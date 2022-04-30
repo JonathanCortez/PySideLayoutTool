@@ -1,0 +1,16 @@
+{
+  "Version": 0.1,
+  "Modules":
+  [
+    {
+      "Name" : "UIEditorTemplates"
+    }
+  ],
+  "Plugins": [
+    {
+      "Name" : "UEHoudiniEnginePlugin",
+      "Enable" : false
+    }
+
+  ]
+}

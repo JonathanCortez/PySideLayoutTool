@@ -1,0 +1,43 @@
+{
+  "Icons": "IconRegistration",
+  "Properties":
+  [
+    "Common.CheckBoxTemplate.CheckboxProperty",
+    "Common.ComboBoxTemplate.ComboBoxProperty",
+    "Common.StringEditTemplate.StringEditProperty",
+    "Common.ClampRangeTemplate.ClampRangeProperty",
+    "Common.DictionaryTemplate.DictionaryWidgetProperty"
+
+  ],
+  "Categories":
+  [
+    {
+      "Name": "Common",
+      "Modules":
+      [
+        "CheckBoxTemplate.CheckboxClass",
+        "SeparatorTemplate.SeparatorClass",
+        "SliderTemplate.SliderClass",
+        "StringEditTemplate.StringEditClass",
+        "ClampRangeTemplate.ClampRangeClass",
+        "LineEditTemplate.MultiLineEditClasses",
+        "DictionaryTemplate.DictionaryClass",
+        "ComboBoxTemplate.ComboBoxClass",
+        "LabelTemplate.LabelClass",
+        "ButtonTemplate.ButtonClass",
+        "FileTemplate.FileClass",
+        "ColorTemplate.ColorClass",
+        "RampTemplate.RampClass"
+      ]
+    },
+    {
+      "Name": "Folder",
+      "Modules":
+      [
+        "SimpleFolderTemplate.SimpleFolderClass",
+        "CollapisbleFolderTemplate.CollapisbleFolderClass",
+        "TabFolderTemplate.FolderTabClasses"
+      ]
+    }
+  ]
+}
