@@ -81,7 +81,7 @@ class BaseConcreteBuilder(TemplateBuilderInterface):
         self._new_item.type_str = args[1]
         if self.set_icon() is not None:
             icon = QtGui.QIcon(self.set_icon()) #type: ignore
-            self._new_item.setIcon(0,icon)
+            self._new_item.setIcon(0,self.set_icon())
 
 
     def Item_management(self, item_on, position):

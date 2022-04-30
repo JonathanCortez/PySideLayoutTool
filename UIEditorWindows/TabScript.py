@@ -40,15 +40,12 @@ class EditorLayout(QtWidgets.QWidget):
         self._bottom_toolbar = QtWidgets.QToolBar()
         self._pyModules = {}
 
-        self._left_move_action = self._top_toolbar.addAction(QtGui.QIcon(
-            UIEditorIconFactory.IconEditorFactory.create('move_left')), 'Line Left Move')
-        self._right_move_action = self._top_toolbar.addAction(QtGui.QIcon(
-            UIEditorIconFactory.IconEditorFactory.create('move_right')), 'Line Right Move')
+        self._left_move_action = self._top_toolbar.addAction(UIEditorIconFactory.IconEditorFactory.create('move_left'), 'Line Left Move')
+        self._right_move_action = self._top_toolbar.addAction(UIEditorIconFactory.IconEditorFactory.create('move_right'), 'Line Right Move')
 
         self._top_toolbar.addSeparator()
 
-        self._comment_action = self._top_toolbar.addAction(QtGui.QIcon(
-            UIEditorIconFactory.IconEditorFactory.create('comment')), 'Comment In/Out')
+        self._comment_action = self._top_toolbar.addAction(UIEditorIconFactory.IconEditorFactory.create('comment'), 'Comment In/Out')
         self._top_toolbar.addSeparator()
 
         spacing = QtWidgets.QWidget()
@@ -57,10 +54,8 @@ class EditorLayout(QtWidgets.QWidget):
 
         self._bottom_toolbar.addWidget(spacing)
         self._bottom_toolbar.addSeparator()
-        self._zoom_in_action = self._bottom_toolbar.addAction(QtGui.QIcon(
-            UIEditorIconFactory.IconEditorFactory.create('zoom_In')), 'Increase Text Size')
-        self._zoom_out_action = self._bottom_toolbar.addAction(QtGui.QIcon(
-            UIEditorIconFactory.IconEditorFactory.create('zoom_Out')), 'Decrease Text Size')
+        self._zoom_in_action = self._bottom_toolbar.addAction(UIEditorIconFactory.IconEditorFactory.create('zoom_In'), 'Increase Text Size')
+        self._zoom_out_action = self._bottom_toolbar.addAction(UIEditorIconFactory.IconEditorFactory.create('zoom_Out'), 'Decrease Text Size')
 
         self._tab_widget = QtWidgets.QTabWidget(self)
         self._tab_widget.setProperty('class','editor_pane')

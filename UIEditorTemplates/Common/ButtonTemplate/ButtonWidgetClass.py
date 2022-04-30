@@ -84,7 +84,7 @@ class ButtonStripWidget(QtWidgets.QWidget):
         self._last_button = None
 
     def lastSelected(self):
-        return (self._lastSelected, self._last_button)
+        return (self._last_selected, self._last_button)
 
     def checked_buttons(self):
         buttons_checked = []

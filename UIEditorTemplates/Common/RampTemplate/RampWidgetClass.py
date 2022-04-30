@@ -150,8 +150,8 @@ class RampWidgetButtons(QtWidgets.QWidget):
         self._spacing_item.setFixedHeight(15)
         self._spacing_item.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
 
-        self.__open_arrow_icon = QtGui.QIcon(UIEditorIconFactory.IconEditorFactory.create('arrow_open'))
-        self.__close_arrow_icon = QtGui.QIcon(UIEditorIconFactory.IconEditorFactory.create('arrow_close'))
+        self.__open_arrow_icon = UIEditorIconFactory.IconEditorFactory.create('arrow_open')
+        self.__close_arrow_icon = UIEditorIconFactory.IconEditorFactory.create('arrow_close')
 
         self._chart_button = QtWidgets.QPushButton()
         self._chart_button.setFixedSize(20, 20)
@@ -166,7 +166,7 @@ class RampWidgetButtons(QtWidgets.QWidget):
 
         self._rev_domain = QtWidgets.QPushButton()
         self._rev_domain.setFixedSize(20,20)
-        self._rev_domain.setIcon(QtGui.QIcon(UIEditorIconFactory.IconEditorFactory.create('arrow_exchange_alt')))
+        self._rev_domain.setIcon(UIEditorIconFactory.IconEditorFactory.create('arrow_exchange_alt'))
         self._rev_domain.setStyleSheet('QPushButton { background-color: rgba(100, 100, 100, 0); }'
                                        'QPushButton:hover:!pressed{ background-color: #2f2f2f; }'
                                        'QPushButton:pressed{ background-color:  #e1e1e1 };')
@@ -176,11 +176,11 @@ class RampWidgetButtons(QtWidgets.QWidget):
                                        'QPushButton:hover:!pressed{ background-color: #2f2f2f; }'
                                        'QPushButton:pressed{ background-color:  #e1e1e1 };')
         self._comp_ramp.setFixedSize(20, 20)
-        self._comp_ramp.setIcon(QtGui.QIcon(UIEditorIconFactory.IconEditorFactory.create('arrow_exchange_v')))
+        self._comp_ramp.setIcon(UIEditorIconFactory.IconEditorFactory.create('arrow_exchange_v'))
 
         self._preset_menu = QtWidgets.QPushButton()
         self._preset_menu.setFixedSize(40, 20)
-        self._preset_menu.setIcon(QtGui.QIcon(UIEditorIconFactory.IconEditorFactory.create('menu_list')))
+        self._preset_menu.setIcon(UIEditorIconFactory.IconEditorFactory.create('menu_list'))
         self._preset_menu.setStyleSheet('QPushButton { background-color: rgba(100, 100, 100, 0); }'
                                        'QPushButton:hover:!pressed{ background-color: #2f2f2f; }'
                                        'QPushButton:pressed{ background-color:  #e1e1e1 };')

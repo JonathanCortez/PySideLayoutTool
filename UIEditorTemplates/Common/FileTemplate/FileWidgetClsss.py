@@ -27,8 +27,8 @@ class FileWidgetLayout(QtWidgets.QWidget):
         self._button_widget = QtWidgets.QPushButton()
         self._button_widget.setMinimumWidth(30)
         self._button_widget.setMaximumWidth(30)
-        icon = QtGui.QIcon(UIEditorIconFactory.IconEditorFactory.create('add_file'))
-        self._button_widget.setIcon(icon)
+        # icon = QtGui.QIcon(UIEditorIconFactory.IconEditorFactory.create('add_file'))
+        self._button_widget.setIcon(UIEditorIconFactory.IconEditorFactory.create('add_file'))
 
         self._hor_layout.addWidget(self._text_box)
         self._hor_layout.addSpacing(5)

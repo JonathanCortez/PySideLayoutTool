@@ -438,7 +438,7 @@ class AlphaRect(QtWidgets.QWidget):
         self.setMinimumWidth(256)
         self.setMaximumWidth(256)
         self.linearBrush = QtGui.QBrush()
-        self.checkerImage = QtGui.QPixmap('/PySideLayoutTool/resources/images/checkerPattern.png')
+        self.checkerImage = QtGui.QPixmap('/PySideLayoutTool/Resources/Icons/checkerPattern.png')
         self.linearBrush.setTexture(self.checkerImage)
 
     def paintEvent(self, event) -> None:
