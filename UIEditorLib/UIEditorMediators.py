@@ -203,22 +203,20 @@ class EditorsMediator(Mediator):
             widget_property.setValue(property_data[property_name])
             self._lastCheck(property_name, display_obj)
 
-        if not property_data['Default']:
-            if data['Values'][key_in][index] != property_data['Default']:
-                builder.newWidget().set_value(data['Values'][key_in][index])
+        if 'Default' in property_data:
+            if not property_data['Default']:
+                if data['Values'][key_in][index] != property_data['Default']:
+                    builder.newWidget().set_value(data['Values'][key_in][index])
 
         return builder
 
     def _recursive_build(self, parm_string: str ,key_name: str, index_on, data, tree):
         item_on = self._prev_item if self._prev_item.bOnItem() else self._prev_item.itemParent()
         builder = self._rebuild_state(parm_string ,key_name, index_on, item_on, data, tree)
-        # print(key_name, parm_string)
 
         if builder.newItem().bOnItem():
             item_name = builder.newItem().name()
-            # print(item_name)
             if item_name in data['Types']:
-                # print('builder.newItem().bOnItem() : ', item_name)
                 for index,folder_type in enumerate(data['Types'][item_name]):
                     self._recursive_build(folder_type,item_name, index, data, tree)
 

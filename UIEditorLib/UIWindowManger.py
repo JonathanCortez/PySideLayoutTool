@@ -98,7 +98,7 @@ class WindowsManger:
 
     @classmethod
     def restoreState(cls,data):
-        win_instance_editor = cls.get_Stack(data['Name'],'User')[data['Name'] + '_editor']
+        win_instance_editor = cls.get_Stack(data['Name'],data['Category'])[data['Name'] + '_editor']
         win_instance_editor.restoreUIState(data)
 
 

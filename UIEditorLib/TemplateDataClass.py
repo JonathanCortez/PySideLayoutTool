@@ -433,7 +433,6 @@ class TemplateSerialization:
 
         self._built_data['Type_Properties'] = property_groups
         self._built_data['Values'] = value_list
-        print(self._built_data['Values'])
 
         if self._current_data_base._parent.pyModules() > 0:
             py_editor = self._current_data_base._parent.pyEditor().pyModule_editor()
