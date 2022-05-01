@@ -76,8 +76,8 @@ class UIAPILayoutWrapper:
     def on_pre_update(self):
         pass
 
-    def set_parameter_value(self, type: str, name: str, value):
-        self._layout_wrap.templateLayout().find_widget(name).set_value(value)
+    def set_parameter_value(self, name: str, value):
+        self._layout_wrap.parm(name).set_value(value)
 
     def get_parameter_value(self, name: str):
-        return self._layout_wrap.templateLayout().find_widget(name).eval()
+        return self._layout_wrap.parm(name).eval()

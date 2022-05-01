@@ -33,6 +33,9 @@ class MainWindowLayout(QtWidgets.QMainWindow, UIEditorMediators.BaseComponent):
         self._scrollArea.setWidget(self._widget_ptr)
         self.update()
 
+    def parm(self, name : str):
+        return self._widget_ptr.find_widget(name)
+
     def templateLayout(self):
         return self._widget_ptr
 
