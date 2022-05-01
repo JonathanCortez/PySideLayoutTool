@@ -306,6 +306,11 @@ class FolderMultiTabList(QtWidgets.QWidget):
     def set_base_widget(self,widget):
         self._base_widget = widget
 
+    def add_button_widget(self):
+        return self._addButton
+
+    def remove_button_widget(self):
+        return self._remove_button
 
 
 

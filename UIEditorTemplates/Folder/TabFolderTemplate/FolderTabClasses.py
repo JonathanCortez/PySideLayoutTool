@@ -81,8 +81,14 @@ class FolderMultiListWidgetClass(LayoutTemplate.FolderSetup):
         self._folder_widget = FolderTabWidgetClass.FolderMultiTabList(self._childWidgets)
         self._layout.addWidget(self._folder_widget)
 
+        self._folder_widget.add_button_widget().clicked.connect(self._new_widget)
+        self._folder_widget.remove_button_widget().clicked.connect(self._new_widget)
+
+    def _new_widget(self):
+        self.notify_conditions()
+
     def eval(self) -> int or float:
-        pass
+        return self._folder_widget.count()
 
     def clearLayout(self):
         count = self._folder_widget.count()

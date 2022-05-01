@@ -17,7 +17,7 @@ from . import TabScript
 # - Fix Collapsible Tab Size when reapplying. --(Fixed)
 # - Fix Collapsible within another Collapsible.
 # - Fix Remove objects properly. --(Fixed)
-# - basic Text Editor.
+# - basic Text Editor. --(Added)
 
 
 class EditorWindow(QtWidgets.QMainWindow, UIEditorMediators.BaseComponent):
@@ -88,7 +88,6 @@ class EditorWindow(QtWidgets.QMainWindow, UIEditorMediators.BaseComponent):
 
     def closeEvent(self, event) -> None:
         pass
-
 
 
 class CombineWidget(QtWidgets.QWidget):
@@ -171,6 +170,7 @@ class ButtonWidgets(QtWidgets.QWidget):
         self._view_button.pressed.connect(self.viewLayout)
         self._apply_button.pressed.connect(self.updateWindowLayout)
         self._accept_button.pressed.connect(self.acceptFunc)
+        self._cancel_button.pressed.connect(self.closeEditor)
 
     def viewLayout(self):
         self._main_win.LayoutDisplay()
@@ -181,6 +181,9 @@ class ButtonWidgets(QtWidgets.QWidget):
     def acceptFunc(self):
         self.updateWindowLayout()
         self.viewLayout()
+        self._main_win.close()
+
+    def closeEditor(self):
         self._main_win.close()
 
 
