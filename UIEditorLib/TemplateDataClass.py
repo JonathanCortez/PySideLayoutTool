@@ -105,14 +105,13 @@ class TemplateData:
 
         return last_index, last_key
 
-    def find_group_widget(self, name):
+    def find_group_widget(self, name : str):
         index = -1
         key_in = None
-
         for key in self._widget_groups:
-            for i in enumerate(self._widget_groups[key]):
-                if i[1].name() == name:
-                    index = i[0]
+            for n, item in enumerate(self._widget_groups[key]):
+                if item.name() == name:
+                    index = n
                     key_in = key
                     break
 
@@ -233,8 +232,11 @@ class TemplateData:
 
 
     def recursiveLayout(self,name:str, layout, widget_data, update_clear = True):
+        for widget_update in widget_data[name]:
+            widget_update._updateProperties()
+            widget_update.clear_Observers()
+
         for widget in widget_data[name]:
-            widget._updateProperties()
             widget.PreUpdate()
             
             self._process_script(widget.callback(), widget)
@@ -266,7 +268,6 @@ class TemplateData:
                     layout.horizontal_join(widget)
 
             widget.PostUpdate()
-            widget.clear_Observers()
             widget._setHidden_expression(self._conditionHandle(widget.hiden_when(), widget))
             widget._setDisable_expression(self._conditionHandle(widget.disable_when(), widget))
 
@@ -282,6 +283,7 @@ class TemplateData:
     def _expression_format(self, string_list: List[str], widget_on):
         expressionList = []
         string_lenght = len(string_list)
+
         for num in range(0, string_lenght,1):
             current_str_list_len = len(string_list[num])
             count = 0
@@ -290,8 +292,11 @@ class TemplateData:
                 index, key_in = self.find_group_widget(str_item[1])
                 if index != -1:
                     base_observer = self._widget_groups[key_in][index]
-                    base_observer.add_Observer(widget_on)
-                    expressionList.append(base_observer)
+                    if base_observer != widget_on:
+                        base_observer.add_Observer(widget_on)
+                        expressionList.append(base_observer)
+                    else:
+                        expressionList.append('None')
                 else:
                     expressionList.append(str_item[1])
 

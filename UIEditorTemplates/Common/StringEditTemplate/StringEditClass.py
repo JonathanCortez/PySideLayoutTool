@@ -7,7 +7,7 @@ class StringClass(LayoutTemplate.ParmSetup):
 
     def __init__(self,parent):
         super(StringClass, self).__init__(parent)
-        self._textbox = StringEditWidgetClass.StringWidget(self.defaultValue())
+        self._textbox = StringEditWidgetClass.StringWidget(self.default_value())
         self._layout.addWidget(self._textbox)
 
         self._textbox.string_widget().editingFinished.connect(self._str_changed)

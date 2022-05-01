@@ -433,7 +433,7 @@ class EditorHighlighter(QtGui.QSyntaxHighlighter):
         keywords = ["break", "else", "for", "if", "in","elif",
                     "or", "yield", "return", "pass","None",
                     "try", "while","and", "class", "def",
-                    "True", "False", "None"]
+                    "True", "False", "None","import", "from"]
         rule_list = []
         for word in keywords:
             pattern = QtCore.QRegExp("\\b" + word + "\\b")

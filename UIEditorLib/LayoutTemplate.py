@@ -9,6 +9,7 @@ from . import StringValidatorClass, TemplateDataClass
 from .UIEditorProperty import ProcessUIProperties, UIProperty
 from . import UIFunctions as ui
 
+
 try:
     import unreal
 except ImportError:
@@ -82,10 +83,11 @@ class WidgetSetup(QtWidgets.QWidget):
     def callback_func(self):
         if hasattr(self,'__code_obj__') :
             code = getattr(self, '__code_obj__')
-            call = getattr(self, '__call_obj__')
             exec(compile(code, 'Script', 'exec'), globals(), locals())
-            exec(compile(call, 'Script', 'exec'), globals(), locals())
-            
+            call = getattr(self, '__call_obj__')
+            if call:
+                exec(compile(call, 'Script', 'exec'), {'self': self}, locals())
+
 
     def notify_conditions(self):
         self._disable_implementation(self._eval_expression(self._disable_str_list) if self._disable_str_list is not None else False)
@@ -94,6 +96,7 @@ class WidgetSetup(QtWidgets.QWidget):
     def _eval_expression(self, expression) -> bool:
         expressionStr = ''
         expressionStr = ' '.join([str(elem.eval() if isinstance(elem, QtWidgets.QWidget) else elem) for elem in expression])
+        # print(expressionStr)
         return eval(expressionStr)
 
 
@@ -202,11 +205,11 @@ class ParmSetup(WidgetSetup):
         pass
 
     @UIProperty(metaWidget='LineEditProperty', label='Default', category='Setting')
-    def defaultValue(self):
+    def default_value(self):
         pass
 
     @abstractmethod
-    def setValue(self, value):
+    def set_value(self, value):
         """ set value for parameter """
 
 
@@ -225,11 +228,11 @@ class FolderSetup(WidgetSetup):
         self._childWidgets = TemplateDataClass.TemplateGroup()
 
     @UIProperty(metaWidget='LineEditProperty',label='Tab Hidden When', category='Expressions')
-    def tabHide(self):
+    def tab_hide(self):
         pass
 
     @UIProperty(metaWidget='LineEditProperty', label='Tab Disable When', category='Expressions')
-    def tabDisable(self):
+    def tab_disable(self):
         pass
 
     def clearLayout(self):
@@ -256,7 +259,7 @@ class FolderSetup(WidgetSetup):
         return False
 
     @abstractmethod
-    def setValue(self, value):
+    def set_value(self, value):
         """ set value for parameter """
 
     @abstractmethod

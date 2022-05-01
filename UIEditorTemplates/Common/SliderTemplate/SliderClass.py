@@ -61,7 +61,7 @@ class IntegerSliderClass(SliderTemplateClass):
         self._set_slider_value(self._value)
 
     def PostUpdate(self):
-        default = self._value if self.defaultValue() == '' else int(self.defaultValue())
+        default = self._value if self.default_value() == '' else int(self.default_value())
         self._value = int(self.clampRange().min) if default < int(self.clampRange().min) else default
         self._slider_widget.slider.setRange(self.clampRange().min, self.clampRange().max)
         self._slider_widget.slider.setValue(self._value)
@@ -107,7 +107,7 @@ class FloatSliderClass(SliderTemplateClass):
         self._set_slider_value(self._value)
 
     def PostUpdate(self):
-        default = self._value if self.defaultValue() == '' else float(self.defaultValue())
+        default = self._value if self.default_value() == '' else float(self.default_value())
         self._value = float(self.clampRange().min) if default < float(self.clampRange().min) else default
         self._slider_widget.slider.setRange(int(self.clampRange().min * 1000000.0),int(self.clampRange().max * 1000000.0))
         self._slider_widget.slider.setValue(int(self._value * 1000000.0))

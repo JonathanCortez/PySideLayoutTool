@@ -20,9 +20,7 @@ def DisplayWindow():
     path = __file__.replace('main.py', 'UIEditorProject.uiproject')
     UIModuleInterface.main_path(path)
     UIModuleInterface.PreInitialize(None, None)
-
     UIModuleInterface.Setup_Init()
-
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

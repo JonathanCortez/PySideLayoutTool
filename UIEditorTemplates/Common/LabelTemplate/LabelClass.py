@@ -11,8 +11,8 @@ class LabelSetupClass(LayoutTemplate.ParmSetup):
 
 
     def PostUpdate(self):
-        if self.defaultValue() != '':
-            self._label_widget.setText(self.defaultValue())
+        if self.default_value() != '':
+            self._label_widget.setText(self.default_value())
 
     def eval(self):
         return self._label_widget.text()
