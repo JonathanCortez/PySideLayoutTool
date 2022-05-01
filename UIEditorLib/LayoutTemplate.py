@@ -7,14 +7,17 @@ from abc import abstractmethod
 
 from . import StringValidatorClass, TemplateDataClass
 from .UIEditorProperty import ProcessUIProperties, UIProperty
-
-class CallbackObject(QObject):
-    callback = Signal()
+from . import UIFunctions as ui
 
 try:
     import unreal
 except ImportError:
     pass
+
+
+class CallbackObject(QObject):
+    callback = Signal()
+
 
 class WidgetSetup(QtWidgets.QWidget):
     """ Widget base class """

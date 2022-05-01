@@ -3,9 +3,10 @@ import re
 from typing import List, Dict, Any
 from PySide2 import QtWidgets
 
-from PySideLayoutTool.UIEditorLib import UIEditorFactory, RootWidget
+from PySideLayoutTool.UIEditorLib import UIEditorFactory, RootWidget, UIFunctions as ui
 from PySideLayoutTool.UIEditorTemplates.Layout import CustomFormLayout
 import pickle
+
 
 class TemplateData:
 
