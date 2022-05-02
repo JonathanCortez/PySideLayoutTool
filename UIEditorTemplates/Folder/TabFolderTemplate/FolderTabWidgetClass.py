@@ -310,7 +310,7 @@ class FolderMultiTabList(QtWidgets.QWidget):
         return self._addButton
 
     def remove_button_widget(self):
-        return self._remove_button
+        return self._subButton
 
 
 
