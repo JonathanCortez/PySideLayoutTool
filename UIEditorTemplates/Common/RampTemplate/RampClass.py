@@ -33,6 +33,8 @@ class RampSetupClass(LayoutTemplate.ParmSetup):
         return self._ramp_widget.get_ramp()
 
 
+
+
 class RampColorSetupClass(LayoutTemplate.ParmSetup):
 
     def __init__(self,parent):
@@ -44,7 +46,8 @@ class RampColorSetupClass(LayoutTemplate.ParmSetup):
         return False
 
     def PostUpdate(self):
-        pass
+        self._ramp_widget.label(self.label())
+
 
 
 class RampBuildClass(TemplateBuildClass.ParameterBuild):
@@ -61,5 +64,5 @@ class RampColorBuildClass(TemplateBuildClass.ParameterBuild):
 
 
 def register():
-    UIEditorFactory.WidgetFactory.register('Ramp', RampBuildClass)
-    UIEditorFactory.WidgetFactory.register('Ramp Color', RampColorBuildClass)
+    UIEditorFactory.WidgetFactory.register('Ramp (Float)', RampBuildClass)
+    UIEditorFactory.WidgetFactory.register('Ramp (Color)', RampColorBuildClass)

@@ -62,6 +62,9 @@ class EditorWindow(QtWidgets.QMainWindow, UIEditorMediators.BaseComponent):
     def pyEditor(self):
         return self._pyEditor
 
+    def layout_win_obj(self):
+        return self.mediator.layout_window() #type: ignore
+
     def TemplateLayout(self):
         return self._data
 
@@ -69,7 +72,7 @@ class EditorWindow(QtWidgets.QMainWindow, UIEditorMediators.BaseComponent):
         self.mediator.notifyDisplay() #type: ignore
 
     def LayoutUpdate(self):
-        self.mediator.notifyUpdate(self._data.newLayout()) #type: ignore
+        self.mediator.notifyUpdate(self._data.newLayout(self.layout_win_obj())) #type: ignore
 
     def editor_name(self):
         return self._ID_name
@@ -199,7 +202,7 @@ class ParameterTab(QtWidgets.QWidget):
 
         self._horizontal_layout.addWidget(ParameterList())
 
-        self._displayWidget = ParameterDisplay(main_parent)
+        self._displayWidget = ParameterDisplay(self)
         self._ItemLayout = LayoutTree(main_parent, self._displayWidget)
 
         self._splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
@@ -232,7 +235,7 @@ class ParameterDisplay(QtWidgets.QWidget):
         self._layout.setSpacing(0)
         self._layout.setContentsMargins(5, 5, 5, 5)
 
-        self._stack = QtWidgets.QStackedWidget()
+        self._stack = QtWidgets.QStackedWidget(self)
 
         self._header = QtWidgets.QLabel('Description')
         self._header.setStyleSheet("QLabel{"
@@ -317,6 +320,7 @@ class LayoutTree(QtWidgets.QTreeWidget):
         self.setDragDropMode(QtWidgets.QAbstractItemView.DropOnly and QtWidgets.QAbstractItemView.InternalMove)
         self.setDragEnabled(True)
         self.setDropIndicatorShown(True)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
 
         self._parent = parent
         self.setHeaderLabel('Layout')
@@ -334,8 +338,23 @@ class LayoutTree(QtWidgets.QTreeWidget):
         self._root_item = self.topLevelItem(0)
         self._root_item.stackIndex = self._displayWidget.addStack(TemplateDisplayUI.RootUISetup(self))
 
+        # self.selectionModel().selectionChanged.connect(self.handleSelection) #type: ignore
         self.itemPressed.connect(self.item_pressed)
         self.itemDoubleClicked.connect(self.item_name_change)
+
+
+    # def handleSelection(self, selected, deselected):
+    #     folder_items = []
+    #     for index in selected.indexes():
+    #         item = self.itemFromIndex(index)
+    #         if isinstance(self.itemFromIndex(index), TreeItemInterface.FolderItem):
+    #             folder_items.append(item)
+    #
+    #     # if folder_items:
+    #     #     self.selectionModel().Current = folder_items
+
+
+
 
     def item_name_change(self, item, column):
         if item is not self._root_item:
@@ -359,38 +378,56 @@ class LayoutTree(QtWidgets.QTreeWidget):
 
 
     def startDrag(self, supportedActions) -> None:
-        listsQModelIndex = self.selectedIndexes()
-        if listsQModelIndex and self.selectedItems()[0].bMoveable():
-            self._currentItem = self.selectedItems()[0]
-            if self._currentItem.bMoveable():
-                mimeData = QtCore.QMimeData()
-                dataQMimeData = self.model().mimeData(listsQModelIndex)
-                dragQDrag = QtGui.QDrag(self)
-                # dragQDrag.setPixmap(QtGui.QPixmap('test.jpg')) # <- For put your custom image here
-                dragQDrag.setMimeData(dataQMimeData)
-                dragQDrag.exec_(supportedActions, QtCore.Qt.MoveAction)
+        listsQModelIndex = []
+        for i in self.selectedIndexes():
+            item = self.itemFromIndex(i)
+            if item.bMoveable():
+                listsQModelIndex.append(i)
+
+        mimeData = QtCore.QMimeData()
+        dataQMimeData = self.model().mimeData(listsQModelIndex)
+        dragQDrag = QtGui.QDrag(self)
+        # dragQDrag.setPixmap(QtGui.QPixmap('test.jpg')) # <- For put your custom image here
+        dragQDrag.setMimeData(dataQMimeData)
+        dragQDrag.exec_(supportedActions, QtCore.Qt.MoveAction)
+
+
+        # listsQModelIndex = self.selectedIndexes()
+        # if listsQModelIndex and self.selectedItems()[0].bMoveable():
+        #     self._currentItem = self.selectedItems()[0]
+        #     if self._currentItem.bMoveable():
+        #         mimeData = QtCore.QMimeData()
+        #         dataQMimeData = self.model().mimeData(listsQModelIndex)
+        #         dragQDrag = QtGui.QDrag(self)
+        #         # dragQDrag.setPixmap(QtGui.QPixmap('test.jpg')) # <- For put your custom image here
+        #         dragQDrag.setMimeData(dataQMimeData)
+        #         dragQDrag.exec_(supportedActions, QtCore.Qt.MoveAction)
 
 
 
     def keyPressEvent(self, event) -> None:
         if event.key() == QtCore.Qt.Key_Backspace or event.key() == QtCore.Qt.Key_Delete:
-            if self._currentItem is not self._root_item and self._currentItem is not None:
+            for on_selection in self.selectedItems():
+                if on_selection is not self._root_item:
 
-                if self._currentItem.childCount() > 0:
-                    for i in self._parent.database().item_groups()[self._currentItem.name()]:
-                        self._currentItem.removeChild(i)
-                        self._currentItem.itemParent().itemHandling(i, None)
-                        i.setItem(self._currentItem.itemParent())
+                    if on_selection.childCount() > 0:
+                        index = self.indexFromItem(on_selection).row()
+                        for i in self._parent.TemplateLayout().item_groups()[on_selection.name()]:
+                            on_selection.removeChild(i)
+                            # on_selection.itemParent().itemHandling(i, None)
+                            i.setItem(on_selection.itemParent())
+                            on_selection.itemParent().insertChild(index, i)
+                            index += 1
 
-                self.EditorWin().TemplateLayout().remove_data_obj(self._currentItem)
-                self._currentItem.itemParent().removeChild(self._currentItem)
-                display_widget = self._displayWidget.widgetStack(self._currentItem.stackIndex)
-                self._displayWidget.removeStack(display_widget)
-                self._update_display_item_index()
-                self._check_below_items()
-                itemdel = self._currentItem
-                self._currentItem = None
-                del itemdel, display_widget
+                    self.EditorWin().TemplateLayout().remove_data_obj(on_selection)
+                    on_selection.itemParent().removeChild(on_selection)
+                    display_widget = self._displayWidget.widgetStack(on_selection.stackIndex)
+                    self._displayWidget.removeStack(display_widget)
+                    self._update_display_item_index()
+                    self._check_below_items()
+                    itemdel = on_selection
+                    self._currentItem = None
+                    del itemdel, display_widget
 
 
 
@@ -465,13 +502,33 @@ class LayoutTree(QtWidgets.QTreeWidget):
         # TODO: Just for looks, update treeWidget highlight mark when item gets added or moved.
 
         if event.dropAction() == QtCore.Qt.MoveAction and self._bSameItem and item.itemParent() is not self._currentItem and self._bisChild:
-            self._currentItem.itemParent().removeChild(self._currentItem)
-            item.itemHandling(self._currentItem, self.dropIndicatorPosition)
-            self.setExpanded(self.indexFromItem(item), True)
-            self.setExpanded(self.indexFromItem(self._currentItem), True)
-            self.parent_handling(item)
-            self.EditorWin().TemplateLayout().update_groups(self._currentItem, self.indexFromItem(self._currentItem).row())
+            selected_items = []
+            for on_selection in self.selectedItems():
+                if isinstance(on_selection , TreeItemInterface.FolderItem):
+                    if not isinstance(on_selection.itemParent(), TreeItemInterface.FolderItem):
+                        selected_items.append(on_selection)
 
+                    elif item != on_selection.itemParent():
+                        selected_items.append(on_selection)
+
+                elif item != on_selection.itemParent():
+                    selected_items.append(on_selection)
+
+            remove_selections = []
+            for selection in selected_items:
+                if selection.itemParent() in selected_items:
+                    remove_selections.append(selection)
+
+            for r in remove_selections:
+                selected_items.remove(r)
+
+            for i in selected_items:
+                i.itemParent().removeChild(i)
+                item.itemHandling(i, self.dropIndicatorPosition)
+                self.setExpanded(self.indexFromItem(item), True)
+                self.setExpanded(self.indexFromItem(i), True)
+                self.parent_handling(i, item)
+                self.EditorWin().TemplateLayout().update_groups(i, self.indexFromItem(i).row())
             # TODO: still keep an eye on parenting when moved if it works property throughout the application growth
 
         self._check_below_items()
@@ -493,11 +550,11 @@ class LayoutTree(QtWidgets.QTreeWidget):
         return state
 
 
-    def parent_handling(self, item_on: QtWidgets.QTreeWidgetItem):
+    def parent_handling(self,current_item, item_on: QtWidgets.QTreeWidgetItem):
         if self.dropIndicatorPosition == self.AboveItem and item_on.bOnItem():
-            self._currentItem.setItem(item_on.itemParent())
+            current_item.setItem(item_on.itemParent())
         else:
-            self._currentItem.setItem(item_on)
+            current_item.setItem(item_on)
 
 
     def isUnderFolder(self, item):
@@ -589,6 +646,7 @@ class LayoutTree(QtWidgets.QTreeWidget):
     def _check_below_items(self):
         data = self.EditorWin().TemplateLayout()
         items = data.item_groups()
+
         for key in items:
             for i in items[key]:
                 if not i.bOnItem():
@@ -630,6 +688,9 @@ class LayoutTree(QtWidgets.QTreeWidget):
 
     def EditorWin(self):
         return self._parent
+
+    def layoutWin(self):
+        return self._parent.layout_win_obj()
 
     def displayObject(self):
         return self._displayWidget

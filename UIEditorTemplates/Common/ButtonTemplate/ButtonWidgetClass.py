@@ -84,7 +84,7 @@ class ButtonStripWidget(QtWidgets.QWidget):
         self._last_button = None
 
     def lastSelected(self):
-        return (self._last_selected, self._last_button)
+        return self._last_selected, self._last_button
 
     def checked_buttons(self):
         buttons_checked = []
@@ -93,3 +93,70 @@ class ButtonStripWidget(QtWidgets.QWidget):
                 buttons_checked.append(i)
 
         return buttons_checked
+
+
+class RGBAButtonWidget(QtWidgets.QWidget):
+
+    def __init__(self):
+        super(RGBAButtonWidget, self).__init__()
+        self._hor_layout = QtWidgets.QHBoxLayout()
+        self._hor_layout.setSpacing(1)
+        self._hor_layout.setContentsMargins(0, 0, 0, 0)
+        self._hor_layout.setAlignment(QtCore.Qt.AlignLeft)
+
+        self.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Fixed)
+
+        self._rgb_button_widget = QtWidgets.QPushButton('RGB')
+        self._flip_flop = True
+
+        self._r_button_widget = QtWidgets.QPushButton('R')
+        self._r_button_widget.setFlat(True)
+        self._r_button_widget.setCheckable(True)
+
+        self._g_button_widget = QtWidgets.QPushButton('G')
+        self._g_button_widget.setFlat(True)
+        self._g_button_widget.setCheckable(True)
+
+        self._b_button_widget = QtWidgets.QPushButton('B')
+        self._b_button_widget.setFlat(True)
+        self._b_button_widget.setCheckable(True)
+
+        self._a_button_widget = QtWidgets.QPushButton('A')
+        self._a_button_widget.setFlat(True)
+        self._a_button_widget.setCheckable(True)
+
+        self._hor_layout.addWidget(self._rgb_button_widget)
+        self._hor_layout.addWidget(self._r_button_widget)
+        self._hor_layout.addWidget(self._g_button_widget)
+        self._hor_layout.addWidget(self._b_button_widget)
+        self._hor_layout.addWidget(self._a_button_widget)
+
+        self.setLayout(self._hor_layout)
+
+        self._rgb_button_widget.clicked.connect(self._rgb_pressed)
+
+    def _rgb_pressed(self):
+        self._r_button_widget.setChecked(self._flip_flop)
+        self._g_button_widget.setChecked(self._flip_flop)
+        self._b_button_widget.setChecked(self._flip_flop)
+
+        if self._flip_flop:
+            self._flip_flop = False
+        else:
+            self._flip_flop = True
+
+
+    def rgb_button_state(self):
+        return self._rgb_button_widget.isChecked()
+
+    def red_button_state(self):
+        return self._r_button_widget.isChecked()
+
+    def green_button_state(self):
+        return self._g_button_widget.isChecked()
+
+    def blue_button_state(self):
+        return self._b_button_widget.isChecked()
+
+    def alpha_button_state(self):
+        return self._a_button_widget.isChecked()

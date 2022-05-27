@@ -6,18 +6,12 @@ class DictionaryProperty(IWidgetProperties):
 
     def __init__(self):
         super(DictionaryProperty, self).__init__()
-        self._keys = None
-        self._values = None
+        self._keys = []
+        self._values = []
         self._dict_widget = DictionaryWidgetClass.DictWidgetClass()
         self._layout.addWidget(self._dict_widget)
 
         self._dict_widget.table_widget.cellChanged.connect(self.updateValues)
-        self._dict_widget.add_button.clicked.connect(self.updateSize)
-        self._dict_widget.sub_button.clicked.connect(self.updateSize)
-
-    def updateSize(self,state):
-        self._parent.updateSize(self._dict_widget.sizeHint().width(), self._dict_widget.sizeHint().height())
-
 
     def override_default(self, defaults: tuple):
         pass

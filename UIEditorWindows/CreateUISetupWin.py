@@ -21,6 +21,8 @@ class UISetupWin(QtWidgets.QDialog):
         self._category_str = QtWidgets.QLineEdit()
         self._category_str.setText('User')
 
+        self._path_str.setText(UIWindowManger.WindowsManger.root_save() + '/')
+
         self._button_file_browser = QtWidgets.QPushButton()
         self._file_dialog = QtWidgets.QFileDialog()
         self._create_button = QtWidgets.QPushButton('Create')
@@ -44,6 +46,9 @@ class UISetupWin(QtWidgets.QDialog):
     def check_name(self):
         new_name = StringValidatorClass.checkString(self._UI_name.text())
         self._UI_name.setText(new_name)
+        full_name_path = UIWindowManger.WindowsManger.root_save() + f'/{new_name}'
+        self._path_str.setText(full_name_path)
+        self._save_path = full_name_path
 
     def open_browser(self):
         file_name = self._file_dialog.getSaveFileName(self,'Save Path', UIWindowManger.WindowsManger.root_save(), '.qui')
@@ -52,8 +57,7 @@ class UISetupWin(QtWidgets.QDialog):
 
     def new_ui(self):
         UIWindowManger.WindowsManger.InitilizeWindows(self._UI_name.text(), self._save_path, self._category_str.text())
-        UIWindowManger.WindowsManger.WindowShow(
-            UIWindowManger.WindowsManger.get_Stack(self._UI_name.text(), self._category_str.text())[self._UI_name.text() + '_editor'])
+        UIWindowManger.WindowsManger.WindowShow(UIWindowManger.WindowsManger.get_Stack(self._UI_name.text(), self._category_str.text())[self._UI_name.text() + '_editor'])
         self.close()
 
 

@@ -52,6 +52,7 @@ class BaseConcreteBuilder(TemplateBuilderInterface):
         self._new_item = None
         self._new_display = None
         self._mediator = None
+        self._layout_win = None
 
         self.__instances = None
 
@@ -100,7 +101,8 @@ class BaseConcreteBuilder(TemplateBuilderInterface):
 
 
     def Database_Fill(self, parent_tree):
-        new_widget = self._new_widget(None)
+        self._layout_win = parent_tree.layoutWin()
+        new_widget = self._new_widget(parent=self._layout_win)
         new_widget._pass_instances(self.__instances)
         self._new_widget = new_widget
 
@@ -112,19 +114,19 @@ class BaseConcreteBuilder(TemplateBuilderInterface):
         parent_tree.set_current_objects(self._new_item, self._new_widget, self._new_display)
 
 
-    def clone_widget(self, widget_cloning):
+    def clone_widget(self,parent_win, widget_parent,  widget_cloning):
         self._new_widget = self.widgetClass()
         instances = self._new_widget._displayProperties()
 
         for i in instances:
-            clone_value = widget_cloning.__property_instances__[i.func_owner].value()
+            clone_description_value = widget_cloning.__property_instances__[i.func_owner].value()
             if i.func_owner == 'name':
-                clone_value = clone_value + '_1'
-                # print(clone_value)
+                clone_description_value += f'_{widget_parent.count() + 1}'
 
-            i.property_widget.setValue(clone_value)
+            i.property_widget.setValue(clone_description_value)
 
-        new_widget = self._new_widget(None)
+        self._layout_win = parent_win
+        new_widget = self._new_widget(parent=self._layout_win)
         new_widget._pass_instances(instances)
         self._new_widget = new_widget
 

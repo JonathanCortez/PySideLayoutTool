@@ -1,6 +1,6 @@
 from . import DictionaryWidgetClass
 from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
-
+from PySideLayoutTool.UIEditorLib.UIEditorProperty import UIProperty
 
 class DictionarySetupClass(LayoutTemplate.ParmSetup):
 
@@ -12,6 +12,11 @@ class DictionarySetupClass(LayoutTemplate.ParmSetup):
 
         self._layout.addWidget(self._dict_widget)
         self._dict_widget.table_widget.cellChanged.connect(self._dict_changed)
+
+
+    @UIProperty(metaWidget='DictionaryProperty', label='Values', category='Combo/Menu Items')
+    def dict_keyValue(self):
+        pass
 
 
     def _dict_changed(self,row, column):

@@ -1,6 +1,9 @@
+
+from __future__ import division
+from functools import reduce
+from operator import mul
 # import numpy as np
-# import scipy.interpolate
-# import scipy.interpolate as si
+
 
 from PySide2 import QtWidgets, QtCore, QtGui
 from PySideLayoutTool.UIEditorTemplates.Common.SliderTemplate import SliderWidgetClass
@@ -13,6 +16,12 @@ from PySideLayoutTool.UIEditorLib import UIEditorIconFactory
 
 import math
 from typing import Dict, List, Any
+
+
+#TODO: FIX!!! Resize on init.
+# reOrder points on x position when moved and redraw curve.
+# Implement curve interpolations.
+
 
 class RampWidgetSetup(QtWidgets.QWidget):
 
@@ -28,7 +37,6 @@ class RampWidgetSetup(QtWidgets.QWidget):
         self._widget_buttons = RampWidgetButtons(self)
 
         self._base_frame = QtWidgets.QGroupBox()
-        self._collapsible_folder = CollapisbleFolderWidgetClass.CollapsibleFolderWidget('Controls')
 
         self._frame_layout = QtWidgets.QVBoxLayout()
         self._frame_layout.setSpacing(0)
@@ -51,7 +59,9 @@ class RampWidgetSetup(QtWidgets.QWidget):
         self._stack.addWidget(self._placeholder)
 
         self._collapsible_layout.addWidget(self._stack)
-        self._collapsible_folder.setContentLayout(self._collapsible_layout, True)
+        self._collapsible_folder = CollapisbleFolderWidgetClass.CollapsibleFolderWidget(self._collapsible_layout)
+        self._collapsible_folder.folder_title('Controls')
+        self._collapsible_folder.open_folder(True)
 
         self._frame_layout.addWidget(self._ramp_display)
         self._frame_layout.addWidget(SeparatorWidgetClass.SeparatorHWidget())
@@ -86,7 +96,7 @@ class RampWidgetSetup(QtWidgets.QWidget):
     def itemData(self):
         return self._itemData
 
-    def sliderWidget(self):
+    def slider_widget(self):
         return self._slider
 
     def widgetStack(self):
@@ -95,14 +105,17 @@ class RampWidgetSetup(QtWidgets.QWidget):
     def actionButtons(self):
         return self._widget_buttons
 
+    def graphic_scene_outer(self):
+        return self._ramp_display
+
     def graphicScene(self):
         return self._ramp_display.ramp().scene
 
     def updateSlider_width(self,*args):
         self._slider.updateWidth(args[0])
 
-    def newHandle(self, position):
-        return self._slider.newHandle(position)
+    def newHandle(self, position, control):
+        return self._slider.newHandle(position, control)
 
     def newControl(self,index, pos, value, interp):
         if self._placeholder:
@@ -123,13 +136,17 @@ class RampWidgetSetup(QtWidgets.QWidget):
 
         return new_control
 
+
     def get_ramp(self):
         return self.graphicScene().get_ramp_values()
 
     def setRamp(self,positions,values,interps):
+        graph_scene_y_min = self._ramp_display.ramp().scene.min_height_pos()
+        graph_scene_y_max = self._ramp_display.ramp().scene.max_height_pos()
+
         for x in enumerate(positions):
-            x_pos = self.mapRange_Clamp(x[1], 0, 1, -145.0, self._ramp_display.ramp().width - 148)
-            y_pos = self.mapRange_Clamp(values[x[0]], 0, 1, 105.0, -93)
+            x_pos = self.mapRange_Clamp(x[1], 0, 1, -152.0, self._ramp_display.ramp().width - 155)
+            y_pos = self.mapRange_Clamp(values[x[0]], 0, 1, graph_scene_y_min, graph_scene_y_max)
             self._ramp_display.ramp().scene.addRampPoint(x_pos,y_pos, interps[x[0]])
 
 
@@ -139,7 +156,7 @@ class RampWidgetButtons(QtWidgets.QWidget):
         super(RampWidgetButtons, self).__init__()
         self._layout = QtWidgets.QHBoxLayout()
         self._layout.setSpacing(5)
-        self._layout.setContentsMargins(0,0,0,0)
+        self._layout.setContentsMargins(0,10,0,0)
         self._layout.setAlignment(QtCore.Qt.AlignLeft)
         self._parent = parent
 
@@ -162,7 +179,7 @@ class RampWidgetButtons(QtWidgets.QWidget):
                                        'QPushButton:hover:!pressed{ background-color: #2f2f2f; }'
                                        'QPushButton:flat:checked { background-color: rgba(100, 100, 100, 255); };')
 
-        self._chart_button.toggled.connect(self.updateChart)
+        self._chart_button.toggled.connect(self.update_chart)
 
         self._rev_domain = QtWidgets.QPushButton()
         self._rev_domain.setFixedSize(20,20)
@@ -171,12 +188,16 @@ class RampWidgetButtons(QtWidgets.QWidget):
                                        'QPushButton:hover:!pressed{ background-color: #2f2f2f; }'
                                        'QPushButton:pressed{ background-color:  #e1e1e1 };')
 
+        self._rev_domain.pressed.connect(self.reverse_chart)
+
         self._comp_ramp = QtWidgets.QPushButton()
         self._comp_ramp.setStyleSheet('QPushButton { background-color: rgba(100, 100, 100, 0); }'
                                        'QPushButton:hover:!pressed{ background-color: #2f2f2f; }'
                                        'QPushButton:pressed{ background-color:  #e1e1e1 };')
         self._comp_ramp.setFixedSize(20, 20)
         self._comp_ramp.setIcon(UIEditorIconFactory.IconEditorFactory.create('arrow_exchange_v'))
+
+        self._comp_ramp.pressed.connect(self.comp_chart)
 
         self._preset_menu = QtWidgets.QPushButton()
         self._preset_menu.setFixedSize(40, 20)
@@ -219,6 +240,7 @@ class RampWidgetButtons(QtWidgets.QWidget):
         self.setLayout(self._layout)
 
 
+
     def setLabel(self, text: str):
         self._label.setText(text)
 
@@ -226,16 +248,32 @@ class RampWidgetButtons(QtWidgets.QWidget):
         func = self._type_action[action.text()]
         self._parent.sliderWidget().clearHandles()
         self._parent.graphicScene().clearPoints()
+        self._parent.itemData().clear_groups()
         for i in range(0,self._parent.widgetStack().count()):
             self._parent.widgetStack().removeWidget(self._parent.widgetStack().widget(i))
         self._parent.setRamp(*func())
 
 
-    def updateChart(self,state):
+    def update_chart(self,state):
         if state:
             self._chart_button.setIcon(self.__open_arrow_icon)
+            self._parent.graphic_scene_outer().set_height(200)
+            self._parent.graphicScene().display_grid(True)
+            self._parent.graphicScene().scene_collapsed()
+            self._parent.slider_widget().update_height(190)
         else:
             self._chart_button.setIcon(self.__close_arrow_icon)
+            self._parent.graphic_scene_outer().set_height(50)
+            self._parent.graphicScene().display_grid(False)
+            self._parent.graphicScene().scene_collapsed()
+            self._parent.slider_widget().update_height(40)
+
+    def reverse_chart(self):
+        self._parent.graphicScene().reverse_points()
+
+
+    def comp_chart(self):
+        self._parent.graphicScene().complement_points()
 
 
     def constantSetup(self):
@@ -296,6 +334,13 @@ class RampWidgetData:
     def getGroupC(self) -> Dict:
         return self._groupItemC
 
+
+    def clear_groups(self):
+        self._groupItemA.clear()
+        self._groupItemB.clear()
+        self._groupItemC.clear()
+
+
     def removeGroupItems(self, base_key):
         if base_key in self._groupItemA:
             items = self._groupItemA[base_key]
@@ -326,6 +371,8 @@ class RampSliderWidget(QtWidgets.QWidget):
         super(RampSliderWidget, self).__init__(parent)
         self.opt = QtWidgets.QStyleOptionSlider()
         self.slider_positions = []
+        self._slider_pos_cont = {}
+
         self.currentIndex = 0
         self._base_parent = None
 
@@ -334,7 +381,7 @@ class RampSliderWidget(QtWidgets.QWidget):
         self.opt.maximum = 1 * 1000000.0
 
         self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Slider))
-        self.move(0,190)
+        self.move(0,40)
         self.setFixedWidth(398)
 
     def baseParent(self,parent):
@@ -344,26 +391,53 @@ class RampSliderWidget(QtWidgets.QWidget):
     def handlePosition(self,index):
         return self.slider_positions[index]
 
+    def sort_dict_handles(self):
+        self._slider_pos_cont = dict(sorted(self._slider_pos_cont.items(), key=lambda item: item[1]))
 
-    def newHandle(self,position):
+
+    def newHandle(self,position, control):
         self.slider_positions.append(position)
+        self._slider_pos_cont[control] = position
+        self.sort_dict_handles()
         self.update()
         return len(self.slider_positions) - 1
 
-    def removeHandle(self,index):
+    def removeHandle(self,index, control):
         self.slider_positions.pop(index)
+        self._slider_pos_cont.pop(control)
+        self.sort_dict_handles()
         self.update()
 
     def clearHandles(self):
         self.slider_positions.clear()
+        self._slider_pos_cont.clear()
         self.update()
 
     def handlePositions(self):
         return self.slider_positions
 
+    def handle_dict_positions(self):
+        return self._slider_pos_cont
+
     def updateWidth(self, width):
         self.setFixedWidth(width+10)
 
+
+    def update_height(self, height):
+        self.move(0, height)
+
+
+    def keyPressEvent(self, event) -> None:
+        if event.key() == QtCore.Qt.Key_Backspace or event.key() == QtCore.Qt.Key_Delete:
+            itemlist = self._base_parent.itemData().getGroupB()[self.currentIndex]
+            self._base_parent.itemData().removeGroupItems(itemlist[1])
+            self._base_parent.graphicScene().removePoint(itemlist[0])
+            self.removeHandle(self.currentIndex,self._other_parent)
+            self._base_parent.widgetStack().removeWidget(itemlist[1])
+            itemlist[1].deleteLater()
+
+            for index, i in enumerate(list(self._slider_pos_cont.keys())):
+                i.setNum(index + 1)
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
@@ -395,7 +469,8 @@ class RampSliderWidget(QtWidgets.QWidget):
                 if itemlist[0].parentScene().currentSelected() != itemlist[0]:
                     itemlist[0].parentScene().itemSelect(itemlist[0])
 
-                self._base_parent.widgetStack().setCurrentWidget(itemlist[1])
+                self._current_control = itemlist[1]
+                self._base_parent.widgetStack().setCurrentWidget(self._current_control)
                 return
 
 
@@ -406,16 +481,24 @@ class RampSliderWidget(QtWidgets.QWidget):
 
         if self._current_handle == QtWidgets.QStyle.SC_SliderHandle:
             self.slider_positions[self.currentIndex] = pos
+            self._slider_pos_cont[self._current_control] = pos
+            self.sort_dict_handles()
+
             itemlist = self._base_parent.itemData().getGroupB()[self.currentIndex]
+            itemlist[1].setPosValue(self._base_parent.mapRange_Clamp(pos, 0, 1000000.0, 0, 1))
             itemlist[0].parentScene().moveXItem(itemlist[0], pos)
             itemlist[0].parentScene().drawPath()
-            itemlist[1].setPosValue(self._base_parent.mapRange_Clamp(pos,0,1000000.0, 0, 1))
+
+            for index, i in enumerate(list(self._slider_pos_cont.keys())):
+                i.setNum(index + 1)
+
             self.update()
             return
 
 
-    def moveSlider(self,index,pos):
+    def moveSlider(self,index,control, pos):
         self.slider_positions[index] = pos
+        self._slider_pos_cont[control] = pos
         self.update()
 
 
@@ -425,7 +508,7 @@ class PointNumWidget(QtWidgets.QWidget):
 
     def __init__(self, parent):
         super(PointNumWidget,self).__init__()
-        self._base_parent = parent
+        self._parent = parent
         self._other_parent = None
         self._base_index = 0
 
@@ -434,9 +517,10 @@ class PointNumWidget(QtWidgets.QWidget):
         self._layout.setContentsMargins(0,5,0,5)
         self._layout.setAlignment(QtCore.Qt.AlignLeft)
 
-        self._index_widget = LineEditWidgets.LineEditIntWidgetClass()
+        self._index_widget = LineEditWidgets.LineEditIntWidgetClass(no_num_button=False)
         self._index_widget.baseWidget().setToolTip('Mouse wheel to change Selection.')
         self._index_widget.baseWidget().setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
 
         self._add_button = QtWidgets.QPushButton('+')
         self._add_button.setFont(QtGui.QFont('+',8,QtGui.QFont.Bold))
@@ -460,8 +544,8 @@ class PointNumWidget(QtWidgets.QWidget):
 
         self.setLayout(self._layout)
 
-        self._add_button.pressed.connect(self.addPoint)
-        self._sub_button.pressed.connect(self.removePoint)
+        self._add_button.pressed.connect(self.add_point)
+        self._sub_button.pressed.connect(self.remove_point)
         self._index_widget.baseWidget().valueChanged.connect(self.updateSelection)
 
     def controllerParent(self):
@@ -480,31 +564,32 @@ class PointNumWidget(QtWidgets.QWidget):
 
     def updateSelection(self, value):
         if self._index_widget.wheelState():
-            self._base_parent.widgetStack().setCurrentIndex(value - 1)
-            other = self._base_parent.widgetStack().currentWidget()
-            itemlist = self._base_parent.itemData().getGroupC()[other]
+            controls = list(self._parent.slider_widget().handle_dict_positions().keys())
+            self._parent.widgetStack().setCurrentWidget(controls[value - 1])
+            itemlist = self._parent.itemData().getGroupC()[controls[value - 1]]
             itemlist[0].parentScene().itemSelect(itemlist[0])
             self._index_widget.setValue(self._base_index)
             self.setFocus()
 
 
-    def addPoint(self):
-        pass
+
+    def add_point(self):
+        itemlist = self._parent.itemData().getGroupC()[self._other_parent]
+        self._parent.graphicScene().insert_point(itemlist[0])
 
 
 
-    def removePoint(self):
-        itemlist = self._base_parent.itemData().getGroupC()[self._other_parent]
-        self._base_parent.itemData().removeGroupItems(self._other_parent)
-        self._base_parent.graphicScene().removePoint(itemlist[0])
-        self._base_parent.sliderWidget().removeHandle(itemlist[1])
-        self._base_parent.widgetStack().removeWidget(self._other_parent)
+    def remove_point(self):
+        itemlist = self._parent.itemData().getGroupC()[self._other_parent]
+        self._parent.itemData().removeGroupItems(self._other_parent)
+        self._parent.graphicScene().removePoint(itemlist[0])
+        self._parent.slider_widget().removeHandle(itemlist[1], self._other_parent)
+        self._parent.widgetStack().removeWidget(self._other_parent)
         self._other_parent.deleteLater()
 
-        for i in range(0,self._base_parent.widgetStack().count()):
-            widget = self._base_parent.widgetStack().widget(i)
-            widget.setNum(i+1)
-            widget.setMaxNum(self._base_parent.widgetStack().count())
+        for index, i in enumerate(list(self._parent.slider_widget().handle_dict_positions().keys())):
+            i.setNum(index + 1)
+
 
 
 
@@ -547,6 +632,7 @@ class RampControlsWidget(QtWidgets.QWidget):
 
         self._menu_interp._combo_box.activated.connect(self.updatePath)
 
+
     def withLabel(self,text, widget_obj):
         hor_layout = QtWidgets.QHBoxLayout()
         hor_layout.setSpacing(5)
@@ -564,8 +650,6 @@ class RampControlsWidget(QtWidgets.QWidget):
         self._parent.graphicScene().drawPath()
 
 
-
-
     def changeSelection(self, value):
         if self._notSelf:
             self._parent.widgetStack().setCurrentIndex(value-1)
@@ -579,9 +663,16 @@ class RampControlsWidget(QtWidgets.QWidget):
     def updatePosition(self, value):
         if self._parent.bInit():
             itemlist = self._parent.itemData().getGroupC()[self]
+            self._parent.slider_widget().moveSlider(itemlist[1], self, value)
             itemlist[0].parentScene().moveXItem(itemlist[0], value)
             itemlist[0].parentScene().drawPath()
-            self._parent.sliderWidget().moveSlider(itemlist[1], value)
+
+            self._parent.slider_widget().sort_dict_handles()
+
+            for index, i in enumerate(list(self._parent.slider_widget().handle_dict_positions().keys())):
+                i.setNum(index + 1)
+
+
 
 
     def updateValue(self, value):
@@ -618,9 +709,10 @@ class RampGraphicDisplayOuter(QtWidgets.QWidget):
         self._layout = QtWidgets.QVBoxLayout()
         self._layout.setSpacing(0)
         self._layout.setContentsMargins(5,0,5,10)
+        self._display_height = 50
 
         self._parent = parent
-        self.setFixedHeight(215)
+        self.setFixedHeight(self._display_height + 15)
 
         self._ramp_display = RampGraphicViewer(parent)
 
@@ -630,6 +722,10 @@ class RampGraphicDisplayOuter(QtWidgets.QWidget):
     def ramp(self):
         return self._ramp_display
 
+    def set_height(self, height):
+        self._display_height = height + 15
+        self._ramp_display.set_view_height(height)
+        self.setFixedHeight(self._display_height)
 
 
 class RampGraphicViewer(QtWidgets.QGraphicsView):
@@ -641,8 +737,9 @@ class RampGraphicViewer(QtWidgets.QGraphicsView):
         self.scene.setBackgroundBrush(QtGui.QBrush(QtGui.QColor(45,45,45)))
         self.setScene(self.scene)
         self.setRenderHint(QtGui.QPainter.Antialiasing)
+        self._view_height = 50
 
-        self.setFixedHeight(200)
+        self.setFixedHeight(self._view_height)
         self._parent = parent
 
         self.width = 388
@@ -654,6 +751,10 @@ class RampGraphicViewer(QtWidgets.QGraphicsView):
         self.scene.sizeChange(self.width)
 
 
+    def set_view_height(self, height):
+        self._view_height = height
+        self.setFixedHeight(self._view_height)
+
 
 
 class RampGraphicScene(QtWidgets.QGraphicsScene):
@@ -663,20 +764,96 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
         self._parent = parent
 
         self.width = 376
-        self._min = -145
-        self._sub = 148
+        self._min = -152 # 148 old
+        self._sub = 155 # 145 old
+
+        self._y_min = 30.0 # 105.0 old
+        self._y_max = -18.0 # -93.0 old
+
         self.__doOnce = True
+        self._show_grid = False
 
         self.points = []
         self.interps = {}
+
         self.xLines = []
+        self.yLines = []
         self.xText = []
+        self.yText = []
+
         self.scenePath = None
         self.lastPoint = None
         self.currentPoint = None
         self._mouseState = False
 
         self.updateGridY()
+
+    def keyPressEvent(self, event) -> None:
+        if event.key() == QtCore.Qt.Key_Backspace or event.key() == QtCore.Qt.Key_Delete:
+            itemlist = self._parent.itemData().getGroupA()[self.currentPoint]
+            self._parent.itemData().removeGroupItems(itemlist[1])
+            self.removePoint(self.currentPoint)
+            self._parent.slider_widget().removeHandle(itemlist[0],itemlist[1])
+            self._parent.widgetStack().removeWidget(itemlist[1])
+            itemlist[1].deleteLater()
+
+            for index, i in enumerate(list(self._parent.slider_widget().handle_dict_positions().keys())):
+                i.setNum(index + 1)
+
+    def min_height_pos(self):
+        return self._y_min
+
+    def max_height_pos(self):
+        return self._y_max
+
+    def scene_collapsed(self):
+        self._y_min = 180 if self._show_grid else 30.0
+
+        for p in self.points:
+            newPos = self._parent.mapRange_Clamp(p.pos().y(), 30.0 if self._show_grid else 180.0, self._y_max, self._y_min, self._y_max)
+            p.setPos(p.pos().x(), newPos)
+
+
+    def display_grid(self, state: bool):
+        self._show_grid = state
+
+        for x in self.xLines:
+            x.setVisible(state)
+
+        for y in self.yLines:
+            y.setVisible(state)
+
+        for tx in self.xText:
+            tx.setVisible(state)
+
+        for ty in self.yText:
+            ty.setVisible(state)
+
+
+    def reverse_points(self):
+        for p in self.points:
+            new_x_pos = self._parent.mapRange_Clamp(p.pos().x(), self._min, self.width - self._sub, self.width - self._sub, self._min)
+            p.setPos(new_x_pos, p.pos().y())
+            self.sortPoints()
+            self.updateValues(p)
+
+        for index, sort_p in enumerate(self.points):
+            data_item = self._parent.itemData().getGroupA()[sort_p]
+            data_item[1].setNum(index + 1)
+
+
+        # self._parent.widgetStack()
+        #
+        # for i in range(0,self._parent.widgetStack().count()):
+        #     self._parent.widgetStack().widget(i).setMaxNum(self._parent.widgetStack().count())
+        #     self._parent.widgetStack().widget(i).setNum(i+1)
+
+    def complement_points(self):
+        for p in self.points:
+            new_y_pos = self._parent.mapRange_Clamp(p.pos().y(), self._y_min, self._y_max, self._y_max, self._y_min)
+            p.setPos(p.pos().x(), new_y_pos)
+            self.updateValues(p)
+
 
     def sizeChange(self, width):
         self.width = width
@@ -713,7 +890,7 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
     def mouseMoveEvent(self, event) -> None:
         pos_y = self.selectedItems()[0].pos().y()
         pos_x = self.selectedItems()[0].pos().x()
-        if pos_y > -93 and pos_y < 105:
+        if pos_y > self._y_max and pos_y < self._y_min:
             super(RampGraphicScene, self).mouseMoveEvent(event)
 
             if self._mouseState:
@@ -752,7 +929,7 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
                 x_text.append(str(round(num, 3)))
 
         divLen = len(x_text) + 1
-        bottom = 95
+        bottom = 170
         xpos = (abs(self._min) + (self.width - 148)) / divLen - abs(self._min)
 
         if len(self.xLines) != 0:
@@ -767,9 +944,14 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
             text_item = self.addText(x_text[i], QtGui.QFont(x_text[i], 8, QtGui.QFont.Normal))
             text_item.setDefaultTextColor(text_color)
             text_item.setPos(xpos-4, bottom)
-            new_line = self.addLine(xpos + 10, -100, xpos + 10, 95, line_pen)
+
+            new_line = self.addLine(xpos + 10, -100, xpos + 10, bottom, line_pen)
             self.xLines.append(new_line)
             self.xText.append(text_item)
+
+            new_line.setVisible(self._show_grid)
+            text_item.setVisible(self._show_grid)
+
             xpos += (self.width-4) / divLen
 
 
@@ -777,15 +959,22 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
         line_pen = QtGui.QPen(QtGui.QColor(80, 80, 80), 1, QtCore.Qt.SolidLine)
         text_color = QtGui.QColor(80, 80, 80)
 
-        ypos = 64
+        ypos = 140 #64 old
         y_text = ['0.2', '0.4', '0.6', '0.8']
 
         for i in range(0,len(y_text)):
             text_item = self.addText(y_text[i], QtGui.QFont(y_text[i], 8, QtGui.QFont.Normal))
             text_item.setDefaultTextColor(text_color)
             text_item.setPos(-138.0, ypos)
+
             new_line = self.addLine(-115.0, ypos + 10, 10000, ypos + 10, line_pen)
             new_line.setFlag(QtWidgets.QGraphicsItem.ItemIgnoresTransformations)
+            self.yLines.append(new_line)
+            self.yText.append(text_item)
+
+            new_line.setVisible(self._show_grid)
+            text_item.setVisible(self._show_grid)
+
             ypos -= 39
 
 
@@ -815,8 +1004,10 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
         elif index + 1 < len(self.points):
             new_index = index + 1
 
-        self.points.pop(index)
         self.itemSelect(self.points[new_index])
+        self.points.pop(index)
+        self.drawPath()
+
 
     def clearPoints(self):
         for p in self.points:
@@ -825,8 +1016,14 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
         self.points.clear()
 
 
-    def insertEllipse(self,item):
-        pass
+    def insert_point(self, point):
+        index = self.points.index(point)
+        next_point = self.points[index+1] if index < (len(self.points)-1) else self.points[index-1]
+        x_pos = (point.pos().x() + next_point.pos().x()) / 2
+        y_pos = (point.pos().y() + next_point.pos().y()) / 2
+        interp = self.interps[point]
+        position = QtCore.QPointF(x_pos, y_pos)
+        self.addNew_EllipsePoint(position, interp)
 
 
     def get_ramp_values(self):
@@ -834,7 +1031,7 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
         points_value = []
         for p in self.points:
             points_pos.append(self._parent.mapRange_Clamp(p.pos().x(), self._min, self.width - self._sub, 0, 1))
-            points_value.append(self._parent.mapRange_Clamp(p.pos().y(), 105.0, -93, 0, 1))
+            points_value.append(self._parent.mapRange_Clamp(p.pos().y(), self._y_min, self._y_max, 0, 1))
 
         return { 'positions':points_pos, 'values': points_value, 'interpolations': list(self.interps.values()) }
 
@@ -862,10 +1059,10 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
 
         slider_pos = self._parent.mapRange_Clamp(position.x(),self._min,self.width - self._sub, 0, 1000000.0)
         control_x_pos = self._parent.mapRange_Clamp(position.x(),self._min, self.width - self._sub, 0, 1)
-        control_y_pos = self._parent.mapRange_Clamp(position.y(), 105.0, -93, 0, 1)
+        control_y_pos = self._parent.mapRange_Clamp(position.y(), self._y_min, self._y_max, 0, 1)
 
-        slider_index = self._parent.newHandle(int(slider_pos))
         control_widget = self._parent.newControl(self.points.index(newEllipse),control_x_pos, control_y_pos, interp)
+        slider_index = self._parent.newHandle(int(slider_pos), control_widget)
         self._parent.itemData().addGroup(newEllipse, slider_index, control_widget)
 
         self.itemSelect(newEllipse)
@@ -888,10 +1085,11 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
         self.points = points_sorted
 
 
+
     def updatePoints(self):
         for i in self.points:
             itemlist = self._parent.itemData().getGroupA()[i]
-            pos = self._parent.sliderWidget().handlePosition(itemlist[0])
+            pos = self._parent.slider_widget().handlePosition(itemlist[0])
             newPos = self._parent.mapRange_Clamp(pos,0 , 1000000.0, self._min, self.width - self._sub)
             i.setPos(newPos, i.pos().y())
 
@@ -899,11 +1097,41 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
     def updateInterp(self,item,index):
         self.interps[item] = index
 
+    def updateValues(self, item):
+        itemlist = self._parent.itemData().getGroupA()[item]
+
+        slider_pos = self._parent.mapRange_Clamp(item.pos().x(), self._min, self.width - self._sub, 0, 1000000.0)
+        self._parent.slider_widget().moveSlider(itemlist[0],itemlist[1], slider_pos)
+
+        control_x_pos = self._parent.mapRange_Clamp(item.pos().x(),self._min, self.width - self._sub, 0, 1)
+        control_y_pos = self._parent.mapRange_Clamp(item.pos().y(), self._y_min, self._y_max, 0, 1)
+
+        itemlist[1].setPosValue(control_x_pos)
+        itemlist[1].setValue(control_y_pos)
+
+        self._parent.slider_widget().sort_dict_handles()
+        self.sortPoints()
+
+        for index, i in enumerate(list(self._parent.slider_widget().handle_dict_positions().keys())):
+            i.setNum(index + 1)
+
+        self.drawPath()
+
+
+    def moveXItem(self, item, pos_x):
+        pos_x = self._parent.mapRange_Clamp(pos_x, 0, 1000000.0, self._min, self.width - self._sub)
+        item.setPos(pos_x, item.pos().y())
+        self.sortPoints()
+
+    def moveYItem(self, item, pos_y):
+        pos_y = self._parent.mapRange_Clamp(pos_y, 0, 1000000.0, self._y_min, self._y_max)
+        item.setPos(item.pos().x(), pos_y)
+
 
     def drawPath(self):
         addition = 10
         path = QtGui.QPainterPath()
-        path.moveTo(-160,130)
+        path.moveTo(-160,250)
         path.lineTo(-160, self.points[0].pos().y() + addition)
 
         if len(self.points) != 1:
@@ -922,12 +1150,12 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
                     # for ip in self.points:
                     #     if self.interps[p] == 2:
                     #         pos = ip.pos().x() + addition,ip.pos().y() + addition
-                    #         pts.append(pos)
+                    #         pts.append(list(pos))
                     #
                     # extra_start_pt = (pts[0][0] - 10 , pts[0][1])
                     # extra_end_pt = (pts[-1][0] + 10, pts[-1][1])
-                    # pts.insert(0,extra_start_pt)
-                    # pts.insert(len(pts), extra_end_pt)
+                    # pts.insert(0,list(extra_start_pt))
+                    # pts.insert(len(pts), list(extra_end_pt))
                     #
                     # c = CatmullRomChain(pts)
                     # xpos, ypos = zip(*c)
@@ -1004,37 +1232,12 @@ class RampGraphicScene(QtWidgets.QGraphicsScene):
 
         distance = (self.width - self._sub) - self.points[-1].pos().x()
         path.lineTo(self.points[-1].pos().x() + abs(distance) + 30, self.points[-1].pos().y() + addition)
-        path.lineTo(self.points[-1].pos().x() + abs(distance) + 30, 120.0)
+        path.lineTo(self.points[-1].pos().x() + abs(distance) + 30, 250.0)
 
         if self.scenePath:
             self.removeItem(self.scenePath)
 
         self.scenePath = self.addPath(path,QtGui.QPen(QtGui.QColor(25, 25, 25, 125), 3, QtCore.Qt.SolidLine), QtGui.QBrush(QtGui.QColor(200, 200, 200,125)))
-
-
-    def updateValues(self, item):
-        print('Updating')
-        itemlist = self._parent.itemData().getGroupA()[item]
-
-        slider_pos = self._parent.mapRange_Clamp(item.pos().x(), self._min, self.width - self._sub, 0, 1000000.0)
-        self._parent.sliderWidget().moveSlider(itemlist[0], slider_pos)
-
-        control_x_pos = self._parent.mapRange_Clamp(item.pos().x(),self._min, self.width - self._sub, 0, 1)
-        control_y_pos = self._parent.mapRange_Clamp(item.pos().y(), 105.0, -93, 0, 1)
-
-        itemlist[1].setPosValue(control_x_pos)
-        itemlist[1].setValue(control_y_pos)
-        self.drawPath()
-
-
-    def moveXItem(self, item, pos_x):
-        pos_x = self._parent.mapRange_Clamp(pos_x, 0, 1000000.0, self._min, self.width - self._sub)
-        item.setPos(pos_x, item.pos().y())
-
-    def moveYItem(self, item, pos_y):
-        pos_y = self._parent.mapRange_Clamp(pos_y, 0, 1000000.0, 105.0, -93)
-        item.setPos(item.pos().x(), pos_y)
-
 
 
 
@@ -1055,61 +1258,89 @@ class EllipseItem(QtWidgets.QGraphicsEllipseItem):
 
 
 
-# def CatmullRomSpline(P0, P1, P2, P3, nPoints=100):
-#     """
-#     P0, P1, P2, and P3 should be (x,y) point pairs that define the Catmull-Rom spline.
-#     nPoints is the number of points to include in this curve segment.
-#     """
-#     # Convert the points to numpy so that we can do array multiplication
-#     P0, P1, P2, P3 = map(np.array, [P0, P1, P2, P3])
-#
-#     # Parametric constant: 0.5 for the centripetal spline, 0.0 for the uniform spline, 1.0 for the chordal spline.
-#     alpha = 1.0
-#     # Premultiplied power constant for the following tj() function.
-#     alpha = alpha/2
-#     def tj(ti, Pi, Pj):
-#         xi, yi = Pi
-#         xj, yj = Pj
-#         return ((xj-xi)**2 + (yj-yi)**2)**alpha + ti
-#
-#     # Calculate t0 to t4
-#     t0 = 0
-#     t1 = tj(t0, P0, P1)
-#     t2 = tj(t1, P1, P2)
-#     t3 = tj(t2, P2, P3)
-#
-#     # Only calculate points between P1 and P2
-#     t = np.linspace(t1, t2, nPoints)
-#
-#     # Reshape so that we can multiply by the points P0 to P3
-#     # and get a point for each value of t.
-#     t = t.reshape(len(t), 1)
-#
-#     A1 = (t1-t)/(t1-t0)*P0 + (t-t0)/(t1-t0)*P1
-#     A2 = (t2-t)/(t2-t1)*P1 + (t-t1)/(t2-t1)*P2
-#     A3 = (t3-t)/(t3-t2)*P2 + (t-t2)/(t3-t2)*P3
-#
-#     B1 = (t2-t)/(t2-t0)*A1 + (t-t0)/(t2-t0)*A2
-#     B2 = (t3-t)/(t3-t1)*A2 + (t-t1)/(t3-t1)*A3
-#
-#     C = (t2-t)/(t2-t1)*B1 + (t-t1)/(t2-t1)*B2
-#     return C
-#
-#
-#
-# def CatmullRomChain(P):
-#     """
-#     Calculate Catmull-Rom for a chain of points and return the combined curve.
-#     """
-#     sz = len(P)
-#
-#     # The curve C will contain an array of (x, y) points.
-#     C = []
-#     for i in range(sz-3):
-#         c = CatmullRomSpline(P[i], P[i+1], P[i+2], P[i+3])
-#         C.extend(c)
-#
-#     return C
+def CatmullRomSpline(P0, P1, P2, P3, nPoints=100):
+    """
+    P0, P1, P2, and P3 should be (x,y) point pairs that define the Catmull-Rom spline.
+    nPoints is the number of points to include in this curve segment.
+    """
+    # Convert the points to numpy so that we can do array multiplication
+    # P0, P1, P2, P3 = map(np.array, [P0, P1, P2, P3])
+    P0, P1, P2, P3 = list(P0), list(P1), list(P2), list(P3)
+
+    # Parametric constant: 0.5 for the centripetal spline, 0.0 for the uniform spline, 1.0 for the chordal spline.
+    alpha = 1.0
+    # Premultiplied power constant for the following tj() function.
+    alpha = alpha/2
+
+    def tj(ti, Pi, Pj):
+        xi, yi = Pi
+        xj, yj = Pj
+        return ((xj-xi)**2 + (yj-yi)**2)**alpha + ti
+
+    def linspace(start, stop, n):
+        if n == 1:
+            yield stop
+            return
+        h = (stop - start) / (n - 1)
+        for i in range(n):
+            yield start + h * i
+
+    def reshape(lst, shape):
+        if len(shape) == 1:
+            return lst
+        n = reduce(mul, shape[1:])
+        return [reshape(lst[i * n:(i + 1) * n], shape[1:]) for i in range(len(lst) // n)]
+
+    # Calculate t0 to t4
+    t0 = 0
+    t1 = tj(t0, P0, P1)
+    t2 = tj(t1, P1, P2)
+    t3 = tj(t2, P2, P3)
+
+    # Only calculate points between P1 and P2
+    # t = np.linspace(t1, t2, nPoints)
+
+    a = list(linspace(t1, t2, nPoints))
+    t = [ round(x,8) for x in a ]
+    # t = []
+    # for x in a:
+    #     i = [x]; t.append(i)
+
+
+    # Reshape so that we can multiply by the points P0 to P3
+    # and get a point for each value of t.
+    # t = t.reshape(len(t), 1)
+    t = reshape(t, [1])
+    print(t)
+    A1 = (t1-t)/(t1-t0)*P0 + (t-t0)/(t1-t0)*P1
+    A2 = (t2-t)/(t2-t1)*P1 + (t-t1)/(t2-t1)*P2
+    A3 = (t3-t)/(t3-t2)*P2 + (t-t2)/(t3-t2)*P3
+
+    B1 = (t2-t)/(t2-t0)*A1 + (t-t0)/(t2-t0)*A2
+    B2 = (t3-t)/(t3-t1)*A2 + (t-t1)/(t3-t1)*A3
+
+    C = (t2-t)/(t2-t1)*B1 + (t-t1)/(t2-t1)*B2
+    return C
+
+
+
+def CatmullRomChain(P):
+    """
+    Calculate Catmull-Rom for a chain of points and return the combined curve.
+    """
+    sz = len(P)
+
+    # The curve C will contain an array of (x, y) points.
+    C = []
+    for i in range(sz-3):
+        c = CatmullRomSpline(P[i], P[i+1], P[i+2], P[i+3])
+        C.extend(c)
+
+    return C
+
+
+
+
 
 #------------------------------------------------------------------------------------------------
 

@@ -144,8 +144,10 @@ class EditorsMediator(Mediator):
         self._mainEditor = editor_window
         self._mainEditor.mediator = self
         self._layoutWin = layout_window
-        self._layoutWin.mediator = self
-        self._serialization= TemplateDataClass.TemplateSerialization(self._mainEditor.editor_path(), self._mainEditor.TemplateLayout())
+        # self._layoutWin.mediator = self
+        self._serialization = TemplateDataClass.TemplateSerialization(self._mainEditor.editor_path(), self._mainEditor.TemplateLayout())
+        self._layoutWin._serialization_obj = self._serialization
+
         self._prev_item = None
 
     def notifyUpdate(self,widget: QtWidgets.QWidget):
@@ -168,6 +170,9 @@ class EditorsMediator(Mediator):
     def notifyDisplay(self):
         self._layoutWin.display()
 
+    def layout_window(self):
+        return self._layoutWin
+
     def restoreWins(self, data):
         if 'Types' in data:
             editor_tree = self._mainEditor.parameter_Tab().layout_tree()
@@ -183,7 +188,7 @@ class EditorsMediator(Mediator):
             for index, py_name in enumerate(modules_data.keys()):
                 py_editor.newTabCode(index, py_name, modules_data[py_name])
 
-        self._layoutWin.UpdateLayout(self._mainEditor.TemplateLayout().newLayout())
+        self._layoutWin.UpdateLayout(self._mainEditor.TemplateLayout().newLayout(self._layoutWin))
 
 
     def _lastCheck(self, name, display):

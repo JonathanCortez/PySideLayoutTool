@@ -18,7 +18,7 @@ class SliderTemplateClass(LayoutTemplate.ParmSetup):
         self._slider_widget.boxEdit._digital_widget.editingFinished.connect(self._set_box_value)
         self._slider_widget.boxEdit._digital_widget.valueChanged.connect(self._wheel_set_box_value)
 
-    def clamp(self, num, min_value, max_value): #TODO: Fix this to work with lock boolean
+    def clamp(self, num, min_value, max_value):
         return max(min(num,max_value),min_value)
     
     def eval(self):
@@ -61,34 +61,44 @@ class IntegerSliderClass(SliderTemplateClass):
         self._set_slider_value(self._value)
 
     def PostUpdate(self):
-        default = self._value if self.default_value() == '' else int(self.default_value())
-        self._value = int(self.clampRange().min) if default < int(self.clampRange().min) else default
+        super(IntegerSliderClass, self).PostUpdate()
+        self._value = int(self.clampRange().min)
         self._slider_widget.slider.setRange(self.clampRange().min, self.clampRange().max)
         self._slider_widget.slider.setValue(self._value)
         self._slider_widget.slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
         self._slider_widget.slider.setTickInterval(1)
+        self._slider_widget.boxEdit.setRange(int(self.clampRange().min) if self.clampRange().minLock else -1000000, int(self.clampRange().max) if self.clampRange().maxLock else 1000000)
         self._slider_widget.boxEdit.setValue(self._value)
 
 
     def _set_slider_value(self, value):
-        if self._value != value:
-            self._value = value
-            self._slider_widget.boxEdit.setValue(value)
-            super()._set_slider_value(self._value)
+        if self._slider_widget._slider_block:
+            if self._value != value:
+                self._slider_widget._boxedit_block = False
+                self._value = self.clamp(value, int(self.clampRange().min  * 1000000.0) if self.clampRange().minLock else -100000000, int(self.clampRange().max * 1000000.0) if self.clampRange().maxLock else 100000000)
+                self._slider_widget.boxEdit.setValue(value)
+                self._slider_widget._boxedit_block = True
+                super()._set_slider_value(self._value)
 
 
 
     def _set_box_value(self):
-        # self._value = self.clamp(self._slider_widget.boxEdit.value(), self.clampRange().min, self.clampRange().max)
-        self._value = self._slider_widget.boxEdit.value()
-        self._slider_widget.slider.setValue(self._value)
-        self.setFocus()
-        super()._set_box_value()
+        if self._slider_widget._boxedit_block:
+            self._slider_widget._slider_block = False
+            self._value = self.clamp(self._slider_widget.boxEdit.value(), int(self.clampRange().min * 1000000.0) if self.clampRange().minLock else -100000000,int(self.clampRange().max * 1000000.0) if self.clampRange().maxLock else 100000000)
+            self._slider_widget.slider.setValue(self._value)
+            self.setFocus()
+            self._slider_widget._slider_block = True
+            super()._set_box_value()
 
     def _wheel_set_box_value(self):
         if self._slider_widget.boxEdit.wheelState():
+            self._slider_block = False
+            self._boxedit_block = False
             self._value = self._slider_widget.boxEdit.value()
             self._slider_widget.slider.setValue(self._value)
+            self._slider_block = True
+            self._boxedit_block = True
             super()._set_box_value()
 
 
@@ -107,33 +117,42 @@ class FloatSliderClass(SliderTemplateClass):
         self._set_slider_value(self._value)
 
     def PostUpdate(self):
-        default = self._value if self.default_value() == '' else float(self.default_value())
-        self._value = float(self.clampRange().min) if default < float(self.clampRange().min) else default
+        super(FloatSliderClass, self).PostUpdate()
+        self._value = float(self.clampRange().min)
         self._slider_widget.slider.setRange(int(self.clampRange().min * 1000000.0),int(self.clampRange().max * 1000000.0))
         self._slider_widget.slider.setValue(int(self._value * 1000000.0))
+        self._slider_widget.boxEdit.setRange(float(self.clampRange().min) if self.clampRange().minLock else -1000000.0, float(self.clampRange().max) if self.clampRange().maxLock else 1000000.0)
         self._slider_widget.boxEdit.setValue(float(self._value))
 
 
     def _set_slider_value(self, value):
-        if self._value != value:
-            self._value = float(self.clamp(value, int(self.clampRange().min  * 1000000.0), int(self.clampRange().max * 1000000.0)) / 1000000.0)
-            self._slider_widget.boxEdit.setValue(round(self._value, 3))
-            super()._set_slider_value(self._value)
-
+        if self._slider_widget._slider_block:
+            if self._value != value:
+                self._slider_widget._boxedit_block = False
+                self._value = float(self.clamp(value, int(self.clampRange().min  * 1000000.0) if self.clampRange().minLock else -100000000, int(self.clampRange().max * 1000000.0) if self.clampRange().maxLock else 100000000) / 1000000.0)
+                self._slider_widget.boxEdit.setValue(round(self._value, 3))
+                self._slider_widget._boxedit_block = True
+                super()._set_slider_value(self._value)
 
 
     def _set_box_value(self):
-        # self._value = float(self.clamp(self._slider_widget.boxEdit.value()  , int(self.clampRange().min), int(self.clampRange().max)) / 1000000.0)
-        self._value = self._slider_widget.boxEdit.value()
-        self._slider_widget.slider.setValue(int(1000000.0 * self._value))
-        self.setFocus()
-        super()._set_box_value()
+        if self._slider_widget._boxedit_block:
+            self._slider_widget._slider_block = False
+            self._value = self._slider_widget.boxEdit.value() # float(self.clamp(self._slider_widget.boxEdit.value(), int(self.clampRange().min * 1000000.0) if self.clampRange().minLock else -100000000,int(self.clampRange().max * 1000000.0) if self.clampRange().maxLock else 100000000) / 1000000.0)
+            self._slider_widget.slider.setValue(int(1000000.0 * self._value))
+            self.setFocus()
+            self._slider_widget._slider_block = True
+            super()._set_box_value()
 
 
     def _wheel_set_box_value(self):
         if self._slider_widget.boxEdit.wheelState():
+            self._slider_block = False
+            self._boxedit_block = False
             self._value = self._slider_widget.boxEdit.value()
             self._slider_widget.slider.setValue(int(1000000.0 * self._value))
+            self._slider_block = True
+            self._boxedit_block = True
             super()._set_box_value()
 
 

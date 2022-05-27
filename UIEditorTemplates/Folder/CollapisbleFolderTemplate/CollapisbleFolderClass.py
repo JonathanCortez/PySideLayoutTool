@@ -10,8 +10,8 @@ class CollapisbleFolderClass(FolderSetup):
 
     def __init__(self,parent):
         super(CollapisbleFolderClass, self).__init__(parent)
-        self._folder_widget = CollapisbleFolderWidgetClass.CollapsibleFolderWidget('None')
-
+        self._parent = parent
+        self._folder_widget = CollapisbleFolderWidgetClass.CollapsibleFolderWidget(self._childWidgets)
         self._layout.addWidget(self._folder_widget)
 
 
@@ -22,6 +22,7 @@ class CollapisbleFolderClass(FolderSetup):
     def eval(self):
         return None
 
+
     def clearLayout(self):
         if self._folder_widget.collapisble_layout() is not None:
             for i in range(0, self._folder_widget.collapisble_layout().count()):
@@ -29,25 +30,23 @@ class CollapisbleFolderClass(FolderSetup):
                 widget = item_layout.widget()
                 widget.deleteLater()
 
-            for i in range(0, self._folder_layout.count()):
-                item_layout = self._folder_layout.takeAt(i)
-                self._folder_layout.removeItem(item_layout)
-                del item_layout
-
         self._childWidgets = TemplateDataClass.TemplateGroup()
-        self._folder_layout.addWidget(self._childWidgets)
-        self._folder_widget.setTitle(self.label())
-        self._folder_widget.setContentLayout(self._folder_layout)
+        self._folder_widget.new_frame(self._childWidgets)
 
 
     def PostUpdate(self):
-        self._folder_widget.setContentLayout(self._folder_layout)
+        self._folder_widget.folder_title(self.label())
+        # self._folder_widget.setContentLayout(self._folder_layout)
+        # self._folder_widget.updateSize(0,10)
+        # self._folder_widget.force_close()
 
 
 class CollapisbleFolderBuild(FolderBuild):
 
     def widgetClass(self):
         return CollapisbleFolderClass
+
+
 
 
 def register():

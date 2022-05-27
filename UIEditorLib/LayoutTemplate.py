@@ -10,6 +10,7 @@ from .UIEditorProperty import ProcessUIProperties, UIProperty
 from . import UIFunctions as ui
 
 
+
 try:
     import unreal
 except ImportError:
@@ -25,23 +26,30 @@ class WidgetSetup(QtWidgets.QWidget):
 
 
     def __init__(self, parent):
-        super(WidgetSetup, self).__init__(parent)
+        super(WidgetSetup, self).__init__()
         self._layout = QtWidgets.QVBoxLayout()
         self._layout.setSpacing(0)
         self._layout.setContentsMargins(0, 0, 0, 0)
+        self._parent = parent
 
         self.setLayout(self._layout)
 
         self._signal = CallbackObject()
 
         self._layout_parent = None
+        self._label_widget = None
         self._observingObjs = []
         self._delegate_objs = []
+
+        self._id = -1
+        self._parent_id = -1
+        self._is_child_widget = False
 
         self._hidden_str_list = None
         self._disable_str_list = None
 
         self._signal.callback.connect(self.callback_func) #type: ignore
+
 
     @classmethod
     @ProcessUIProperties
@@ -82,11 +90,12 @@ class WidgetSetup(QtWidgets.QWidget):
 
     def callback_func(self):
         if hasattr(self,'__code_obj__') :
-            code = getattr(self, '__code_obj__')
-            exec(compile(code, 'Script', 'exec'), globals(), locals())
-            call = getattr(self, '__call_obj__')
-            if call:
-                exec(compile(call, 'Script', 'exec'), {'self': self}, locals())
+            exec(compile(getattr(self, '__code_obj__'), 'Script', 'exec'), globals(), locals())
+            if hasattr(self, '__call_obj__'):
+                if hasattr(self, '__call_args__'):
+                    locals()['kwargs'] = getattr(self, '__call_args__')
+                exec(compile(getattr(self, '__call_obj__'), 'Script', 'exec'), globals(), locals())
+
 
 
     def notify_conditions(self):
@@ -96,7 +105,6 @@ class WidgetSetup(QtWidgets.QWidget):
     def _eval_expression(self, expression) -> bool:
         expressionStr = ''
         expressionStr = ' '.join([str(elem.eval() if isinstance(elem, QtWidgets.QWidget) else elem) for elem in expression])
-        # print(expressionStr)
         return eval(expressionStr)
 
 
@@ -129,12 +137,40 @@ class WidgetSetup(QtWidgets.QWidget):
     def clear_Observers(self):
         self._observingObjs.clear()
 
+    def set_label_widget(self, widget_label):
+        self._label_widget = widget_label
+
     def set_layout_parent(self, layout_parent):
         self._layout_parent = layout_parent
 
-    
-    @UIProperty(metaWidget='LineEditProperty', label='Name', category='Default', category_args=(True,300), defaults=(2, 1,'NewName',
-                                                                                                                     StringValidatorClass.checkString))
+    def layout_win(self):
+        return self._parent
+    # @property
+    # def parent_id(self):
+    #     return self._parent_id
+    #
+    # @parent_id.setter
+    # def parent_id(self, parent_id: int):
+    #     self._parent_id = parent_id
+    #
+    # @property
+    # def is_child(self):
+    #     return self._is_child_widget
+    #
+    # @is_child.setter
+    # def is_child(self, state: bool):
+    #     self._is_child_widget = state
+    #
+    # @property
+    # def widget_id(self):
+    #     return self._id
+    #
+    # @widget_id.setter
+    # def widget_id(self, id_num: int):
+    #     self._id = id_num
+
+
+    @UIProperty(metaWidget='LineEditProperty', label='Name', category='Default', category_args=(True,300), defaults=(2, 1,'NewName',StringValidatorClass.checkString))
     def name(self):
         pass
 
@@ -149,10 +185,13 @@ class WidgetSetup(QtWidgets.QWidget):
         """ callback for conditions and script call given. """
 
 
-    @UIProperty(metaWidget='ComboProperty', label='Type', category='Default')
+    @UIProperty(metaWidget='ComboProperty', label='Type', category='Default', use_separator=True)
     def type(self):
         """ String representation of what type this widget is."""
-
+    
+    @UIProperty(metaWidget='LineEditProperty', label='Help', category='Default')
+    def tooltip(self):
+        pass
 
     @UIProperty(metaWidget='LineEditProperty', label='Disable When', category='Expressions')
     def disable_when(self):
@@ -175,6 +214,9 @@ class WidgetSetup(QtWidgets.QWidget):
     @abstractmethod
     def PostUpdate(self):
         """ Handle how widgets get updated """
+        tooltip_string = f"<p style='white-space:pre'> Parameter: <B>{self.name()}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name()}<B></p>"
+        self.setToolTip(tooltip_string)
+        self.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
 
 
     #TODO: Fix this. Would like to remove this func.
@@ -204,10 +246,6 @@ class ParmSetup(WidgetSetup):
     def bNeighbor(self):
         pass
 
-    @UIProperty(metaWidget='LineEditProperty', label='Default', category='Setting')
-    def default_value(self):
-        pass
-
     @abstractmethod
     def set_value(self, value):
         """ set value for parameter """
@@ -235,16 +273,25 @@ class FolderSetup(WidgetSetup):
     def tab_disable(self):
         pass
 
+    @UIProperty(metaWidget='LineEditProperty', label='Default', category='Setting')
+    def default_value(self):
+        pass
+
+    @abstractmethod
     def clearLayout(self):
-        if self._folder_widget.layout() is not None:
-            for i in range(0,self._folder_widget.layout().count()):
-                item_layout = self._folder_widget.layout().itemAt(i)
-                widget = item_layout.widget()
-                widget.deleteLater()
+        pass
 
-        self._childWidgets = TemplateDataClass.TemplateGroup()
-        self._folder_layout.addWidget(self._childWidgets)
+    @abstractmethod
+    def set_value(self, value):
+        """ set value for parameter """
 
+    @abstractmethod
+    def setTabHidden(self, state: bool):
+        """ Implementation for hiding tab group """
+
+    @abstractmethod
+    def setTabDisable(self, state: bool):
+        """ Implementation for disabling tab group """
 
     def PostUpdate(self):
         pass
@@ -258,20 +305,30 @@ class FolderSetup(WidgetSetup):
     def bLabel(self) -> bool:
         return False
 
-    @abstractmethod
-    def set_value(self, value):
-        """ set value for parameter """
 
-    @abstractmethod
-    def setTabHidden(self, state: bool):
-        """ Implementation for hiding tab group """
+    def _close_tab_change(self, index):
+        for widget in self._folder_widget.last_widget_removed.templateGroupData():
+            self._parent.widget_layout().pop(widget)
+
+        for index in range(0,self._folder_widget.count()):
+            widget_template = self._folder_widget.tabWidget.widget(index)
+            for key in widget_template.templateGroupData():
+                widget = self._parent.widget_layout()[key]
+                del self._parent.widget_layout()[key]
+                widget.__property_instances__['name'].setValue(widget.__property_instances__['name'].value()[:-1] + str(index + 1))
+                widget._updateProperties()
+
+                self._parent.widget_layout()[f'{widget.name()}'] = widget
+
+                if widget._label_widget:
+                    widget.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{widget.name()}<B></p> {widget.tooltip()} " if widget.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{widget.name()}<B></p>")
+                    widget.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
+                    widget._label_widget.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{widget.name()}<B></p> {widget.tooltip()} " if widget.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{widget.name()}<B></p>")
+                    widget._label_widget.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
 
 
-    @abstractmethod
-    def setTabDisable(self, state: bool):
-        """ Implementation for disabling tab group """
-
-
+        self.notify_expressions()
 
 
 

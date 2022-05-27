@@ -7,7 +7,7 @@ from . import ButtonWidgetClass
 
 class SimpleButtonSetupClass(LayoutTemplate.ParmSetup):
 
-    def __init__(self,parent):
+    def __init__(self, parent):
         super(SimpleButtonSetupClass, self).__init__(parent)
         horizontal_Layout = QtWidgets.QHBoxLayout()
         horizontal_Layout.setSpacing(0)
@@ -23,6 +23,7 @@ class SimpleButtonSetupClass(LayoutTemplate.ParmSetup):
 
         self._button_widget.pressed.connect(self.button_action)
 
+
     def bLabel(self):
         return False
 
@@ -30,6 +31,7 @@ class SimpleButtonSetupClass(LayoutTemplate.ParmSetup):
         self.notify_expressions()
 
     def PostUpdate(self):
+        super(SimpleButtonSetupClass, self).PostUpdate()
         self._button_widget.changeText(self.label())
 
     def eval(self):
@@ -66,6 +68,7 @@ class ButtonStripSetupClass(LayoutTemplate.ParmSetup):
         self._button_widget.typeStrip(self.button_type().currentItem_index)
 
     def PostUpdate(self):
+        super(ButtonStripSetupClass, self).PostUpdate()
         if self._button_widget.layout().itemAt(0).count() > 0:
             for i in range(0,self._button_widget.layout().itemAt(0).count()):
                 item_layout = self._button_widget.layout().itemAt(0).itemAt(i)
@@ -74,7 +77,7 @@ class ButtonStripSetupClass(LayoutTemplate.ParmSetup):
 
             self._button_widget.clearButtons()
 
-        if self.button_type().currentItem_index != 1:
+        if self.button_type().currentItem_index != 1 and self.dict_keyValue().keys:
             if len(self.dict_keyValue().keys) > 0:
                 self._button_widget.addButtons(self.dict_keyValue().keys)
 
@@ -85,6 +88,35 @@ class ButtonStripSetupClass(LayoutTemplate.ParmSetup):
             return self._button_widget.lastSelected()
 
 
+class RGBAButtonWidgetSetup(LayoutTemplate.ParmSetup):
+
+    def __init__(self, parent):
+        super(RGBAButtonWidgetSetup, self).__init__(parent)
+        self._button_widget = ButtonWidgetClass.RGBAButtonWidget()
+        self._layout.addWidget(self._button_widget)
+
+    def eval(self):
+        return self._button_widget.rgb_button_state(), self._button_widget.red_button_state(), self._button_widget.green_button_state(), self._button_widget.blue_button_state(), self._button_widget.alpha_button_state()
+
+    def PostUpdate(self):
+        self._button_widget._rgb_button_widget.setToolTip('Toggle RGB')
+        self._button_widget._rgb_button_widget.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
+        self._button_widget._r_button_widget.setToolTip('Red')
+        self._button_widget._r_button_widget.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
+        self._button_widget._g_button_widget.setToolTip('Green')
+        self._button_widget._g_button_widget.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
+        self._button_widget._b_button_widget.setToolTip('Blue')
+        self._button_widget._b_button_widget.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
+        self._button_widget._a_button_widget.setToolTip('Alpha')
+        self._button_widget._a_button_widget.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
+    def set_value(self, value):
+        pass
+
 
 
 
@@ -94,15 +126,19 @@ class SimpleButtonBuildClass(TemplateBuildClass.ParameterBuild):
         return SimpleButtonSetupClass
 
 
-
-
 class ButtonStripBuildClass(TemplateBuildClass.ParameterBuild):
 
     def widgetClass(self):
         return ButtonStripSetupClass
 
 
+class ButtonRGBABuildClass(TemplateBuildClass.ParameterBuild):
+
+    def widgetClass(self):
+        return RGBAButtonWidgetSetup
+
 
 def register():
     UIEditorFactory.WidgetFactory.register('Button', SimpleButtonBuildClass)
     UIEditorFactory.WidgetFactory.register('Button Strip', ButtonStripBuildClass)
+    UIEditorFactory.WidgetFactory.register('RGBA Mask', ButtonRGBABuildClass)

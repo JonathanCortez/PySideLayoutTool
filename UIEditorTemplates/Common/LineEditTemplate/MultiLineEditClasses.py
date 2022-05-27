@@ -52,8 +52,16 @@ class IntegerVector2Class(VectorClasses):
         self.notify_expressions()
 
     def PostUpdate(self):
+        self._v1.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_x'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_x'}<B></p>")
+        self._v2.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_y'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_y'}<B></p>")
+        self._v1.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+        self._v2.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
         self._v1.setValue(self.clampRange().min)
         self._v2.setValue(self.clampRange().min)
+
+        self._parent._widgets[self.name() + '_x'] = self._v1
+        self._parent._widgets[self.name() + '_y'] = self._v2
 
     def eval(self):
         return self._value
@@ -90,7 +98,12 @@ class IntegerVector3Class(IntegerVector2Class):
 
     def PostUpdate(self):
         super(IntegerVector3Class, self).PostUpdate()
+        self._v3.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_z'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_z'}<B></p>")
+        self._v3.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
         self._v3.setValue(self.clampRange().min)
+
+        self._parent._widgets[self.name() + '_z'] = self._v3
 
     def eval(self):
         return self._value
@@ -128,7 +141,12 @@ class IntegerVector4Class(IntegerVector3Class):
 
     def PostUpdate(self):
         super(IntegerVector4Class, self).PostUpdate()
+        self._v4.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_w'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_w'}<B></p>")
+        self._v4.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
         self._v4.setValue(self.clampRange().min)
+
+        self._parent._widgets[self.name() + '_w'] = self._v4
 
     def eval(self):
         return self._value
@@ -169,7 +187,7 @@ class FloatVector2Class(VectorClasses):
         self._hor_layout.addWidget(self._v2)
 
         self._v1.baseWidget().valueChanged.connect(self._v1_change)
-        self._v1.baseWidget().valueChanged.connect(self._v2_change)
+        self._v2.baseWidget().valueChanged.connect(self._v2_change)
 
     def _v1_change(self, arg):
         self._value1 = arg
@@ -180,8 +198,16 @@ class FloatVector2Class(VectorClasses):
         self.notify_expressions()
 
     def PostUpdate(self):
+        self._v1.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_x'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_x'}<B></p>")
+        self._v2.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_y'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_y'}<B></p>")
+        self._v1.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+        self._v2.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
         self._v1.setValue(self.clampRange().min * 1000000.0)
         self._v2.setValue(self.clampRange().min * 1000000.0)
+
+        self._parent._widgets[self.name() + '_x'] = self._v1
+        self._parent._widgets[self.name() + '_y'] = self._v2
 
     def eval(self):
         return self._value
@@ -209,6 +235,8 @@ class FloatVector3Class(FloatVector2Class):
 
         self._hor_layout.addWidget(self._v3)
 
+        self._parent._widgets[self.name() + '_z'] = self._v3
+
         self._v3.baseWidget().valueChanged.connect(self._v3_change)
 
     def _v3_change(self, arg):
@@ -217,7 +245,12 @@ class FloatVector3Class(FloatVector2Class):
 
     def PostUpdate(self):
         super(FloatVector3Class, self).PostUpdate()
+        self._v3.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_z'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_z'}<B></p>")
+        self._v3.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
         self._v3.setValue(self.clampRange().min * 1000000.0)
+
+        self._parent._widgets[self.name() + '_z'] = self._v3
 
     def eval(self):
         return self._value
@@ -256,7 +289,12 @@ class FloatVector4Class(FloatVector3Class):
 
     def PostUpdate(self):
         super(FloatVector4Class, self).PostUpdate()
+        self._v4.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_w'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_w'}<B></p>")
+        self._v4.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+
         self._v4.setValue(self.clampRange().min * 1000000.0)
+
+        self._parent._widgets[self.name() + '_w'] = self._v4
 
     def eval(self):
         return self._value

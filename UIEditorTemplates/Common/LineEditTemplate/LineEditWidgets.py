@@ -119,11 +119,13 @@ class LineEditDigitalWidgetClass(LineEditWidgetClass):
 
 class LineEditFloatWidgetClass(LineEditDigitalWidgetClass):
 
-    def __init__(self, minValue=0,maxValue=1,steps=0.1):
+    def __init__(self, minValue=0,maxValue=1,steps=0.1, no_num_button=True):
         super(LineEditFloatWidgetClass, self).__init__(minValue, maxValue,steps)
         self._digital_widget = QtWidgets.QDoubleSpinBox()
         self._digital_widget.setSingleStep(self._steps)
-        self._digital_widget.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+
+        if no_num_button:
+            self._digital_widget.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
 
         self._hor_layout.addWidget(self._digital_widget)
         self._digital_widget.installEventFilter(self)
@@ -143,11 +145,13 @@ class LineEditFloatWidgetClass(LineEditDigitalWidgetClass):
 
 class LineEditIntWidgetClass(LineEditDigitalWidgetClass):
 
-    def __init__(self, minValue=0,maxValue=1,steps=1):
+    def __init__(self, minValue=0,maxValue=1,steps=1, no_num_button=True):
         super(LineEditIntWidgetClass, self).__init__(minValue, maxValue,steps)
         self._digital_widget = QtWidgets.QSpinBox()
         self._digital_widget.setSingleStep(self._steps)
-        self._digital_widget.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+
+        if no_num_button:
+            self._digital_widget.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
 
         self._hor_layout.addWidget(self._digital_widget)
         self._digital_widget.installEventFilter(self)

@@ -1,6 +1,6 @@
 import sys
 
-from UIEditorLib import UIModuleInterface
+from UIEditorLib import UISetupModule
 from PySide2 import QtWidgets
 from Resources import pysidetoolicons
 
@@ -18,9 +18,9 @@ def houdini_main_window():
 
 def DisplayWindow():
     path = __file__.replace('main.py', 'UIEditorProject.uiproject')
-    UIModuleInterface.main_path(path)
-    UIModuleInterface.PreInitialize(None, None)
-    UIModuleInterface.Setup_Init()
+    UISetupModule.main_path(path)
+    UISetupModule.PreInitialize(None, None)
+    UISetupModule.Setup_Init()
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

@@ -41,11 +41,13 @@ class ColorObject(QObject):
 
 class colorPicker(QtWidgets.QDialog):
     "custom colorDialog from Orthallelous"
-    currentColorChanged = ColorObject()
-    colorSelected = ColorObject()
+    # currentColorChanged = ColorObject()
+    # colorSelected = ColorObject()
 
     def __init__(self,bAlpha, initial=None, parent=None):
         super(colorPicker, self).__init__(parent)
+        self.currentColorChanged = ColorObject()
+        self.colorSelected = ColorObject()
         self._use_Aplha = bAlpha
         self.setup()
         self.setColor(initial)
@@ -429,6 +431,7 @@ class ColorRect(QtWidgets.QWidget):
         self.linearBrush = QtGui.QBrush(self.linearGrad)
         self.update()
 
+
 class AlphaRect(QtWidgets.QWidget):
 
     def __init__(self, parent):
@@ -739,11 +742,11 @@ class ColorListButtons(QtWidgets.QWidget):
 
 
 class ColorWheel(QtWidgets.QWidget):
-    currentColorChanged = ColorObject()
 
     def __init__(self, parent=None):
         super(ColorWheel, self).__init__(parent)
         self.setFixedSize(256, 256)
+        self.currentColorChanged = ColorObject()
 
         # start, end angles for value arc
         self.s_ang, self.e_ang = 135, 225

@@ -56,10 +56,8 @@ class ItemDisplayUI(QtWidgets.QWidget, UIEditorMediators.BaseComponent):
 
     def construct_display(self, instances, *args):
         for i in instances:
-            current_catergory_folder = None
             current_layout = None
-            if i.category in self._category_widgets:
-                current_catergory_folder = self._category_widgets[i.category]
+            if i.category in self._category_layout:
                 current_layout = self._category_layout[i.category]
                 list_widget = self._layout_list_widgets.pop(current_layout)
                 list_widget.append(i.property_widget)
@@ -71,12 +69,11 @@ class ItemDisplayUI(QtWidgets.QWidget, UIEditorMediators.BaseComponent):
 
             else:
                 # names = i.category.split('|') #TODO: Handle sub category
-                current_catergory_folder = CollapisbleFolderWidgetClass.CollapsibleFolderWidget(i.category)
 
-                self._mainLayout.addWidget(current_catergory_folder)
-                self._mainLayout.addSpacing(5)
-
-                self._category_widgets[i.category] = current_catergory_folder
+                # self._mainLayout.addWidget(current_catergory_folder)
+                # self._mainLayout.addSpacing(5)
+                #
+                # self._category_widgets[i.category] = current_catergory_folder
                 current_layout = CustomFormLayout.CustomForm()
                 new_list = [i.property_widget]
                 self._layout_list_widgets[current_layout] = new_list
@@ -84,7 +81,7 @@ class ItemDisplayUI(QtWidgets.QWidget, UIEditorMediators.BaseComponent):
                 layout_item = current_layout.new_Row(i.label,'None', i.property_widget)
                 self._widget_label_data[i.label] = layout_item.itemAt(0).widget()
 
-            i.property_widget.addParent(current_catergory_folder)
+            # i.property_widget.addParent(current_catergory_folder)
 
             # Separator handling layout
             if i.separator:
@@ -114,13 +111,27 @@ class ItemDisplayUI(QtWidgets.QWidget, UIEditorMediators.BaseComponent):
                 self._type = args[1]
 
 
-        for key in self._category_widgets:
+        for key in self._category_layout:
             widget_layout = self._category_layout[key]
             state = False
             if key in self._category_open:
                 state = True
 
-            self._category_widgets[key].setContentLayout(widget_layout.layout(), state)
+            current_catergory_folder = CollapisbleFolderWidgetClass.CollapsibleFolderWidget(widget_layout)
+            current_catergory_folder.folder_title(key)
+            current_catergory_folder.open_folder(state)
+
+            self._mainLayout.addWidget(current_catergory_folder)
+            self._mainLayout.addSpacing(5)
+            self._category_widgets[key] = current_catergory_folder
+
+        # for key in self._category_widgets:
+        #     widget_layout = self._category_layout[key]
+        #     state = False
+        #     if key in self._category_open:
+        #         state = True
+        #
+        #     self._category_widgets[key].setContentLayout(widget_layout.layout(), state)
 
 
     def mediatorName(self):

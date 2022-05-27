@@ -9,6 +9,10 @@ class CustomForm(QtWidgets.QVBoxLayout):
         self.setContentsMargins(10 ,0 ,10 ,10)
         self.setAlignment(QtCore.Qt.AlignTop)
 
+        self._label_widgets = {}
+
+    def labels(self, widget):
+        return self._label_widgets[widget]
 
     def new_Row(self, label :str,name:str, widget: QtWidgets.QWidget, spacing=15, apply_to_main=True):
         setup_layout = QtWidgets.QHBoxLayout()
@@ -20,7 +24,7 @@ class CustomForm(QtWidgets.QVBoxLayout):
         self._label_widget.setMaximumHeight(30)
 
         if name is not None:
-            self._label_widget.setToolTip(f'Name : <B>{name}<B>')
+            self._label_widget.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{name}<B></p>")
             self._label_widget.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
 
         setup_layout.addWidget(self._label_widget ,alignment=QtCore.Qt.AlignLeft)
@@ -30,6 +34,7 @@ class CustomForm(QtWidgets.QVBoxLayout):
         if apply_to_main:
             self.addLayout(setup_layout)
 
+        self._label_widgets[widget] = self._label_widget
         return setup_layout
 
     def add_Layout(self, layout_item):

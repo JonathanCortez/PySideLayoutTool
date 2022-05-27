@@ -90,7 +90,7 @@ class UICProperty:
 
 
 
-def UIProperty(metaWidget: str, label:str = None, category:str = None, category_args=(False,300), defaults=None, use_separator:bool=False):
+def UIProperty(metaWidget: str, label:str = None, category:str = None, category_args=(False,300), defaults=None, use_separator:bool=False, neighbor=False):
     class PrepareCls:
         def __init__(self, func):
             self._metaWidget = PropertyFactory.create_property(metaWidget)

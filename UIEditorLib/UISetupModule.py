@@ -102,16 +102,20 @@ def load_modules(modules: List[str], bisPlugin) -> None:
 
     for module in modules:
         main_module = module['Name']
+
         if bisPlugin:
             if not bool(module['Enable']):
-                return
+                continue
+
             main_module = "Plugins." + main_module
             uiplugin_path = module['Name']
             moduleLib = import_module(main_module)
             path = moduleLib.__file__.replace('__init__.py', f'{uiplugin_path}.uiplugin')
+
         else:
             moduleLib = import_module(main_module)
             path = moduleLib.__file__.replace('__init__.py',f'{main_module}.uiplugin')
+
 
         with open(path) as file:
             data = json.load(file)

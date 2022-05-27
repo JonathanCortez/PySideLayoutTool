@@ -1,5 +1,6 @@
 from PySide2 import QtWidgets, QtCore
 
+
 class TabWidgets(QtWidgets.QWidget):
 
     def __init__(self):
@@ -22,17 +23,15 @@ class FolderMultiTabWidget(QtWidgets.QWidget):
         self._layout = QtWidgets.QVBoxLayout()
         self._layout.setSpacing(0)
         self._layout.setContentsMargins(0,0,0,0)
+        self._parent = parent
 
         self._tabs_widget = {}
-
-        self._first_content = TabWidgets()
-        self._first_content.addWidget(widget)
-        self._tabs_widget['1'] = self._first_content
+        self.last_widget_removed = None
 
         self._base_widget = widget
-        self._tabCount = 1
+        self._tabCount = 0
 
-        self._positonTypes = {
+        self._position_types = {
             0 : QtWidgets.QTabWidget.North,
             1 : QtWidgets.QTabWidget.West,
             2 : QtWidgets.QTabWidget.East
@@ -44,11 +43,8 @@ class FolderMultiTabWidget(QtWidgets.QWidget):
         self.tabWidget.setTabPosition(QtWidgets.QTabWidget.North)
         self.tabWidget.setSizePolicy(QtWidgets.QSizePolicy.Expanding,QtWidgets.QSizePolicy.Fixed)
 
-        self.tabWidget.addTab(self._first_content, '1')
-        self.tabWidget.tabBar().tabButton(0, QtWidgets.QTabBar.RightSide).resize(0, 0)
-
         self.tabWidget.addTab(QtWidgets.QWidget(), '+')
-        self.tabWidget.tabBar().tabButton(1, QtWidgets.QTabBar.RightSide).resize(0, 0)
+        self.tabWidget.tabBar().tabButton(0, QtWidgets.QTabBar.RightSide).resize(0, 0)
 
         self.tabWidget.tabBar().setSelectionBehaviorOnRemove(QtWidgets.QTabBar.SelectLeftTab)
 
@@ -61,33 +57,38 @@ class FolderMultiTabWidget(QtWidgets.QWidget):
 
     def newTab(self, index):
         if self.tabWidget.tabText(index) == "+":
-            widget_container = TabWidgets()
-            new_widget = self._base_widget.clone(False)
-            widget_container.addWidget(new_widget)
-            self._tabs_widget[f'{index+1}'] = widget_container
-            self.tabWidget.insertTab(index, widget_container, f'{index + 1}')
-            self._tabCount += 1
+            self.insert_tab(index)
 
     def closeTab(self, index):
-        widget = self.tabWidget.widget(index)
+        self.last_widget_removed = self.tabWidget.widget(index)
         self.tabWidget.removeTab(index)
-        del widget
         self._tabCount -= 1
+        del self._tabs_widget[f'{index+1}']
 
         if index < self._tabCount:
             for i in range(0, self._tabCount):
                 self.tabWidget.setTabText(i,f'{i+1}')
 
+    def insert_tab(self, index):
+        new_widget = self._base_widget.clone(self, self._parent.layout_win(), False)
+        self._tabs_widget[f'{index + 1}'] = new_widget
+        self.tabWidget.insertTab(index, new_widget, f'{index + 1}')
+        self._tabCount += 1
+
+    def clear_tabwidget_data(self):
+        self._tabs_widget.clear()
+        self._tabCount = 0
+
     def set_base_widget(self, widget):
         self._base_widget = widget
 
     def setPlacement(self, index: int):
-        self.tabWidget.setTabPosition(self._positonTypes[index])
+        self.tabWidget.setTabPosition(self._position_types[index])
 
     def currentIndex(self):
         return self.tabWidget.currentIndex()
 
-    def tabCount(self):
+    def count(self):
         return self._tabCount
 
     def tabContainer(self):
@@ -146,12 +147,14 @@ class TabListButton(QtWidgets.QWidget):
 
 class FolderMultiTabList(QtWidgets.QWidget):
 
-    def __init__(self, widget):
+    def __init__(self, widget, use_scroll_area=False, parent=None):
         super(FolderMultiTabList, self).__init__()
         self._layout = QtWidgets.QVBoxLayout()
         self._layout.setSpacing(0)
         self._layout.setContentsMargins(0,0,0,0)
         self._layout.setAlignment(QtCore.Qt.AlignTop)
+
+        self._parent = parent
 
         self._hor_layout = QtWidgets.QHBoxLayout()
         self._hor_layout.setSpacing(5)
@@ -165,6 +168,7 @@ class FolderMultiTabList(QtWidgets.QWidget):
         self._folder_contents = []
         self._contents_button = []
 
+        self.last_widget_removed = None
         self._base_widget = widget
         self._count = 0
 
@@ -201,9 +205,21 @@ class FolderMultiTabList(QtWidgets.QWidget):
         self._hor_layout.addSpacing(60)
 
         self._frame.setLayout(self._frame_layout)
-
         self._layout.addLayout(self._hor_layout)
-        self._layout.addWidget(self._frame)
+
+        self._scroll_area = None
+
+        if use_scroll_area:
+            self._scroll_area = QtWidgets.QScrollArea()
+            self._scroll_area.setWidgetResizable(True)
+            self._scroll_area.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.MinimumExpanding)
+            self._scroll_area.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+
+            self._scroll_area.setWidget(self._frame)
+            self._layout.addWidget(self._scroll_area)
+
+        else:
+            self._layout.addWidget(self._frame)
 
         self.setLayout(self._layout)
 
@@ -213,9 +229,8 @@ class FolderMultiTabList(QtWidgets.QWidget):
 
 
     def new_widget(self):
-        # widget_container = TabWidgets()
-        new_widget = self._base_widget.clone(False)
-        # widget_container.addWidget(new_widget)
+        new_widget = self._base_widget.clone(self,self._parent.layout_win(),False)
+
         hor_layout = QtWidgets.QHBoxLayout()
         hor_layout.setSpacing(0)
         hor_layout.setContentsMargins(0, 0, 0, 0)
@@ -225,6 +240,7 @@ class FolderMultiTabList(QtWidgets.QWidget):
         hor_layout.addWidget(new_widget)
         self._frame_layout.addLayout(hor_layout)
         self._count += 1
+
         self._textbox.setText(str(self._count))
         self._folder_contents.append(new_widget)
         self._contents_button.append(widget_buttons)
@@ -235,6 +251,7 @@ class FolderMultiTabList(QtWidgets.QWidget):
 
         buttons = self._contents_button.pop(index)
         widget = self._folder_contents.pop(index)
+        self.last_widget_removed = widget
 
         layout_item = self._frame_layout.itemAt(index)
         widget_button = layout_item.layout().itemAt(0).widget()
@@ -251,9 +268,8 @@ class FolderMultiTabList(QtWidgets.QWidget):
         self.updateIndexs()
 
     def insertWidget(self, index):
-        # widget_container = TabWidgets()
-        new_widget = self._base_widget.clone(False)
-        # widget_container.addWidget(new_widget)
+        new_widget = self._base_widget.clone(self, self._parent.layout_win(), False)
+
         hor_layout = QtWidgets.QHBoxLayout()
         hor_layout.setSpacing(0)
         hor_layout.setContentsMargins(0, 0, 0, 0)
@@ -316,12 +332,13 @@ class FolderMultiTabList(QtWidgets.QWidget):
 
 class FolderTabList(QtWidgets.QWidget):
 
-    def __init__(self,parent, widget):
+    def __init__(self, parent, widget):
         super(FolderTabList, self).__init__()
         self._layout = QtWidgets.QVBoxLayout()
         self._layout.setSpacing(0)
         self._layout.setContentsMargins(0, 5, 0, 5)
 
+        self._parent = parent
         self._base_widget = widget
 
         self.tabWidget = QtWidgets.QTabWidget()

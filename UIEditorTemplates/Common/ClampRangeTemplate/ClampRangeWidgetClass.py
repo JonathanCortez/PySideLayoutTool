@@ -3,7 +3,7 @@ from PySideLayoutTool.UIEditorLib.UIEditorIconFactory import IconEditorFactory
 
 class ClampRangeWidget(QtWidgets.QWidget):
 
-    def __init__(self, min, max, lockmin, lockmax, validator:bool=True):
+    def __init__(self, min, max, lockmin, lockmax, int_type=True, validator:bool=True):
         super(ClampRangeWidget, self).__init__()
         self._validator =  self.validator_type(validator)
         self._rangeLayout = QtWidgets.QHBoxLayout()
@@ -21,15 +21,15 @@ class ClampRangeWidget(QtWidgets.QWidget):
         self.minLock_widget.setChecked(lockmin)
 
         # Min Edit Line Setup
-        self.minEdit_widget = QtWidgets.QLineEdit()
-        self.minEdit_widget.setValidator(self._validator)
-        self.minEdit_widget.setText(str(min))
+        self.minEdit_widget = QtWidgets.QSpinBox() if int_type else QtWidgets.QDoubleSpinBox()
+        self.minEdit_widget.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+        self.minEdit_widget.setValue(min)
         self.minEdit_widget.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
 
         # Max Edit Line Setup
-        self.maxEdit_widget = QtWidgets.QLineEdit()
-        self.maxEdit_widget.setValidator(self._validator)
-        self.maxEdit_widget.setText(str(max))
+        self.maxEdit_widget = QtWidgets.QSpinBox() if int_type else QtWidgets.QDoubleSpinBox()
+        self.maxEdit_widget.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+        self.maxEdit_widget.setValue(max)
         self.maxEdit_widget.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
 
         self.maxLock_widget = QtWidgets.QPushButton()

@@ -47,7 +47,7 @@ class TreeItem(QtWidgets.QTreeWidgetItem, UIEditorMediators.BaseComponent):
         else:
             self._itemIn = item_In.itemParent()
 
-        # print(f'parent item: {self._itemIn.text(0)}')
+        # print('parent : ', self._itemIn)
 
     def updateItem(self):
         self.setText(0, f'{self._item_label}({self._item_name})')

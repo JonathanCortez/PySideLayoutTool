@@ -1,10 +1,11 @@
 from PySide2 import QtWidgets, QtGui
 from PySideLayoutTool.UIEditorLib.StringValidatorClass import checkString
+from PySideLayoutTool.UIEditorLib import UIEditorScript
 
-class StringWidget(QtWidgets.QWidget):
+class BasicStringWidget(QtWidgets.QWidget):
 
     def __init__(self, default_text, validator=2, validators_lvl=0):
-        super(StringWidget, self).__init__()
+        super(BasicStringWidget, self).__init__()
         self.validator = self.validater_type(validator)
         self.validator_level = validators_lvl
         self.setMinimumHeight(40)
@@ -19,7 +20,6 @@ class StringWidget(QtWidgets.QWidget):
         self._str_widget.setText(default_text)
 
         self._layout.addWidget(self._str_widget)
-
         self.setLayout(self._layout)
 
         self._str_widget.textChanged.connect(self.updateText)
@@ -39,3 +39,30 @@ class StringWidget(QtWidgets.QWidget):
         ][index]
 
 
+class MultiStringWidget(QtWidgets.QWidget):
+
+    def __init__(self, use_color_text: bool):
+        super(MultiStringWidget, self).__init__()
+        self._layout = QtWidgets.QVBoxLayout()
+        self._layout.setSpacing(0)
+        self._layout.setContentsMargins(0,10,0,0)
+
+        self._label_widget = QtWidgets.QLabel('None')
+
+        self._multiline_text_widget = UIEditorScript.ScriptEditor() if use_color_text else QtWidgets.QPlainTextEdit()
+
+        self._layout.addWidget(self._label_widget)
+        self._layout.addSpacing(5)
+        self._layout.addWidget(self._multiline_text_widget)
+
+        self.setLayout(self._layout)
+
+    def text_window_lines(self, min , max):
+        pass
+
+
+    def set_label_text(self, text: str):
+        self._label_widget.setText(text)
+
+    def text(self):
+        return self._multiline_text_widget.document().toPlainText()

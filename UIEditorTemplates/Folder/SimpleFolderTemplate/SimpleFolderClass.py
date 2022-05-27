@@ -1,5 +1,5 @@
 from PySide2 import QtWidgets
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
+from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory, TemplateDataClass
 
 
 class SimpleFolderWidget(LayoutTemplate.FolderSetup):
@@ -17,16 +17,17 @@ class SimpleFolderWidget(LayoutTemplate.FolderSetup):
     def eval(self) -> int or float:
         return None
 
-    # def callback(self) -> None:
-    #     for observer in self._observingObjs:
-    #         observer.evalCondition s()
-
     def clearLayout(self):
-        super(SimpleFolderWidget, self).clearLayout()
+        if self._folder_widget.layout() is not None:
+            for i in range(0, self._folder_widget.layout().count()):
+                item_layout = self._folder_widget.layout().itemAt(i)
+                item_layout.widget().deleteLater()
+
+        self._childWidgets = TemplateDataClass.TemplateGroup()
+        self._folder_layout.addWidget(self._childWidgets)
+        self._folder_widget.setLayout(self._folder_layout)
 
     def PostUpdate(self):
-        # super(SimpleFolderWidget, self).OnUpdate()
-        # self._folder_layout.addWidget(self._childWidgets)
         self._folder_widget.setTitle(self.label())
 
 

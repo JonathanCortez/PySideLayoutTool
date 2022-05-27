@@ -15,6 +15,7 @@ class DictWidgetClass(QtWidgets.QWidget):
         self.table_widget = QtWidgets.QTableWidget(1, 2)
         self.table_widget.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self._table_size = 62
+        self._table_height = 30
 
         hor_header = self.table_widget.horizontalHeader()
         hor_header.setSectionResizeMode(0, QtWidgets.QHeaderView.Interactive)
@@ -59,6 +60,9 @@ class DictWidgetClass(QtWidgets.QWidget):
 
         self.table_widget.cellChanged.connect(self.cellText)
 
+    def base_table_height(self):
+        return self._table_height
+
     def count(self):
         return self.table_widget.rowCount()
 
@@ -67,7 +71,7 @@ class DictWidgetClass(QtWidgets.QWidget):
         self.table_widget.insertRow(count)
 
         if count < 5:
-            self._table_size += 30
+            self._table_size += self._table_height
 
         self.table_widget.setMinimumHeight(self._table_size)
         self.table_widget.setMaximumHeight(self._table_size)
@@ -79,7 +83,7 @@ class DictWidgetClass(QtWidgets.QWidget):
         if count > 1:
             self.table_widget.removeRow(count - 1)
             if count <= 5:
-                self._table_size -= 30
+                self._table_size -= self._table_height
 
         self.table_widget.setMinimumHeight(self._table_size)
         self.table_widget.setMaximumHeight(self._table_size)

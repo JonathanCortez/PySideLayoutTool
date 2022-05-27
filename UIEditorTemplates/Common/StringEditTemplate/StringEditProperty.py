@@ -10,7 +10,7 @@ class StringProperty(IWidgetProperties):
         self._val_func = None
         self._verify_func = None
 
-        self._textbox = StringEditWidgetClass.StringWidget(self._strText)
+        self._textbox = StringEditWidgetClass.BasicStringWidget(self._strText)
         self._layout.addWidget(self._textbox)
 
         self._textbox._str_widget.textChanged.connect(self.checkText)
