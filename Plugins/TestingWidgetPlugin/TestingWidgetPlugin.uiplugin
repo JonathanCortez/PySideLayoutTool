@@ -1,0 +1,12 @@
+{
+  "Categories":
+  [
+    {
+      "Name": "Common",
+      "Modules":
+      [
+          "WidgetTestClass"
+      ]
+    }
+  ]
+}
