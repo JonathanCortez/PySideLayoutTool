@@ -1,4 +1,4 @@
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
+from UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
 from . import FileWidgetClsss
 
 class FileWidgetSetupClass(LayoutTemplate.ParmSetup):

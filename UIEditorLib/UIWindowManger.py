@@ -1,7 +1,7 @@
 from typing import Dict, Callable, Any, List
-from PySideLayoutTool.UIEditorWindows import MainEditorWindow
-from PySideLayoutTool.UIEditorWindows import MainLayoutWindow
-from PySideLayoutTool.UIEditorLib import UIEditorMediators
+from UIEditorWindows import MainEditorWindow
+from UIEditorWindows import MainLayoutWindow
+from UIEditorLib import UIEditorMediators
 
 class WindowsManger:
 

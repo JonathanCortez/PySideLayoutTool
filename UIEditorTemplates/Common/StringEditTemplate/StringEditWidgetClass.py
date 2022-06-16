@@ -1,6 +1,6 @@
 from PySide2 import QtWidgets, QtGui
-from PySideLayoutTool.UIEditorLib.StringValidatorClass import checkString
-from PySideLayoutTool.UIEditorLib import UIEditorScript
+from UIEditorLib.StringValidatorClass import checkString
+from UIEditorLib import UIEditorScript
 
 class BasicStringWidget(QtWidgets.QWidget):
 

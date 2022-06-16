@@ -1,4 +1,4 @@
-from PySideLayoutTool.UIEditorLib.UIEditorProperty import  UICProperty, PropertyFactory, IWidgetProperties
+from UIEditorLib.UIEditorProperty import  UICProperty, PropertyFactory, IWidgetProperties
 from . import ClampRangeWidgetClass
 
 @PropertyFactory.register('ClampProperty')

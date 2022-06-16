@@ -1,8 +1,8 @@
-from PySideLayoutTool.UIEditorLib import TemplateDataClass
-from PySideLayoutTool.UIEditorLib.UIEditorProperty import UIProperty
-from PySideLayoutTool.UIEditorLib.UIEditorFactory import WidgetFactory
-from PySideLayoutTool.UIEditorLib.LayoutTemplate import FolderSetup
-from PySideLayoutTool.UIEditorLib.TemplateBuildClass import FolderBuild
+from UIEditorLib import TemplateDataClass
+from UIEditorLib.UIEditorProperty import UIProperty
+from UIEditorLib.UIEditorFactory import WidgetFactory
+from UIEditorLib.LayoutTemplate import FolderSetup
+from UIEditorLib.TemplateBuildClass import FolderBuild
 from . import CollapisbleFolderWidgetClass
 
 

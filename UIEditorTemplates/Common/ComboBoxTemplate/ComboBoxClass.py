@@ -1,6 +1,6 @@
 from . import ComboBoxWidgetClass
-from PySideLayoutTool.UIEditorLib.UIEditorProperty import UIProperty
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
+from UIEditorLib.UIEditorProperty import UIProperty
+from UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
 
 class ComboBoxSetupClass(LayoutTemplate.ParmSetup):
 

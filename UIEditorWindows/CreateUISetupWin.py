@@ -1,5 +1,5 @@
 from PySide2 import QtWidgets, QtCore
-from PySideLayoutTool.UIEditorLib import StringValidatorClass, UIWindowManger
+from UIEditorLib import StringValidatorClass, UIWindowManger
 
 
 class UISetupWin(QtWidgets.QDialog):

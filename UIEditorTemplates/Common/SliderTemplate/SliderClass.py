@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import Any
 
-from PySideLayoutTool.UIEditorLib.UIEditorProperty import UIProperty
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
+from UIEditorLib.UIEditorProperty import UIProperty
+from UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
 from PySide2 import QtWidgets
 from . import SliderWidgetClass
 

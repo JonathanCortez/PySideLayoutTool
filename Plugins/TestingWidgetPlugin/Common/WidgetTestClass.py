@@ -1,6 +1,6 @@
-from PySideLayoutTool.UIEditorLib.UIEditorFactory import WidgetFactory
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass
-from PySideLayoutTool.UIEditorLib.UIEditorProperty import UIProperty
+from UIEditorLib.UIEditorFactory import WidgetFactory
+from UIEditorLib import LayoutTemplate, TemplateBuildClass
+from UIEditorLib.UIEditorProperty import UIProperty
 from PySide2 import QtWidgets
 
 # Class to layout your widgets

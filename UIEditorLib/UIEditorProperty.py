@@ -6,7 +6,6 @@ from typing import Callable, Any, Dict
 from PySide2 import QtWidgets
 
 
-
 class IWidgetProperties(QtWidgets.QWidget):
 
     def __init__(self):

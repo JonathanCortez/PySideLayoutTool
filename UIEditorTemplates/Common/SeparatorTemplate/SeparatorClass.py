@@ -1,6 +1,6 @@
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorIconFactory
-from PySideLayoutTool.UIEditorLib.UIEditorFactory import WidgetFactory
-from PySideLayoutTool.UIEditorLib.UIEditorProperty import UIProperty
+from UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorIconFactory
+from UIEditorLib.UIEditorFactory import WidgetFactory
+from UIEditorLib.UIEditorProperty import UIProperty
 from PySide2 import QtWidgets
 from . import SeparatorWidgetClass
 

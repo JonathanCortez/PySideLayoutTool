@@ -1,9 +1,9 @@
 from PySide2 import QtCore, QtWidgets
 
 from . import StringValidatorClass as Validator, UIEditorMediators
-from ..UIEditorTemplates.Common.SeparatorTemplate import SeparatorWidgetClass
-from ..UIEditorTemplates.Folder.CollapisbleFolderTemplate import CollapisbleFolderWidgetClass
-from ..UIEditorTemplates.Layout import CustomFormLayout
+from UIEditorTemplates.Common.SeparatorTemplate import SeparatorWidgetClass
+from UIEditorTemplates.Folder.CollapisbleFolderTemplate import CollapisbleFolderWidgetClass
+from UIEditorTemplates.Layout import CustomFormLayout
 from typing import Dict, Any, List
 
 

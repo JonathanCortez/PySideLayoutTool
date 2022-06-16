@@ -1,6 +1,6 @@
 from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2.QtCore import QObject, Signal
-from PySideLayoutTool.UIEditorTemplates.Common.SeparatorTemplate import SeparatorWidgetClass
+from UIEditorTemplates.Common.SeparatorTemplate import SeparatorWidgetClass
 
 from math import degrees, radians, sqrt, atan2, sin, cos, pi, floor
 

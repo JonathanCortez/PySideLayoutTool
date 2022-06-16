@@ -1,7 +1,7 @@
 import ast
 
-from PySideLayoutTool.UIEditorLib.UIEditorProperty import UIProperty
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
+from UIEditorLib.UIEditorProperty import UIProperty
+from UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
 from . import RampWidgetClass, RampColorWidgetClass
 
 class RampSetupClass(LayoutTemplate.ParmSetup):

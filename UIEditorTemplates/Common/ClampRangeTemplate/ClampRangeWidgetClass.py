@@ -1,5 +1,5 @@
 from PySide2 import QtWidgets,QtGui
-from PySideLayoutTool.UIEditorLib.UIEditorIconFactory import IconEditorFactory
+from UIEditorLib.UIEditorIconFactory import IconEditorFactory
 
 class ClampRangeWidget(QtWidgets.QWidget):
 

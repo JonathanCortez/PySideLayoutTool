@@ -1,5 +1,5 @@
 from PySide2 import QtWidgets
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory, TemplateDataClass
+from UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory, TemplateDataClass
 
 
 class SimpleFolderWidget(LayoutTemplate.FolderSetup):

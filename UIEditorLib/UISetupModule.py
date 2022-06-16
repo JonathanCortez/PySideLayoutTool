@@ -3,9 +3,9 @@ import os, glob
 from PySide2 import QtWidgets
 import pickle
 
-from PySideLayoutTool.UIEditorLib.UIEditorFactory import WidgetFactory
-from PySideLayoutTool.UIEditorLib.UIWindowManger import WindowsManger
-from PySideLayoutTool.UIEditorWindows import CreateUISetupWin
+from UIEditorLib.UIEditorFactory import WidgetFactory
+from UIEditorLib.UIWindowManger import WindowsManger
+from UIEditorWindows import CreateUISetupWin
 from typing import List
 import json
 

@@ -6,13 +6,13 @@ from operator import mul
 
 
 from PySide2 import QtWidgets, QtCore, QtGui
-from PySideLayoutTool.UIEditorTemplates.Common.SliderTemplate import SliderWidgetClass
-from PySideLayoutTool.UIEditorTemplates.Common.ComboBoxTemplate import ComboBoxWidgetClass
-from PySideLayoutTool.UIEditorTemplates.Folder.CollapisbleFolderTemplate import CollapisbleFolderWidgetClass
-from PySideLayoutTool.UIEditorTemplates.Common.SeparatorTemplate import SeparatorWidgetClass
-from PySideLayoutTool.UIEditorTemplates.Common.LineEditTemplate import LineEditWidgets
+from UIEditorTemplates.Common.SliderTemplate import SliderWidgetClass
+from UIEditorTemplates.Common.ComboBoxTemplate import ComboBoxWidgetClass
+from UIEditorTemplates.Folder.CollapisbleFolderTemplate import CollapisbleFolderWidgetClass
+from UIEditorTemplates.Common.SeparatorTemplate import SeparatorWidgetClass
+from UIEditorTemplates.Common.LineEditTemplate import LineEditWidgets
 
-from PySideLayoutTool.UIEditorLib import UIEditorIconFactory
+from UIEditorLib import UIEditorIconFactory
 
 import math
 from typing import Dict, List, Any

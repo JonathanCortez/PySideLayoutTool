@@ -1,4 +1,4 @@
-from PySideLayoutTool.UIEditorLib import UIWindowManger
+from UIEditorLib import UIWindowManger
 from PySide2 import QtCore, QtWidgets
 
 class MainWindowLayout(QtWidgets.QMainWindow):

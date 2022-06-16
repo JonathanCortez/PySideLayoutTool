@@ -1,5 +1,5 @@
-from PySideLayoutTool.UIEditorLib.UIEditorFactory import WidgetFactory
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass
+from UIEditorLib.UIEditorFactory import WidgetFactory
+from UIEditorLib import LayoutTemplate, TemplateBuildClass
 from PySide2 import QtWidgets
 from . import CheckboxWidgetClass
 

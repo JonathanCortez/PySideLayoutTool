@@ -1,6 +1,6 @@
 from PySide2 import QtWidgets, QtCore, QtGui
 
-from PySideLayoutTool.UIEditorLib import UIEditorIconFactory, UIEditorScript
+from UIEditorLib import UIEditorIconFactory, UIEditorScript
 
 
 class ScriptTab(QtWidgets.QMainWindow):

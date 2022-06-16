@@ -1,5 +1,5 @@
 from PySide2 import QtWidgets, QtCore
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
+from UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
 from . import ColorWidgetClass
 from ..LineEditTemplate import LineEditWidgets
 

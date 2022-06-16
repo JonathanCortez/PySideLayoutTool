@@ -1,6 +1,6 @@
 from . import DictionaryWidgetClass
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
-from PySideLayoutTool.UIEditorLib.UIEditorProperty import UIProperty
+from UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
+from UIEditorLib.UIEditorProperty import UIProperty
 
 class DictionarySetupClass(LayoutTemplate.ParmSetup):
 

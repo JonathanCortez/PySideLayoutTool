@@ -1,4 +1,4 @@
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
+from UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
 from PySide2 import QtWidgets,QtCore
 
 class LabelSetupClass(LayoutTemplate.ParmSetup):

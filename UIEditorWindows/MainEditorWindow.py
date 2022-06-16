@@ -1,7 +1,7 @@
 from PySide2 import QtCore, QtWidgets, QtGui
 
-from PySideLayoutTool.UIEditorLib import UIEditorFactory, TreeItemInterface, TemplateDisplayUI, UIEditorMediators, TemplateDataClass
-from ..UIEditorTemplates.Common.SeparatorTemplate import SeparatorWidgetClass
+from UIEditorLib import UIEditorFactory, TreeItemInterface, TemplateDisplayUI, UIEditorMediators, TemplateDataClass
+from UIEditorTemplates.Common.SeparatorTemplate import SeparatorWidgetClass
 from . import TabScript
 
 

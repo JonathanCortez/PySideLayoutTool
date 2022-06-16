@@ -3,8 +3,8 @@ import re
 from typing import List, Dict, Any
 from PySide2 import QtWidgets
 
-from PySideLayoutTool.UIEditorLib import UIEditorFactory, TreeItemInterface, RootWidget, UIFunctions as ui
-from PySideLayoutTool.UIEditorTemplates.Layout import CustomFormLayout
+from UIEditorLib import UIEditorFactory, TreeItemInterface, RootWidget, UIFunctions as ui
+from UIEditorTemplates.Layout import CustomFormLayout
 import pickle
 
 

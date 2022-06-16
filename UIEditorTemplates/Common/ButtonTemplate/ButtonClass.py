@@ -1,6 +1,6 @@
 from PySide2 import QtWidgets, QtCore
-from PySideLayoutTool.UIEditorLib.UIEditorProperty import UIProperty
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
+from UIEditorLib.UIEditorProperty import UIProperty
+from UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory
 from . import ButtonWidgetClass
 
 # TODO: Need to fix to work properly when buttons/button is set to join horizontal

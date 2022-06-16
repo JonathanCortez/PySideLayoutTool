@@ -1,4 +1,4 @@
-from PySideLayoutTool.UIEditorLib.UIEditorIconFactory import IconEditorFactory
+from UIEditorLib.UIEditorIconFactory import IconEditorFactory
 from PySide2.QtGui import QIcon, QKeySequence, QPixmap
 
 

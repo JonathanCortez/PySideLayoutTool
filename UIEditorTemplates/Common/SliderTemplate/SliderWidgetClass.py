@@ -1,5 +1,5 @@
 from PySide2 import QtWidgets, QtCore
-from PySideLayoutTool.UIEditorTemplates.Common.LineEditTemplate import LineEditWidgets
+from UIEditorTemplates.Common.LineEditTemplate import LineEditWidgets
 
 
 class SliderWidget(QtWidgets.QWidget):

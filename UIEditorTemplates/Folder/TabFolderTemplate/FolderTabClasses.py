@@ -1,5 +1,5 @@
-from PySideLayoutTool.UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory, TemplateDataClass
-from PySideLayoutTool.UIEditorLib.UIEditorProperty import UIProperty
+from UIEditorLib import LayoutTemplate, TemplateBuildClass, UIEditorFactory, TemplateDataClass
+from UIEditorLib.UIEditorProperty import UIProperty
 from . import FolderTabWidgetClass
 
 class FolderListClass(LayoutTemplate.FolderSetup):
