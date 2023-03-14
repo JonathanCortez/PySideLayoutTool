@@ -2,13 +2,14 @@ import sys
 
 from UIEditorLib import UISetupModule
 from PySide2 import QtWidgets
-from Resources import pysidetoolicons
+
+# from Resources import pysidetoolicons
 
 def maya_main_window():
     import maya.OpenMayaUI as mayaUI
     import shiboken2
     main_window_ptr = mayaUI.MQtUtil_mainWindow()
-    return shiboken2.wrapInstance(long(main_window_ptr), QtWidgets.QWidget) #type: ignore
+    return shiboken2.wrapInstance(long(main_window_ptr), QtWidgets.QWidget)   #type: ignore
 
 def houdini_main_window():
     import hou

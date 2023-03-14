@@ -3,8 +3,9 @@ from PySide2 import QtWidgets, QtGui, QtCore
 
 class LineEditWidgetClass(QtWidgets.QWidget):
 
-    def __init__(self):
+    def __init__(self, parent):
         super(LineEditWidgetClass, self).__init__()
+        self._parent = parent
         self._layout = QtWidgets.QVBoxLayout()
         self._layout.setSpacing(0)
         self._layout.setContentsMargins(0,0,0,0)
@@ -28,8 +29,8 @@ class LineEditWidgetClass(QtWidgets.QWidget):
 
 class LineEditStrWidgetClass(LineEditWidgetClass):
 
-    def __init__(self, validater_index=0):
-        super(LineEditStrWidgetClass, self).__init__()
+    def __init__(self,parent, validater_index=0):
+        super(LineEditStrWidgetClass, self).__init__(parent)
         self._str_widget = QtWidgets.QLineEdit()
         self._str_widget.setValidator(self.validater_type(validater_index))
         self._str_widget.setTextMargins(13, 0, 0, 0)
@@ -60,8 +61,8 @@ class LineEditStrWidgetClass(LineEditWidgetClass):
 
 class LineEditDigitalWidgetClass(LineEditWidgetClass):
 
-    def __init__(self, min_value=0, max_value=1, steps=1):
-        super(LineEditDigitalWidgetClass, self).__init__()
+    def __init__(self, parent, min_value=0, max_value=1, steps=1):
+        super(LineEditDigitalWidgetClass, self).__init__(parent)
         self._hor_layout = QtWidgets.QHBoxLayout()
         self._hor_layout.setSpacing(0)
         self._hor_layout.setContentsMargins(0,0,0,0)
@@ -119,8 +120,8 @@ class LineEditDigitalWidgetClass(LineEditWidgetClass):
 
 class LineEditFloatWidgetClass(LineEditDigitalWidgetClass):
 
-    def __init__(self, minValue=0,maxValue=1,steps=0.1, no_num_button=True):
-        super(LineEditFloatWidgetClass, self).__init__(minValue, maxValue,steps)
+    def __init__(self, parent, minValue=0,maxValue=1,steps=0.1, no_num_button=True):
+        super(LineEditFloatWidgetClass, self).__init__(parent, minValue, maxValue,steps)
         self._digital_widget = QtWidgets.QDoubleSpinBox()
         self._digital_widget.setSingleStep(self._steps)
 
@@ -140,13 +141,15 @@ class LineEditFloatWidgetClass(LineEditDigitalWidgetClass):
 
         return super(LineEditFloatWidgetClass, self).eventFilter(obj, event)
 
-
+    @property
+    def digital_widget(self):
+        return self._digital_widget
 
 
 class LineEditIntWidgetClass(LineEditDigitalWidgetClass):
 
-    def __init__(self, minValue=0,maxValue=1,steps=1, no_num_button=True):
-        super(LineEditIntWidgetClass, self).__init__(minValue, maxValue,steps)
+    def __init__(self,parent, minValue=0,maxValue=1,steps=1, no_num_button=True):
+        super(LineEditIntWidgetClass, self).__init__(parent,minValue, maxValue,steps)
         self._digital_widget = QtWidgets.QSpinBox()
         self._digital_widget.setSingleStep(self._steps)
 

@@ -50,7 +50,7 @@ class FloatSliderWidget(SliderWidget):
 
     def __init__(self):
         super(FloatSliderWidget, self).__init__()
-        self.boxEdit = LineEditWidgets.LineEditFloatWidgetClass()
+        self.boxEdit = LineEditWidgets.LineEditFloatWidgetClass(parent=self)
         self.boxEdit.setMinimumWidth(35)
         self.boxEdit.setMaximumWidth(35)
 
@@ -96,7 +96,7 @@ class FloatSliderWidget(SliderWidget):
 class IntSliderWidget(SliderWidget):
     def __init__(self):
         super(IntSliderWidget, self).__init__()
-        self.boxEdit = LineEditWidgets.LineEditIntWidgetClass()
+        self.boxEdit = LineEditWidgets.LineEditIntWidgetClass(parent=self)
         self.boxEdit.setMaximumWidth(60)
 
         self._hor_layout.insertWidget(0, self.boxEdit)

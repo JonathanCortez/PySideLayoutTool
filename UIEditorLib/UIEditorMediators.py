@@ -5,6 +5,7 @@ from . import TemplateDataClass, UIEditorFactory
 
 from PySide2 import QtWidgets
 
+
 class NotifyType(Enum):
     notifyLabel = 1
     notifyCheckNames = 2
@@ -13,7 +14,7 @@ class NotifyType(Enum):
 class Mediator(ABC):
 
     @abstractmethod
-    def notify(self, sender: Any, notify_arg: NotifyType , **kwargs) -> None:
+    def notify(self, sender: Any, notify_arg: NotifyType, **kwargs) -> None:
         """
 
         :param sender:
@@ -22,12 +23,11 @@ class Mediator(ABC):
         """
 
     @abstractmethod
-    def notifyAll(self,**kwargs):
+    def notifyAll(self, **kwargs):
         pass
 
 
 # TODO: Note: This Class/Module must be better exam to implement a S.O.L.I.D Principle so others can extend without breaking everything else
-
 
 
 class LayoutMediator(Mediator):
@@ -37,21 +37,19 @@ class LayoutMediator(Mediator):
         self._view_component = viewComp
         self._view_component.mediator = self
 
-
     # def funcType(self, type_index: int):
     #     return {
     #         1: self.updateLabels,
     #         2: self.checkNames
     #     }[type_index]
 
-
-    def update_item_name(self, name:str):
+    def update_item_name(self, name: str):
         self._item_component.setName(name)
 
     def notify_item_label(self, new_label: str):
         self._item_component.setLabel(new_label)
 
-    def notify_display_label(self, new_label:str):
+    def notify_display_label(self, new_label: str):
         widget, label_widget = self._view_component.findProperty('Label')
         widget.setText(new_label)
 
@@ -90,19 +88,16 @@ class LayoutMediator(Mediator):
 
         base_tree._check_below_items()
 
-
-
-    #TODO: Change verifyName to checkNames but on another subclass of this class
+    # TODO: Change verifyName to checkNames but on another subclass of this class
     def verifyName(self, name_check: str, ) -> str:
         new_name = self.checkNames(name_check, False)
         self._item_component.treeWidget().EditorWin().TemplateLayout().update_names(self._item_component, new_name)
         return new_name
 
-
-    def checkNames(self, name: str, new : bool) -> str:
+    def checkNames(self, name: str, new: bool) -> str:
         if name in self.added_names().values():
             if 2 <= list(self.added_names().values()).count(name) or new:
-                str_lenght = len(name)-1
+                str_lenght = len(name) - 1
                 if name[str_lenght].isdigit():
                     str_num = str(int(name[str_lenght]) + 1)
                     name = name.replace(name[str_lenght], str_num)
@@ -113,12 +108,10 @@ class LayoutMediator(Mediator):
 
         return name
 
-
     def added_names(self):
         return self._item_component.treeWidget().EditorWin().TemplateLayout().layout_names()
 
-
-    def notify(self, sender: Any, notify_arg: NotifyType , **kwargs) -> None:
+    def notify(self, sender: Any, notify_arg: NotifyType, **kwargs) -> None:
         pass
         # instance_vars = vars(self)
         # instance_vars = list(instance_vars.values())
@@ -126,16 +119,13 @@ class LayoutMediator(Mediator):
         #     if comp is not sender:
         #         self.funcType(notify_arg.value)(component=comp, **kwargs)     #type: ignore
 
-
-    def notifyAll(self,**kwargs):
+    def notifyAll(self, **kwargs):
         name = self.checkNames(kwargs['name'], True)
         label = kwargs['label']
         self._item_component.setName(name)
         self._item_component.setLabel(label)
         widget, label_widget = self._view_component.findProperty('Name')
         widget.setText(name)
-
-
 
 
 class EditorsMediator(Mediator):
@@ -145,27 +135,28 @@ class EditorsMediator(Mediator):
         self._mainEditor.mediator = self
         self._layoutWin = layout_window
         # self._layoutWin.mediator = self
-        self._serialization = TemplateDataClass.TemplateSerialization(self._mainEditor.editor_path(), self._mainEditor.TemplateLayout())
+        self._serialization = TemplateDataClass.TemplateSerialization(self._mainEditor.editor_path(),
+                                                                      self._mainEditor.TemplateLayout())
         self._layoutWin._serialization_obj = self._serialization
 
         self._prev_item = None
 
-    def notifyUpdate(self,widget: QtWidgets.QWidget):
+    def notifyUpdate(self, widget: QtWidgets.QWidget):
         self._layoutWin.UpdateLayout(widget)
         self._serialization.write_commonData()
-        self._serialization.saveData(force_save=True)
+        self._serialization.save_data(force_save=True)
 
     def notify_force_update(self):
         self._serialization.write_commonData()
-        self._serialization.saveData(force_save=True)
+        self._serialization.save_data(force_save=True)
 
     def notify_full_serialization(self):
         self._serialization.writeData('Name', self._mainEditor.editor_name())
         self._serialization.writeData('Category', self._mainEditor.editor_category())
-        self._serialization.saveData()
+        self._serialization.save_data()
 
     def notify_save(self):
-        self._serialization.saveData()
+        self._serialization.save_data()
 
     def notifyDisplay(self):
         self._layoutWin.display()
@@ -176,10 +167,9 @@ class EditorsMediator(Mediator):
     def restoreWins(self, data):
         if 'Types' in data:
             editor_tree = self._mainEditor.parameter_Tab().layout_tree()
-            for index , parm_type in enumerate(data['Types']['Root']):
+            for index, parm_type in enumerate(data['Types']['Root']):
                 self._prev_item = editor_tree.root_item()
-                self._recursive_build(parm_type,'Root', index, data, editor_tree)
-
+                self._recursive_build(parm_type, 'Root', index, data, editor_tree)
 
         if 'Py_Modules' in data:
             py_editor = self._mainEditor.pyEditor().pyModule_editor()
@@ -190,17 +180,16 @@ class EditorsMediator(Mediator):
 
         self._layoutWin.UpdateLayout(self._mainEditor.TemplateLayout().newLayout(self._layoutWin))
 
-
     def _lastCheck(self, name, display):
         if name == 'Name':
             display.mediatorNameCheck()
         elif name == 'Label':
             display.mediatorLabel()
 
-    def _rebuild_state(self,type_string, key_in, index: int, item_on, data, tree):
+    def _rebuild_state(self, type_string, key_in, index: int, item_on, data, tree):
         builder = tree.add_new_obj(type_string, item_on, QtWidgets.QAbstractItemView.OnItem)
         self._prev_item = builder.newItem()
-        
+
         property_data = data['Type_Properties'][key_in][index]
         for property_name in property_data:
             display_obj = builder.newDisplay()
@@ -215,15 +204,15 @@ class EditorsMediator(Mediator):
 
         return builder
 
-    def _recursive_build(self, parm_string: str ,key_name: str, index_on, data, tree):
+    def _recursive_build(self, parm_string: str, key_name: str, index_on, data, tree):
         item_on = self._prev_item if self._prev_item.bOnItem() else self._prev_item.itemParent()
-        builder = self._rebuild_state(parm_string ,key_name, index_on, item_on, data, tree)
+        builder = self._rebuild_state(parm_string, key_name, index_on, item_on, data, tree)
 
         if builder.newItem().bOnItem():
             item_name = builder.newItem().name()
             if item_name in data['Types']:
-                for index,folder_type in enumerate(data['Types'][item_name]):
-                    self._recursive_build(folder_type,item_name, index, data, tree)
+                for index, folder_type in enumerate(data['Types'][item_name]):
+                    self._recursive_build(folder_type, item_name, index, data, tree)
 
         tree.setExpanded(tree.indexFromItem(item_on), True)
 
@@ -232,9 +221,6 @@ class EditorsMediator(Mediator):
 
     def notifyAll(self, **kwargs):
         pass
-
-
-
 
 
 class MainEditorMediator(Mediator):
@@ -280,7 +266,6 @@ class MainEditorMediator(Mediator):
 
     def notifyAll(self, **kwargs):
         pass
-
 
 
 class BaseComponent:

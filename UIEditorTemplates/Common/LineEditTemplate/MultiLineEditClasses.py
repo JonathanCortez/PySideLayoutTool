@@ -25,11 +25,11 @@ class IntegerVector2Class(VectorClasses):
 
     def __init__(self,parent):
         super(IntegerVector2Class, self).__init__(parent)
-        self._v1 = LineEditWidgets.LineEditIntWidgetClass()
+        self._v1 = LineEditWidgets.LineEditIntWidgetClass(self)
         x_hint_widget = self._v1.addHint('X')
         x_hint_widget.setProperty('class', 'x_property')
 
-        self._v2 = LineEditWidgets.LineEditIntWidgetClass()
+        self._v2 = LineEditWidgets.LineEditIntWidgetClass(self)
         y_hint_widget = self._v2.addHint('Y')
         y_hint_widget.setProperty('class', 'y_property')
 
@@ -80,7 +80,7 @@ class IntegerVector3Class(IntegerVector2Class):
 
     def __init__(self,parent):
         super(IntegerVector3Class, self).__init__(parent)
-        self._v3 = LineEditWidgets.LineEditIntWidgetClass()
+        self._v3 = LineEditWidgets.LineEditIntWidgetClass(self)
         x_hint_widget = self._v3.addHint('Z')
         x_hint_widget.setProperty('class', 'z_property')
 
@@ -123,7 +123,7 @@ class IntegerVector4Class(IntegerVector3Class):
 
     def __init__(self,parent):
         super(IntegerVector4Class, self).__init__(parent)
-        self._v4 = LineEditWidgets.LineEditIntWidgetClass()
+        self._v4 = LineEditWidgets.LineEditIntWidgetClass(self)
         self._v4.addHint('W')
 
         self._value4 = 0
@@ -171,11 +171,11 @@ class FloatVector2Class(VectorClasses):
 
     def __init__(self,parent):
         super(FloatVector2Class, self).__init__(parent)
-        self._v1 = LineEditWidgets.LineEditFloatWidgetClass(steps=0.1)
+        self._v1 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1)
         x_hint_widget = self._v1.addHint('X')
         x_hint_widget.setProperty('class', 'x_property')
 
-        self._v2 = LineEditWidgets.LineEditFloatWidgetClass(steps=0.1)
+        self._v2 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1)
         y_hint_widget = self._v2.addHint('Y')
         y_hint_widget.setProperty('class', 'y_property')
 
@@ -225,7 +225,7 @@ class FloatVector3Class(FloatVector2Class):
 
     def __init__(self,parent):
         super(FloatVector3Class, self).__init__(parent)
-        self._v3 = LineEditWidgets.LineEditFloatWidgetClass(steps=0.1)
+        self._v3 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1)
         x_hint_widget = self._v3.addHint('Z')
         x_hint_widget.setProperty('class', 'z_property')
 
@@ -272,7 +272,7 @@ class FloatVector4Class(FloatVector3Class):
 
     def __init__(self,parent):
         super(FloatVector4Class, self).__init__(parent)
-        self._v4 = LineEditWidgets.LineEditFloatWidgetClass(steps=0.1)
+        self._v4 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1)
         self._v4.addHint('W')
 
         self._value4 = 0.0

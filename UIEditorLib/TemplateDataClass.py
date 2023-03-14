@@ -13,7 +13,7 @@ class TemplateData:
     def __init__(self, parent):
         self._parent = parent
 
-        self._layout_names: Dict[Any,str] = {}
+        self._layout_names: Dict[Any, str] = {}
         self._widget_groups: Dict[str, List[Any]] = {}
         self._item_groups: Dict[str, List[Any]] = {}
         self._folderlist_groups: Dict[str, str] = {}
@@ -86,11 +86,9 @@ class TemplateData:
         type = self._string_groups[name_find].pop(index)
         del name_str, item, widget, display, type
 
-
     def move_data_groups(self, data, name_move_to, current_name):
         for group_item in data[current_name]:
             data[name_move_to].append(group_item)
-
 
     def find_group_item(self, item):
         last_index = -1
@@ -103,7 +101,7 @@ class TemplateData:
 
         return last_index, last_key
 
-    def find_group_widget(self, name : str):
+    def find_group_widget(self, name: str):
         index = -1
         key_in = None
         for key in self._widget_groups:
@@ -114,7 +112,6 @@ class TemplateData:
                     break
 
         return index, key_in
-
 
     def update_names(self, item, new_name: str):
         name = self._layout_names.pop(item)
@@ -137,7 +134,6 @@ class TemplateData:
             current_widget = self._folderlist_groups.pop(name)
             self._folderlist_groups[new_name] = current_widget
 
-
     def add_group_data(self, item, widget, display, type_str, index: int):
         name = item.itemParent().name()
         if name not in self._widget_groups:
@@ -148,7 +144,7 @@ class TemplateData:
 
         else:
             current_widget_list = self._widget_groups[name]
-            current_widget_list.insert(index,widget)
+            current_widget_list.insert(index, widget)
             self._widget_groups[name] = current_widget_list
 
             current_item_list = self._item_groups[name]
@@ -165,8 +161,7 @@ class TemplateData:
 
         self._layout_widgets[item.name()] = widget
 
-
-    def add_folderlist_data(self,base_name, widget, above_item_name):
+    def add_folderlist_data(self, base_name, widget, above_item_name):
         if not self._folderlist_groups:
             self._folderlist_groups[base_name] = widget
 
@@ -178,8 +173,7 @@ class TemplateData:
             else:
                 self._folderlist_groups[base_name] = widget
 
-
-    def update_groups(self, item, new_index:int):
+    def update_groups(self, item, new_index: int):
         name = item.itemParent().name()
         last_index, last_key = self.find_group_item(item)
 
@@ -187,15 +181,14 @@ class TemplateData:
         widget = self._widget_groups[last_key].pop(last_index)
         type = self._string_groups[last_key].pop(last_index)
         display = self._display_groups[last_key].pop(last_index)
-        
+
         if name not in self._item_groups:
-            self.add_group_data(item,widget,display, type, new_index)
+            self.add_group_data(item, widget, display, type, new_index)
         else:
             self._item_groups[name].insert(new_index, item)
             self._widget_groups[name].insert(new_index, widget)
-            self._display_groups[name].insert (new_index,display)
+            self._display_groups[name].insert(new_index, display)
             self._string_groups[name].insert(new_index, type)
-
 
     def newLayout(self, main_layout_win) -> 'TemplateGroup':
         current_layout = TemplateGroup()
@@ -210,8 +203,7 @@ class TemplateData:
 
         return current_layout
 
-
-    def cloneLayout(self,parent_widget, parent_layout, name: str, pre_def_dict, new_name=None):
+    def cloneLayout(self, parent_widget, parent_layout, name: str, pre_def_dict, new_name=None):
         new_widget_group: Dict[str, List[Any]] = pre_def_dict
 
         for index, widget_type in enumerate(self._string_groups[name]):
@@ -231,19 +223,20 @@ class TemplateData:
                     new_widget_group[name].append(build_class.newWidget())
 
             if widget.name() in self._widget_groups:
-                new_widget_group = self.cloneLayout(widget.name(), new_widget_group, getattr(build_class.newWidget(), '__property_instances__')['name'].value())
+                new_widget_group = self.cloneLayout(widget.name(), new_widget_group,
+                                                    getattr(build_class.newWidget(), '__property_instances__')[
+                                                        'name'].value())
 
         return new_widget_group
 
-
-    def recursiveLayout(self, main_layout_win,  name:str, template_layout, widget_data, update_clear = True):
+    def recursiveLayout(self, main_layout_win, name: str, template_layout, widget_data, update_clear=True):
         for widget_update in widget_data[name]:
             widget_update._updateProperties()
             widget_update.clear_Observers()
 
         # index = start_index
 
-        for index,widget in enumerate(widget_data[name]):
+        for index, widget in enumerate(widget_data[name]):
             widget.PreUpdate()
             self._process_script(widget.callback(), widget)
 
@@ -254,7 +247,7 @@ class TemplateData:
                         self.add_widget_to_layout_data(main_layout_win, widget)
                         continue
 
-            #Folder
+            # Folder
             if widget.name() in widget_data:
                 if update_clear:
                     widget.clearLayout()
@@ -274,19 +267,19 @@ class TemplateData:
                     for name in widget.templateGroup().templateGroupData():
                         main_layout_win.widget_layout().pop(name)
 
-                #Folder List
+                # Folder List
                 if widget.name() in self._folderlist_groups:
                     parent_widget = self._folderlist_groups[widget.name()]
                     if parent_widget == widget or widget.endGroup():
                         widget.setParentTab(True)
                         template_layout.addChild_noLabel(widget)
                     else:
-                        parent_widget._folder_widget.newTab(widget.templateGroup(), widget.label()) #type: ignore
+                        parent_widget._folder_widget.newTab(widget.templateGroup(), widget.label())  # type: ignore
 
                 else:
                     template_layout.addChild_noLabel(widget)
 
-            #Parameters
+            # Parameters
             else:
                 # if child:
                 #     widget.parent_id = self.find_widget(name).widget_id
@@ -300,19 +293,16 @@ class TemplateData:
             self.final_process(widget)
             self.add_widget_to_layout_data(main_layout_win, widget)
 
-
     def final_process(self, widget):
         widget.PostUpdate()
-        widget._setHidden_expression(self._conditionHandle(widget.hiden_when(), widget))
+        widget._setHidden_expression(self._conditionHandle(widget.hidden_when(), widget))
         widget._setDisable_expression(self._conditionHandle(widget.disable_when(), widget))
 
         if widget.invisible():
             widget._hidden_implementation(widget.invisible())
 
-
     def add_widget_to_layout_data(self, layout_win, widget):
         layout_win.widget_layout()[widget.name()] = widget
-
 
     def _conditionHandle(self, expression: str, widget_on):
         if expression != '':
@@ -321,12 +311,11 @@ class TemplateData:
 
         return None
 
-
     def _expression_format(self, string_list: List[str], widget_on):
         expressionList = []
         string_lenght = len(string_list)
 
-        for num in range(0, string_lenght,1):
+        for num in range(0, string_lenght, 1):
             current_str_list_len = len(string_list[num])
             count = 0
             for str_item in enumerate(string_list[num]):
@@ -342,24 +331,25 @@ class TemplateData:
                 else:
                     expressionList.append(str_item[1])
 
-                if count == 3 and str_item[0] != current_str_list_len-1:
+                if count == 3 and str_item[0] != current_str_list_len - 1:
                     expressionList.append('and')
                     count = 0
 
-            if num != string_lenght-1:
+            if num != string_lenght - 1:
                 expressionList.append('or')
 
         return expressionList
-
 
     def _process_script(self, expression: str, widget_obj):
         if expression != '':
             split_expression = expression.split('.')
 
-            if split_expression[0] == 'ui':
+            if split_expression[0] == 'ui' or 'self':
                 expression_path = '.'.join(split_expression[:3])
+
                 call = '.'.join(split_expression[3:])
-                args = call[call.find("(")+1:call.find(")")]
+                args = call[call.find("(") + 1:call.find(")")]
+                print(expression_path)
 
                 if args:
                     new_args = {}
@@ -377,17 +367,18 @@ class TemplateData:
                     setattr(widget_obj, '__code_obj__', code)
                     setattr(widget_obj, '__call_obj__', call)
                     if args:
-                        setattr(widget_obj,'__call_args__', args)
+                        setattr(widget_obj, '__call_args__', args)
             else:
                 pass
 
-
+    def pwd(self):
+        return self._parent
 
 class TemplateGroup(QtWidgets.QWidget):
 
     def __init__(self):
         super(TemplateGroup, self).__init__()
-        self._template_layout_data: Dict[str,Any] = {}
+        self._template_layout_data: Dict[str, Any] = {}
 
         self._parent_layout_item = None
         self.__data_class = None
@@ -396,18 +387,15 @@ class TemplateGroup(QtWidgets.QWidget):
         self._mainLayout = CustomFormLayout.CustomForm()
         self.setLayout(self._mainLayout)
 
-
     def addChild(self, widget: QtWidgets.QWidget, apply_layout=True):
-        layout_item = self._mainLayout.new_Row(widget.label(),widget.name(), widget, apply_to_main=apply_layout)
+        layout_item = self._mainLayout.new_Row(widget.label(), widget.name(), widget, apply_to_main=apply_layout)
         self._template_layout_data[widget.name()] = widget
         widget.set_layout_parent(layout_item)
         return layout_item
 
-
-    def addChild_noLabel(self,widget: QtWidgets.QWidget):
+    def addChild_noLabel(self, widget: QtWidgets.QWidget):
         self._mainLayout.add_Custom(widget)
         self._template_layout_data[widget.name()] = widget
-
 
     def horizontal_join(self, widget):
         if widget.bNeighbor() and self._parent_layout_item is None:
@@ -438,7 +426,6 @@ class TemplateGroup(QtWidgets.QWidget):
 
         widget.set_layout_parent(self._mainLayout)
 
-
     def templateGroupData(self):
         return self._template_layout_data
 
@@ -449,7 +436,7 @@ class TemplateGroup(QtWidgets.QWidget):
 
         return None
 
-    def find_widget(self,name: str) -> Any or None:
+    def find_widget(self, name: str) -> Any or None:
         if name in self._template_layout_data:
             return self._template_layout_data[name]
 
@@ -458,21 +445,19 @@ class TemplateGroup(QtWidgets.QWidget):
     def setTemplateName(self, name: str):
         self._template_name = name
 
-    def setData(self,data_class):
+    def setData(self, data_class):
         self.__data_class = data_class
 
-    def clone(self,parent, layout_win, state: bool):
+    def clone(self, parent, layout_win, state: bool):
         clone_template = TemplateGroup()
         clone_template.setTemplateName(self._template_name)
         clone_template.setData(self.__data_class)
         new_clone_widgets = self.__data_class.cloneLayout(parent, layout_win, self._template_name, {})
-        self.__data_class.recursiveLayout(layout_win , self._template_name, clone_template, new_clone_widgets, state)
+        self.__data_class.recursiveLayout(layout_win, self._template_name, clone_template, new_clone_widgets, state)
         return clone_template
 
 
-
-
-#TODO : REDO Template Serialization to public class not instance.
+# TODO : REDO Template Serialization to public class not instance.
 class TemplateSerialization:
 
     def __init__(self, path, data_base):
@@ -484,14 +469,15 @@ class TemplateSerialization:
         self._built_data['Types'] = self._current_data_base.string_groups()
 
         property_groups: Dict[str, List[Dict[str, Any]]] = {}
-        value_list : Dict[str, List[str]] = {}
+        value_list: Dict[str, List[str]] = {}
         for key_display in self._current_data_base.display_groups():
             property_list = []
             widget_values = []
             for i in self._current_data_base.display_groups()[key_display]:
                 property_dict = {}
                 for widget_property in i.Properties():
-                    property_dict[widget_property] = i.Properties()[widget_property].value() if i.Properties()[widget_property].value() else 'None'
+                    property_dict[widget_property] = i.Properties()[widget_property].value() if i.Properties()[
+                        widget_property].value() else 'None'
 
                 property_list.append(property_dict)
 
@@ -506,19 +492,17 @@ class TemplateSerialization:
 
         if self._current_data_base._parent.pyModules() > 0:
             py_editor = self._current_data_base._parent.pyEditor().pyModule_editor()
-            py_modules : Dict[str, str] = {}
+            py_modules: Dict[str, str] = {}
             for module_name in py_editor.modules().keys():
                 code_str = self._current_data_base._parent.pyModule(module_name)
                 py_modules[module_name] = code_str
 
             self._built_data['Py_Modules'] = py_modules
 
-    def writeData(self,key_name: str, value_data: Any):
+    def writeData(self, key_name: str, value_data: Any):
         self._built_data[key_name] = value_data
 
-    def saveData(self, force_save=False):
+    def save_data(self, force_save=False):
         if not os.path.exists(self._path) or force_save:
             with open(self._path, 'wb') as currentFile:
                 pickle.dump(self._built_data, currentFile, protocol=pickle.HIGHEST_PROTOCOL)
-
-

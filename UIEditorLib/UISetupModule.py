@@ -38,7 +38,7 @@ def PostInitialize() -> None:
         full_path = path + f'/{file}'
         with open(full_path, 'rb') as uiFile:
             data = pickle.load(uiFile)
-            WindowsManger.InitilizeWindows(data['Name'], full_path, data['Category'])
+            WindowsManger.initilize_windows(data['Name'], full_path, data['Category'])
             WindowsManger.restoreState(data)
             uiFile.close()
 
@@ -54,7 +54,7 @@ def Load_UI() -> None:
         data = pickle.load(uiFile)
         ui_name = data['Name']
         if WindowsManger.get_Stack(ui_name,'User') is None:
-            WindowsManger.InitilizeWindows(ui_name, full_file_path[0])
+            WindowsManger.initilize_windows(ui_name, full_file_path[0])
             WindowsManger.restoreState(data)
             WindowsManger.WindowShow(WindowsManger.get_Stack(ui_name, 'User')[ui_name + '_editor'])
         else:

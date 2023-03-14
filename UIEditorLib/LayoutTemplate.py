@@ -10,13 +10,6 @@ from .UIEditorProperty import ProcessUIProperties, UIProperty
 from . import UIFunctions as ui
 
 
-
-try:
-    import unreal
-except ImportError:
-    pass
-
-
 class CallbackObject(QObject):
     callback = Signal()
 
@@ -199,7 +192,7 @@ class WidgetSetup(QtWidgets.QWidget):
 
 
     @UIProperty(metaWidget='LineEditProperty', label='Hide When', category='Expressions')
-    def hiden_when(self):
+    def hidden_when(self):
         pass
 
 

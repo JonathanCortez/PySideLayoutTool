@@ -4,13 +4,14 @@ from UIEditorTemplates.Common.SeparatorTemplate import SeparatorWidgetClass
 
 from math import degrees, radians, sqrt, atan2, sin, cos, pi, floor
 
+
 class ColorButtonWidget(QtWidgets.QPushButton):
 
     def __init__(self, parent, bAlpha=False):
         super(ColorButtonWidget, self).__init__(parent)
         self.setMinimumWidth(40)
         self.setMaximumWidth(40)
-        self._color_editor = colorPicker(bAlpha, parent=self)
+        self._color_editor = colorPicker(self,bAlpha)
         self.brushColor = QtGui.QBrush(QtGui.QColor(255, 255, 255, 255))
         self._color = None
 
@@ -26,14 +27,15 @@ class ColorButtonWidget(QtWidgets.QPushButton):
         super().paintEvent(event)
         painter = QtGui.QPainter(self)
         painter.setBrush(self.brushColor)
-        painter.drawRoundedRect(5,1,30,15,2,2)
+        painter.drawRoundedRect(5, 1, 30, 15, 2, 2)
 
-    def updateButtonColor(self,color):
+    def updateButtonColor(self, color):
         self._color = color
         self.brushColor = QtGui.QBrush(color)
         self.update()
 
-#TODO: ADD checker pattern for color with alpha on button rect.
+
+# TODO: ADD checker pattern for color with alpha on button rect.
 
 class ColorObject(QObject):
     colorSignal = Signal(QtGui.QColor)
@@ -41,10 +43,11 @@ class ColorObject(QObject):
 
 class colorPicker(QtWidgets.QDialog):
     "custom colorDialog from Orthallelous"
+
     # currentColorChanged = ColorObject()
     # colorSelected = ColorObject()
 
-    def __init__(self,bAlpha, initial=None, parent=None):
+    def __init__(self,parent, bAlpha, initial=None):
         super(colorPicker, self).__init__(parent)
         self.currentColorChanged = ColorObject()
         self.colorSelected = ColorObject()
@@ -52,15 +55,13 @@ class colorPicker(QtWidgets.QDialog):
         self.setup()
         self.setColor(initial)
 
-
-    def mapRange_Clamp(self,value, inRangeA, inRangeB, outRangeA, outRangeB):
+    def mapRange_Clamp(self, value, inRangeA, inRangeB, outRangeA, outRangeB):
         if outRangeA == outRangeB: return outRangeA
         if inRangeA == inRangeB: Exception("inRangeA == inRangeB which will produce one to many mapping")
         inPercentage = (value - inRangeA) / (inRangeB - inRangeA)
         if inPercentage < 0.0: return outRangeA
         if inPercentage > 1.0: return outRangeB;
         return outRangeA + inPercentage * (outRangeB - outRangeA)
-
 
     def currentColor(self):
         return self._color
@@ -108,7 +109,6 @@ class colorPicker(QtWidgets.QDialog):
                 self.dialogButtons.hide()
         self.setFixedSize(self.sizeHint())
 
-
     def _colorEdited(self):
         "internal color editing"
         sender, color = self.sender(), self._color
@@ -121,7 +121,7 @@ class colorPicker(QtWidgets.QDialog):
         elif sender in self.colorRects.HSVInputs():
             hsvValue = [self.colorRects.HSVInputs()[0].value()]
             for i in self.colorRects.HSVInputs()[1:]:
-                hsvValue.append(int(self.mapRange_Clamp(i.value(),0,1,0,255)))
+                hsvValue.append(int(self.mapRange_Clamp(i.value(), 0, 1, 0, 255)))
             color.setHsv(*hsvValue)
         # elif sender in self.colorRects.TMIInputs():
         #     tempValue = self.colorRects.TMIInputs()[0].value()
@@ -137,11 +137,15 @@ class colorPicker(QtWidgets.QDialog):
             dat = self.colorNamesCB.itemData(self.colorNamesCB.currentIndex())
             color = self._color = QtGui.QColor(str(dat))  # PySide
             self.colorNamesCB.setToolTip(self.colorNamesCB.currentText())
-        elif isinstance(sender,QtWidgets.QPushButton):
+        elif isinstance(sender, QtWidgets.QPushButton):
             value = sender.palette().window().color().getRgbF()
             color.setRgbF(*value)
         elif isinstance(sender, QtWidgets.QDoubleSpinBox):
-            rgba = sender.parent().parent().eval()
+            parent_obj = sender.parent().parent()
+            if isinstance(parent_obj, ColorEditorRightLayout):
+                parent_obj = parent_obj.parent.parent().parent()
+
+            rgba = parent_obj.eval()
             if len(rgba) == 3:
                 color.setRgbF(float(rgba[0]), float(rgba[1]), float(rgba[2]))
             else:
@@ -153,7 +157,6 @@ class colorPicker(QtWidgets.QDialog):
 
         if self._use_Aplha:
             color.setAlphaF(self.colorRects.AlphaInput().value())
-
 
         # set Values
         self.parent().updateButtonColor(color)
@@ -245,28 +248,27 @@ class colorPicker(QtWidgets.QDialog):
                                       QtWidgets.QSizePolicy.Fixed)
         rightCenter = (QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
 
-
-        #Dialog Splitter
+        # Dialog Splitter
         self.splitter = QtWidgets.QSplitter()
         self.splitter.setChildrenCollapsible(False)
 
-        #Right Side Setup
+        # Right Side Setup
         self.rightLayout = QtWidgets.QVBoxLayout()
         self.rightLayout.setSpacing(5)
-        self.rightLayout.setContentsMargins(0,2,0,2)
+        self.rightLayout.setContentsMargins(0, 2, 0, 2)
 
         self.rightWidget = QtWidgets.QWidget()
         self.rightWidget.setLayout(self.rightLayout)
 
-        #Left Side Setup
+        # Left Side Setup
         self.leftLayout = QtWidgets.QVBoxLayout()
         self.leftLayout.setSpacing(5)
         self.leftLayout.setContentsMargins(5, 2, 5, 2)
 
         self.leftWidget = QtWidgets.QWidget()
 
-        #Color Rects
-        self.colorRects = ColorEditorRightLayout(self,self._use_Aplha)
+        # Color Rects
+        self.colorRects = ColorEditorRightLayout(self, self._use_Aplha)
 
         # HTML
         self.htmlInput = QtWidgets.QLineEdit()
@@ -333,13 +335,13 @@ class colorPicker(QtWidgets.QDialog):
 
         # ok/cancel buttons
         self.dialogButtons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok
-                                                    | QtWidgets.QDialogButtonBox.Cancel)
+                                                        | QtWidgets.QDialogButtonBox.Cancel)
         self.dialogButtons.accepted.connect(self.closeValid)
         self.dialogButtons.rejected.connect(self.closeInvalid)
         self.dialogButtons.setCenterButtons(True)
         # pass QtGui.QColorDialog.NoButtons, False to setOption to remove
 
-        #Layout Setup
+        # Layout Setup
         self.leftLayout.addWidget(self.colorWheel)
         self.leftLayout.addWidget(SeparatorWidgetClass.SeparatorHWidget())
 
@@ -348,7 +350,7 @@ class colorPicker(QtWidgets.QDialog):
 
         color_frame_layout = QtWidgets.QHBoxLayout()
         color_frame_layout.setSpacing(0)
-        color_frame_layout.setContentsMargins(0,10,0,10)
+        color_frame_layout.setContentsMargins(0, 10, 0, 10)
 
         color_frame_layout.addWidget(self.colorDisplay)
 
@@ -389,7 +391,7 @@ class colorPicker(QtWidgets.QDialog):
 
         self.baselayout = QtWidgets.QVBoxLayout()
         self.baselayout.setSpacing(0)
-        self.baselayout.setContentsMargins(0,0,0,0)
+        self.baselayout.setContentsMargins(0, 0, 0, 0)
         self.baselayout.setAlignment(QtCore.Qt.AlignTop)
 
         self.splitter.addWidget(self.leftWidget)
@@ -452,7 +454,7 @@ class AlphaRect(QtWidgets.QWidget):
 
 class ColorRectSlider(QtWidgets.QSlider):
 
-    def __init__(self,parent, minValue=0, maxValue=1, bfloat=True):
+    def __init__(self, parent, minValue=0, maxValue=1, bfloat=True):
         super(ColorRectSlider, self).__init__(parent)
         self.min = minValue * 1000000.0 if bfloat else minValue
         self.max = maxValue * 1000000.0 if bfloat else maxValue
@@ -460,8 +462,8 @@ class ColorRectSlider(QtWidgets.QSlider):
 
         self.setOrientation(QtCore.Qt.Horizontal)
         self.setStyleSheet('QSlider::groove:horizontal { height: 0px; }'
-                            'QSlider::handle:horizontal { margin-top: -12px; margin-bottom: -12px; width: 6px; }'
-                            'QSlider { background-color: none; }')
+                           'QSlider::handle:horizontal { margin-top: -12px; margin-bottom: -12px; width: 6px; }'
+                           'QSlider { background-color: none; }')
 
         self.setRange(int(self.min), int(self.max))
 
@@ -474,20 +476,20 @@ class ColorRectSlider(QtWidgets.QSlider):
 
 class ColorRectLayout(QtWidgets.QWidget):
 
-    def __init__(self,dialog, label: str, tooltip: str,bAlpha=False, minRange=0, maxRange=1,bFloat=True):
-        super(ColorRectLayout, self).__init__()
+    def __init__(self, parent, label: str, tooltip: str, bAlpha=False, minRange=0, maxRange=1, bFloat=True):
+        super(ColorRectLayout, self).__init__(parent)
         self._layout = QtWidgets.QVBoxLayout()
         self._layout.setSpacing(0)
-        self._layout.setContentsMargins(0,0,0,0)
+        self._layout.setContentsMargins(0, 0, 0, 0)
         self._layout.setAlignment(QtCore.Qt.AlignTop)
 
         self._hor_layout = QtWidgets.QHBoxLayout()
         self._hor_layout.setSpacing(5)
-        self._hor_layout.setContentsMargins(0,0,0,0)
+        self._hor_layout.setContentsMargins(0, 0, 0, 0)
         self._hor_layout.setAlignment(QtCore.Qt.AlignLeft)
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
 
-        self.dialog_obj = dialog
+        self.dialog_obj = parent
         self.name = label
         self.minValue = minRange
         self.maxValue = maxRange
@@ -495,7 +497,7 @@ class ColorRectLayout(QtWidgets.QWidget):
         self.input_widget = QtWidgets.QDoubleSpinBox(self) if bFloat else QtWidgets.QSpinBox(self)
         self.input_widget.setRange(-15, 15) if bFloat else self.input_widget.setRange(self.minValue, self.maxValue)
         self.input_widget.setSingleStep(0.1) if bFloat else self.input_widget.setSingleStep(1)
-        self.input_widget.setFixedSize(40,20)
+        self.input_widget.setFixedSize(40, 20)
         self.input_widget.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
 
         self.label_widget = QtWidgets.QLabel(label)
@@ -509,7 +511,6 @@ class ColorRectLayout(QtWidgets.QWidget):
             AlphaRect(self.colorRectDisplay)
         self.colorSlider = ColorRectSlider(self.colorRectDisplay, minRange, maxRange, bFloat)
 
-
         self._hor_layout.addWidget(self.label_widget)
         self._hor_layout.addWidget(self.input_widget)
         self._hor_layout.addSpacing(5)
@@ -518,14 +519,13 @@ class ColorRectLayout(QtWidgets.QWidget):
         self._layout.addLayout(self._hor_layout)
         self.setLayout(self._layout)
 
-        self.input_widget.valueChanged.connect(dialog._colorEdited)
+        self.input_widget.valueChanged.connect(parent._colorEdited)
         self.colorSlider.valueChanged.connect(self.updateColors)
-
 
     def input(self):
         return self.input_widget
 
-    def updateColors(self,value):
+    def updateColors(self, value):
         sender = self.sender()
         value = value
 
@@ -533,17 +533,14 @@ class ColorRectLayout(QtWidgets.QWidget):
             value = float(value / 1000000.0)
         self.input_widget.setValue(value)
 
-
     def updateValues(self, value):
         self.input_widget.blockSignals(True)
         self.input_widget.setValue(value)
         self.colorSlider.setValue(value * 1000000.0 if self.colorSlider.useFloat() else value)
         self.input_widget.blockSignals(False)
 
-    def updateRectColor(self,color):
+    def updateRectColor(self, color):
         self.colorRectDisplay.setColor(color)
-
-
 
 
 class ColorEditorRightLayout(QtWidgets.QWidget):
@@ -560,25 +557,25 @@ class ColorEditorRightLayout(QtWidgets.QWidget):
 
         self._colorButtons = ColorListButtons(parent)
 
-        #RGBA Setup
-        self.redWidget = ColorRectLayout(parent,'&R:','Red')
-        self.greenWidget = ColorRectLayout(parent,'&G:','Green')
-        self.blueWidget = ColorRectLayout(parent,'&B:','Blue')
-        self.alphaWidget = ColorRectLayout(parent,'&A:','Alpha',self._useAlpha) if useAlpha else None
+        # RGBA Setup
+        self.redWidget = ColorRectLayout(parent, '&R:', 'Red')
+        self.greenWidget = ColorRectLayout(parent, '&G:', 'Green')
+        self.blueWidget = ColorRectLayout(parent, '&B:', 'Blue')
+        self.alphaWidget = ColorRectLayout(parent, '&A:', 'Alpha', self._useAlpha) if useAlpha else None
         self.rgbInputs = [self.redWidget.input(), self.greenWidget.input(), self.blueWidget.input()]
 
-        #HSV Setup
+        # HSV Setup
         hueColors = [QtCore.Qt.red, QtCore.Qt.magenta, QtCore.Qt.blue,
                      QtCore.Qt.cyan, QtCore.Qt.green,
                      QtCore.Qt.yellow, QtCore.Qt.red]
 
-        self.hueWidget = ColorRectLayout(parent,'&H:','Hue',maxRange=360,bFloat=False)
+        self.hueWidget = ColorRectLayout(parent, '&H:', 'Hue', maxRange=360, bFloat=False)
         self.hueWidget.updateRectColor(hueColors)
-        self.satWidget = ColorRectLayout(parent,'&S:','Saturation')
-        self.valWidget = ColorRectLayout(parent,'&V:','Value')
+        self.satWidget = ColorRectLayout(parent, '&S:', 'Saturation')
+        self.valWidget = ColorRectLayout(parent, '&V:', 'Value')
         self.hsvInputs = [self.hueWidget.input(), self.satWidget.input(), self.valWidget.input()]
 
-        #TMI Setup
+        # TMI Setup
         # self.TempWidget= ColorRectLayout(parent,'&T:','Temperature',minRange=-1,maxRange=1)
         # self.magentaWidget = ColorRectLayout(parent,'&M:','Magenta',minRange=-1,maxRange=1)
         # self.intensityWidget = ColorRectLayout(parent,'&I:','Intensity')
@@ -622,7 +619,7 @@ class ColorEditorRightLayout(QtWidgets.QWidget):
         self._color = color_obj
         color = color_obj.getRgb()
 
-        #RGB
+        # RGB
         redRect = [QtGui.QColor(255, color[1], color[2], 255),
                    QtGui.QColor(0, color[1], color[2], 255)]
         self.redWidget.updateRectColor(redRect)
@@ -644,7 +641,7 @@ class ColorEditorRightLayout(QtWidgets.QWidget):
             self.alphaWidget.updateRectColor(alphaRect)
             self.alphaWidget.updateValues(color_obj.alphaF())
 
-        #HSV
+        # HSV
         self.hueWidget.updateValues(color_obj.hsvHue())
 
         hueColor = self.parent.mapRange_Clamp(color_obj.getHsv()[0], 0, 360, 0, 1)
@@ -676,27 +673,28 @@ class ColorEditorRightLayout(QtWidgets.QWidget):
 
 class ColorListButtons(QtWidgets.QWidget):
 
-    def __init__(self,parent):
+    def __init__(self, parent):
         super(ColorListButtons, self).__init__()
         self._base_layout = QtWidgets.QVBoxLayout()
         self._base_layout.setSpacing(0)
         self._base_layout.setContentsMargins(0, 0, 0, 0)
         self.parent = parent
 
-        self._first_row = [[1,0,0],[1,0.5,0], [1,1,0], [0.5,1,0], [0,1,0],
-                           [0,1,0.5], [0,1,1], [0,0.5,1], [0,0,1],
-                           [0.5,0,1], [1,0,1], [1,0,0.5]]
+        self._first_row = [[1, 0, 0], [1, 0.5, 0], [1, 1, 0], [0.5, 1, 0], [0, 1, 0],
+                           [0, 1, 0.5], [0, 1, 1], [0, 0.5, 1], [0, 0, 1],
+                           [0.5, 0, 1], [1, 0, 1], [1, 0, 0.5]]
 
-        self._second_row = [ [i/2 for i in x] for x in self._first_row]
+        self._second_row = [[i / 2 for i in x] for x in self._first_row]
 
-        self._third_row = [[0.3,0.075,0.075], [0.3, 0.1875, 0.075],[0.3, 0.3, 0.075],
+        self._third_row = [[0.3, 0.075, 0.075], [0.3, 0.1875, 0.075], [0.3, 0.3, 0.075],
                            [0.1875, 0.3, 0.075], [0.075, 0.3, 0.075], [0.075, 0.3, 0.1875],
-                           [0.075,0.3,0.3], [0.075,0.1875,0.3], [0.075, 0.075, 0.3],
-                           [0.1875, 0.075, 0.3], [0.3,0.075, 0.3], [0.3, 0.075,0.1875]]
+                           [0.075, 0.3, 0.3], [0.075, 0.1875, 0.3], [0.075, 0.075, 0.3],
+                           [0.1875, 0.075, 0.3], [0.3, 0.075, 0.3], [0.3, 0.075, 0.1875]]
 
-        self._fourth_row = [[0,0,0], [0.00625, 0.00625, 0.00625], [0.0125, 0.0125, 0.0125],
-                            [0.025,0.025,0.025], [0.05,0.05,0.05], [0.1,0.1,0.1],[0.2,0.2,0.2],
-                            [0.333,0.333,0.333],[0.5,0.5,0.5], [0.6667,0.6667,0.6667], [0.75,0.75,0.75], [1,1,1]]
+        self._fourth_row = [[0, 0, 0], [0.00625, 0.00625, 0.00625], [0.0125, 0.0125, 0.0125],
+                            [0.025, 0.025, 0.025], [0.05, 0.05, 0.05], [0.1, 0.1, 0.1], [0.2, 0.2, 0.2],
+                            [0.333, 0.333, 0.333], [0.5, 0.5, 0.5], [0.6667, 0.6667, 0.6667], [0.75, 0.75, 0.75],
+                            [1, 1, 1]]
 
         self._color_list = [self._first_row, self._second_row, self._third_row, self._fourth_row]
 
@@ -710,7 +708,7 @@ class ColorListButtons(QtWidgets.QWidget):
         self._frame.setLayout(self._frame_layout)
         self._base_layout.addWidget(self._frame)
 
-        for i in range(0,4):
+        for i in range(0, 4):
             self.addhorizational_Buttons(self._color_list[i])
 
         self.setLayout(self._base_layout)
@@ -721,7 +719,7 @@ class ColorListButtons(QtWidgets.QWidget):
         hor_layout.setContentsMargins(0, 0, 0, 0)
         hor_layout.setAlignment(QtCore.Qt.AlignLeft)
 
-        for i in range(0,12):
+        for i in range(0, 12):
             current_color = color_list[i]
             r = floor(current_color[0] * 255)
             g = floor(current_color[1] * 255)
@@ -731,10 +729,10 @@ class ColorListButtons(QtWidgets.QWidget):
             button.setMinimumHeight(30)
             button.setMaximumHeight(30)
             button.setMaximumWidth(25)
-            button.setStyleSheet("QPushButton { background-color:" + f"rgb({r},{g},{b})"+";}"
-                                 "QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+            button.setStyleSheet("QPushButton { background-color:" + f"rgb({r},{g},{b})" + ";}"
+                                                                                           "QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
             button.setToolTip(f'({current_color[0]}, {current_color[1]}, {current_color[2]}) \n LMB to select')
-            button.setSizePolicy(QtWidgets.QSizePolicy.Minimum,QtWidgets.QSizePolicy.Fixed)
+            button.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
             hor_layout.addWidget(button)
             button.pressed.connect(self.parent._colorEdited)
 
@@ -856,7 +854,6 @@ class ColorWheel(QtWidgets.QWidget):
             self.currentColorChanged.colorSignal.emit(col)
 
         return QtWidgets.QWidget.eventFilter(self, source, event)
-
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)

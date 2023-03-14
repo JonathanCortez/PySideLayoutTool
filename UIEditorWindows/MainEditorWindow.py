@@ -57,7 +57,10 @@ class EditorWindow(QtWidgets.QMainWindow, UIEditorMediators.BaseComponent):
         return self._pyEditor.pyModules_count()
 
     def pyModule(self,name: str):
-        return self._pyEditor.getPyModules().scriptModule(name).toPlainText()
+        code_text = self._pyEditor.getPyModules().scriptModule(name)
+        if code_text:
+            return code_text.toPlainText()
+        return None
 
     def pyEditor(self):
         return self._pyEditor
@@ -726,7 +729,7 @@ class ItemEditWidget(QtWidgets.QLineEdit):
     def edited(self):
         current_text = self.text()
 
-        if current_text is not'':
+        if current_text is not '':
             if current_text is not self._current_text:
                 self._current_text = current_text
                 self._currentItem.setLabel(current_text)

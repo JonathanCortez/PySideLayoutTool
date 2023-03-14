@@ -31,7 +31,7 @@ class MainWindowLayout(QtWidgets.QMainWindow):
 
     def closeEvent(self, event) -> None:
         self._serialization_obj.write_commonData()
-        self._serialization_obj.saveData(force_save=True)
+        self._serialization_obj.save_data(force_save=True)
 
     def UpdateLayout(self, new_widget: QtWidgets.QWidget):
         self._widget_ptr.deleteLater()

@@ -79,7 +79,7 @@ class WindowsManger:
         return False
 
     @classmethod
-    def InitilizeWindows(cls,win_name: str, path_save: str, win_category='User'):
+    def initilize_windows(cls, win_name: str, path_save: str, win_category='User'):
         new_editor = MainEditorWindow.EditorWindow(win_name, path_save, win_category)
         new_layout = MainLayoutWindow.MainWindowLayout(win_name)
         meditor = UIEditorMediators.EditorsMediator(new_editor, new_layout)

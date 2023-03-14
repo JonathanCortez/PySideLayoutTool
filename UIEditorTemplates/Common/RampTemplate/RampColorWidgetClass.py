@@ -513,7 +513,7 @@ class PointNumWidget(QtWidgets.QWidget):
         self._layout.setContentsMargins(0, 5, 0, 5)
         self._layout.setAlignment(QtCore.Qt.AlignLeft)
 
-        self._index_widget = LineEditWidgets.LineEditIntWidgetClass(no_num_button=False)
+        self._index_widget = LineEditWidgets.LineEditIntWidgetClass(parent=self,no_num_button=False)
         self._index_widget.baseWidget().setToolTip('Mouse wheel to change Selection.')
         self._index_widget.baseWidget().setStyleSheet(
             "QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
@@ -638,17 +638,17 @@ class RampControlsWidget(QtWidgets.QWidget):
         self._color_hor_layout.setContentsMargins(0, 0, 0, 0)
         self._color_hor_layout.setAlignment(QtCore.Qt.AlignLeft)
 
-        self._r = LineEditWidgets.LineEditFloatWidgetClass(steps=0.1)
+        self._r = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1)
         self._r.setRange(0, 1)
         r_hint_widget = self._r.addHint('R')
         r_hint_widget.setProperty('class', 'x_property')
 
-        self._g = LineEditWidgets.LineEditFloatWidgetClass(steps=0.1)
+        self._g = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1)
         self._g.setRange(0, 1)
         g_hint_widget = self._g.addHint('G')
         g_hint_widget.setProperty('class', 'y_property')
 
-        self._b = LineEditWidgets.LineEditFloatWidgetClass(steps=0.1)
+        self._b = LineEditWidgets.LineEditFloatWidgetClass(parent=self,steps=0.1)
         self._b.setRange(0, 1)
         b_hint_widget = self._b.addHint('B')
         b_hint_widget.setProperty('class', 'z_property')

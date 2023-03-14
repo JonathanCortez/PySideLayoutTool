@@ -56,7 +56,7 @@ class UISetupWin(QtWidgets.QDialog):
         self._path_str.setText(self._save_path)
 
     def new_ui(self):
-        UIWindowManger.WindowsManger.InitilizeWindows(self._UI_name.text(), self._save_path, self._category_str.text())
+        UIWindowManger.WindowsManger.initilize_windows(self._UI_name.text(), self._save_path, self._category_str.text())
         UIWindowManger.WindowsManger.WindowShow(UIWindowManger.WindowsManger.get_Stack(self._UI_name.text(), self._category_str.text())[self._UI_name.text() + '_editor'])
         self.close()
 

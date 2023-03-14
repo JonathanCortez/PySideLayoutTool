@@ -1,5 +1,5 @@
 from typing import Callable
-from PySideLayoutTool.UIEditorLib import UIWindowManger, LayoutConstructorClass
+from . import UIWindowManger, LayoutConstructorClass
 
 
 class UIParameterStateChange:
@@ -12,17 +12,15 @@ class UIParameterStateChange:
             if hasattr(widget, 'templateGroup'):
                 for w in widget.templateGroup().templateGroupData().values():
                     if hasattr(w, 'templateGroup'):
-                        self._check_item(widget.templateGroup().templateGroupData().values(), type,func)
+                        self._check_item(widget.templateGroup().templateGroupData().values(), type, func)
                     if w.type().currentItem_name == type:
                         w.add_delegate(func)
             else:
                 if widget.type().currentItem_name == type:
                     widget.add_delegate(func)
 
-
     def add_callable(self, type: str, func: Callable):
         self._check_item(self._current_layout.templateLayout().templateGroupData().values(), type, func)
-
 
     def remove_callable(self, type: str, func: Callable):
         for widget in self._current_layout.templateLayout().templateGroupData().values():
@@ -42,9 +40,9 @@ class UIPublicAPIWrapper:
 
     @classmethod
     def instantiate_ui(cls, name, category, file_data):
-        UIWindowManger.WindowsManger.InitilizeWindows(name,
-                                                      UIWindowManger.WindowsManger.root_save() + f"/{category}/" + name + ".qui",
-                                                      win_category=category)
+        UIWindowManger.WindowsManger.initilize_windows(name,
+                                                       UIWindowManger.WindowsManger.root_save() + f"/{category}/" + name + ".qui",
+                                                       win_category=category)
         editor_win = UIWindowManger.WindowsManger.get_Stack(name, category)[name + '_editor']
         layout_win = UIWindowManger.WindowsManger.get_Stack(name, category)[name + '_layout']
 
