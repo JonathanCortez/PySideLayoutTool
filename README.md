@@ -1,7 +1,7 @@
 # Pyside Layout Tool
 
 Pyside Layout Tool is a python application built to help Technical Artist and Tool Developers to make quick clean 
-UI Layout to there supported application with a python interpreter too.
+UI Layout to there supported application that has a python interpreter.
 
 
  ### Extending PySide Layout Tool
