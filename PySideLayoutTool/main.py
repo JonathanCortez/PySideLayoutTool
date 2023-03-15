@@ -3,8 +3,6 @@ import sys
 from PySideLayoutTool.UIEditorLib import UISetupModule
 from PySide2 import QtWidgets
 
-import importlib.resources
-
 
 def maya_main_window():
     import maya.OpenMayaUI as mayaUI
@@ -19,18 +17,15 @@ def houdini_main_window():
 
 
 def DisplayWindow():
-    with importlib.resources.path("resources.data", "UIEditorProject.uiproject") as path:
-        UISetupModule.main_path(path)
-        UISetupModule.PreInitialize(None, None)
-        UISetupModule.Setup_Init()
-    # path = __file__.replace('main.py', 'UIEditorProject.uiproject')
+    UISetupModule.PreInitialize(None)
+    UISetupModule.Setup_Init()
 
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
 
-    with importlib.resources.open_text("resources.data", "LayoutToolBaseStyle.qss") as file:
-        app.setStyleSheet(file.read())
+    # with importlib.resources.open_text("resources.data", "LayoutToolBaseStyle.qss") as file:
+    #     app.setStyleSheet(file.read())
 
     DisplayWindow()
     sys.exit(app.exec_())
