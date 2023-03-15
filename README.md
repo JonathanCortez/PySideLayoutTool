@@ -1,8 +1,36 @@
 # Pyside Layout Tool
 
 Pyside Layout Tool is a python application built to help Technical Artist and Tool Developers to make quick clean 
-UI Layout to there supported application that has a python interpreter.
+parameter layout to there supported application that has a python interpreter.
 
+## Warning
+  Tool is still under development and is going to go through consent updates.
+   
+  ### Metadata Functions
+   
+   - ```name()``` : return string name of the parameter.
+   - ```label()``` : return string display name that is shown on layout.
+   - ```callback()``` : return string of script or empty string.
+   - ```type()``` : return namedtuple ```currentItem_name``` , ```currentItem_index```.
+   - ```disable_when()``` : return string of expression or empty string.
+   - ```hiden_when()``` : return string of expression or empty string.
+   - ```invisible()``` : return bool.
+   - ```eval()``` : return value of a parameter.
+   - ```set_value(value)```: set value for parameter.
+   
+ ### Parameter Functions
+  
+   - ```bNeighbor()``` : return bool parameter as another parameter next to it.
+   - ```default_value()``` : return string of default value of parameter.
+  
+  ### Folder Functions
+  
+   - ```tab_hide()```: return string of tab hide expression.
+   - ```tab_disable()``` : return string of tab disable expression.
+
+  ### Hide/Disable Expression
+    For an expression to work for a parameter e.g :( { parameter_name == 5 } ).
+    If you have experince with Houdini digital asset its the same format expression.
 
  ### Extending PySide Layout Tool
    1. Make new Dictionary in Plugins
@@ -112,3 +140,14 @@ UI Layout to there supported application that has a python interpreter.
         WidgetFactory.register('Demo Widget', WidgetDemoBuild)
    ```
   ![Screenshot (434)](https://user-images.githubusercontent.com/19835724/166815862-54a6afee-ef4d-4fe3-8d63-4d20d2cd9d22.png)
+
+# Known Issues 
+
+  - importing modules from text editor will fail depending on scope.
+    - text editor will be reworked completely with jedi or kite plugin. 
+    
+  ### Ramp
+    - Not all interpolation are yet implemented.
+    - Sometimes Ramp graph doesnt resize properly.
+    - Callback not implemented.
+    - Needs more testing.
