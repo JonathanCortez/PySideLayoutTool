@@ -32,7 +32,7 @@ parameter layout to there supported application that has a python interpreter.
     For an expression to work for a parameter e.g :( { parameter_name == 5 } ).
     If you have experince with Houdini digital asset its the same format expression.
     
-  ### Script Section
+  ### Script Callback
      
    - On Parameter/Folder Callback to work with script: ```ui.editor('Name of UI', 'Category Name').pyModule('Module Name').func()``` or
      ```self.pwd().pyModule('Module Name').func()```
