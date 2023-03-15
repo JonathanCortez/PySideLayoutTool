@@ -8,6 +8,7 @@ from abc import abstractmethod
 from . import StringValidatorClass, TemplateDataClass
 from .UIEditorProperty import ProcessUIProperties, UIProperty
 
+import PySideLayoutTool.UIEditorLib.UIFunctions as ui
 
 class CallbackObject(QObject):
     callback = Signal()

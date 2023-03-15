@@ -78,7 +78,7 @@ class FolderMultiListWidgetClass(LayoutTemplate.FolderSetup):
         self._layout.addWidget(self._folder_widget)
 
         self._folder_widget.add_button_widget().clicked.connect(self._new_widget)
-        self._folder_widget.remove_button_widget().clicked.connect(self._close_tab_change)
+        self._folder_widget.clear_button_widget().clicked.connect(self._close_tab_change)
 
     def _new_widget(self):
         self.notify_conditions()

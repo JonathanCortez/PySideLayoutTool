@@ -194,7 +194,7 @@ class TemplateData:
         current_layout = TemplateGroup()
         current_layout.setData(self)
         current_layout.setTemplateName('Root')
-        main_layout_win._widgets.clear()
+        main_layout_win.widget_layout().clear()
 
         if 'Root' in self._widget_groups:
             self.recursiveLayout(main_layout_win, 'Root', current_layout, self._widget_groups)
@@ -263,7 +263,7 @@ class TemplateData:
                 widget.templateGroup().setTemplateName(widget.name())
                 self.recursiveLayout(main_layout_win, widget.name(), widget.templateGroup(), widget_data)
 
-                if 'Multiparm'.find(widget.type().currentItem_name):
+                if 'Multiparm' in widget.type().currentItem_name:
                     for name in widget.templateGroup().templateGroupData():
                         main_layout_win.widget_layout().pop(name)
 
@@ -293,6 +293,7 @@ class TemplateData:
             self.final_process(widget)
             self.add_widget_to_layout_data(main_layout_win, widget)
 
+
     def final_process(self, widget):
         widget.PostUpdate()
         widget._setHidden_expression(self._conditionHandle(widget.hidden_when(), widget))
@@ -301,8 +302,9 @@ class TemplateData:
         if widget.invisible():
             widget._hidden_implementation(widget.invisible())
 
-    def add_widget_to_layout_data(self, layout_win, widget):
+    def add_widget_to_layout_data(self, layout_win, widget): # Adds widget that is going to be in layout to a dict in the Layout Window Class.
         layout_win.widget_layout()[widget.name()] = widget
+        # print(f' Name : {widget.name()} | widget : {widget}')
 
     def _conditionHandle(self, expression: str, widget_on):
         if expression != '':
@@ -349,7 +351,6 @@ class TemplateData:
 
                 call = '.'.join(split_expression[3:])
                 args = call[call.find("(") + 1:call.find(")")]
-                print(expression_path)
 
                 if args:
                     new_args = {}

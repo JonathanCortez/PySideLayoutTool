@@ -301,6 +301,8 @@ class FolderMultiTabList(QtWidgets.QWidget):
             self._frame_layout.removeItem(layout_item)
             del layout_item
 
+        self.last_widget_removed = self._folder_contents[0]
+
         self._contents_button.clear()
         self._folder_contents.clear()
 
@@ -327,6 +329,9 @@ class FolderMultiTabList(QtWidgets.QWidget):
 
     def remove_button_widget(self):
         return self._subButton
+
+    def clear_button_widget(self):
+        return self._clearButton
 
 
 

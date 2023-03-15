@@ -1,6 +1,7 @@
 from PySideLayoutTool.UIEditorLib import UIWindowManger
 from PySide2 import QtCore, QtWidgets
 
+
 class MainWindowLayout(QtWidgets.QMainWindow):
     def __init__(self, window_name: str):
         super(MainWindowLayout, self).__init__()
@@ -14,7 +15,7 @@ class MainWindowLayout(QtWidgets.QMainWindow):
         self._layout_name = window_name
         self._serialization_obj = None
 
-        self._widgets = {}
+        self._layout_widget_data = {}
 
         self._widget_ptr = QtWidgets.QWidget()
         self._scrollArea = QtWidgets.QScrollArea()
@@ -23,11 +24,10 @@ class MainWindowLayout(QtWidgets.QMainWindow):
 
         self._dock.setWidget(self._scrollArea)
 
-        self.addDockWidget(QtCore.Qt.TopDockWidgetArea,self._dock)
-
+        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self._dock)
 
     def widget_layout(self):
-        return self._widgets
+        return self._layout_widget_data
 
     def closeEvent(self, event) -> None:
         self._serialization_obj.write_commonData()
@@ -39,8 +39,8 @@ class MainWindowLayout(QtWidgets.QMainWindow):
         self._scrollArea.setWidget(self._widget_ptr)
         self.update()
 
-    def parm(self, name : str):
-        return self._widgets[name]
+    def parm(self, name: str):
+        return self._layout_widget_data[name]
 
     def templateLayout(self):
         return self._widget_ptr
@@ -50,4 +50,3 @@ class MainWindowLayout(QtWidgets.QMainWindow):
 
     def display(self):
         UIWindowManger.WindowsManger.WindowShow(self)
-
