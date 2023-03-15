@@ -31,6 +31,16 @@ parameter layout to there supported application that has a python interpreter.
   ### Hide/Disable Expression
     For an expression to work for a parameter e.g :( { parameter_name == 5 } ).
     If you have experince with Houdini digital asset its the same format expression.
+    
+  ### Script Section
+     
+   - On Parameter/Folder Callback to work with script: ```ui.editor('Name of UI', 'Category Name').pyModule('Module Name').func()``` or
+     ```self.pwd().pyModule('Module Name').func()```
+   - Special arguments that can be passed to invoked callback function:
+      - ```kwargs['parm']``` : return widget object the callback was invoked.
+      - ```kwargs['layout']``` : return parent layout window object.
+   - To get other parameter objects : ```ui.layout('Name of UI', 'Category Name').parm('parameter Name')```
+   
 
  ### Extending PySide Layout Tool
    1. Make new Dictionary in Plugins
