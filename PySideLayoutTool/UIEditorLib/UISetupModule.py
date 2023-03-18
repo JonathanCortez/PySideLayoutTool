@@ -29,14 +29,14 @@ def PreInitialize(func) -> None:
     else:
         app = QtWidgets.QApplication.instance()
 
-    with importlib.resources.open_text("resources.data", "LayoutToolBaseStyle.qss") as file:
+    with importlib.resources.open_text("PySideLayoutTool.resources.data", "LayoutToolBaseStyle.qss") as file:
         app.setStyleSheet(file.read())
 
-    package_path = importlib.util.find_spec('saved').submodule_search_locations[0]
+    package_path = importlib.util.find_spec('PySideLayoutTool.saved').submodule_search_locations[0]
     package_path = os.path.abspath(package_path)
     set_layout_file_save_root(package_path)
 
-    with importlib.resources.path("resources.data", "UIEditorProject.uiproject") as path:
+    with importlib.resources.path("PySideLayoutTool.resources.data", "UIEditorProject.uiproject") as path:
         with open(path) as file:
             data = json.load(file)
             load_modules(data['Modules'], False)
@@ -120,14 +120,17 @@ def load_modules(modules: List[str], bisPlugin) -> None:
             if not bool(module['Enable']):
                 continue
 
-            main_module = "Plugins." + main_module
+            main_module = "PySideLayoutTool.Plugins." + main_module
             uiplugin_path = module['Name']
             moduleLib = import_module(main_module)
             path = moduleLib.__file__.replace('__init__.py', f'{uiplugin_path}.uiplugin')
 
+
         else:
+            base_module = main_module
+            main_module = 'PySideLayoutTool.' + main_module
             moduleLib = import_module(main_module)
-            path = moduleLib.__file__.replace('__init__.py', f'{main_module}.uiplugin')
+            path = moduleLib.__file__.replace('__init__.py', f'{base_module}.uiplugin')
 
         with open(path) as file:
             data = json.load(file)

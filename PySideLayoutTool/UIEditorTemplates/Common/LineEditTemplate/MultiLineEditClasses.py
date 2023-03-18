@@ -25,11 +25,11 @@ class IntegerVector2Class(VectorClasses):
 
     def __init__(self,parent):
         super(IntegerVector2Class, self).__init__(parent)
-        self._v1 = LineEditWidgets.LineEditIntWidgetClass(self)
+        self._v1 = LineEditWidgets.LineEditIntWidgetClass(self, enable_switch_widget=True)
         x_hint_widget = self._v1.addHint('X')
         x_hint_widget.setProperty('class', 'x_property')
 
-        self._v2 = LineEditWidgets.LineEditIntWidgetClass(self)
+        self._v2 = LineEditWidgets.LineEditIntWidgetClass(self, enable_switch_widget=True)
         y_hint_widget = self._v2.addHint('Y')
         y_hint_widget.setProperty('class', 'y_property')
 
@@ -40,8 +40,8 @@ class IntegerVector2Class(VectorClasses):
         self._hor_layout.addWidget(self._v1)
         self._hor_layout.addWidget(self._v2)
 
-        self._v1.baseWidget().valueChanged.connect(self._v1_change)
-        self._v2.baseWidget().valueChanged.connect(self._v2_change)
+        self._v1.base_widget().valueChanged.connect(self._v1_change)
+        self._v2.base_widget().valueChanged.connect(self._v2_change)
 
     def _v1_change(self, arg):
         self._value1 = arg
@@ -60,19 +60,19 @@ class IntegerVector2Class(VectorClasses):
         self._v1.setValue(self.clampRange().min)
         self._v2.setValue(self.clampRange().min)
 
-        self._parent._widgets[self.name() + '_x'] = self._v1
-        self._parent._widgets[self.name() + '_y'] = self._v2
+        self._parent._layout_widget_data[self.name() + '_x'] = self._v1
+        self._parent._layout_widget_data[self.name() + '_y'] = self._v2
 
     def eval(self):
         return self._value
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         value = list(value)
         self._value1 = int(value[0])
         self._value2 = int(value[1])
 
-        self._v1.baseWidget().setValue(self._value1)
-        self._v2.baseWidget().setValue(self._value2)
+        self._v1.base_widget().setValue(self._value1)
+        self._v2.base_widget().setValue(self._value2)
 
 
 
@@ -80,7 +80,7 @@ class IntegerVector3Class(IntegerVector2Class):
 
     def __init__(self,parent):
         super(IntegerVector3Class, self).__init__(parent)
-        self._v3 = LineEditWidgets.LineEditIntWidgetClass(self)
+        self._v3 = LineEditWidgets.LineEditIntWidgetClass(self, enable_switch_widget=True)
         x_hint_widget = self._v3.addHint('Z')
         x_hint_widget.setProperty('class', 'z_property')
 
@@ -90,7 +90,7 @@ class IntegerVector3Class(IntegerVector2Class):
 
         self._hor_layout.addWidget(self._v3)
 
-        self._v3.baseWidget().valueChanged.connect(self._v3_change)
+        self._v3.base_widget().valueChanged.connect(self._v3_change)
 
     def _v3_change(self,arg):
         self._value3 = arg
@@ -103,27 +103,27 @@ class IntegerVector3Class(IntegerVector2Class):
 
         self._v3.setValue(self.clampRange().min)
 
-        self._parent._widgets[self.name() + '_z'] = self._v3
+        self._parent._layout_widget_data[self.name() + '_z'] = self._v3
 
     def eval(self):
         return self._value
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         value = list(value)
         self._value1 = int(value[0])
         self._value2 = int(value[1])
         self._value3 = int(value[2])
 
-        self._v1.baseWidget().setValue(self._value1)
-        self._v2.baseWidget().setValue(self._value2)
-        self._v3.baseWidget().setValue(self._value3)
+        self._v1.base_widget().setValue(self._value1)
+        self._v2.base_widget().setValue(self._value2)
+        self._v3.base_widget().setValue(self._value3)
 
 
 class IntegerVector4Class(IntegerVector3Class):
 
     def __init__(self,parent):
         super(IntegerVector4Class, self).__init__(parent)
-        self._v4 = LineEditWidgets.LineEditIntWidgetClass(self)
+        self._v4 = LineEditWidgets.LineEditIntWidgetClass(self, enable_switch_widget=True)
         self._v4.addHint('W')
 
         self._value4 = 0
@@ -132,7 +132,7 @@ class IntegerVector4Class(IntegerVector3Class):
 
         self._hor_layout.addWidget(self._v4)
 
-        self._v4.baseWidget().valueChanged.connect(self._v4_change)
+        self._v4.base_widget().valueChanged.connect(self._v4_change)
 
 
     def _v4_change(self, arg):
@@ -146,23 +146,22 @@ class IntegerVector4Class(IntegerVector3Class):
 
         self._v4.setValue(self.clampRange().min)
 
-        self._parent._widgets[self.name() + '_w'] = self._v4
+        self._parent._layout_widget_data[self.name() + '_w'] = self._v4
 
     def eval(self):
         return self._value
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         value = list(value)
         self._value1 = int(value[0])
         self._value2 = int(value[1])
         self._value3 = int(value[2])
         self._value4 = int(value[3])
 
-
-        self._v1.baseWidget().setValue(self._value1)
-        self._v2.baseWidget().setValue(self._value2)
-        self._v3.baseWidget().setValue(self._value3)
-        self._v4.baseWidget().setValue(self._value4)
+        self._v1.base_widget().setValue(self._value1)
+        self._v2.base_widget().setValue(self._value2)
+        self._v3.base_widget().setValue(self._value3)
+        self._v4.base_widget().setValue(self._value4)
 
 
 #------------------------------------------------------------------------------------------------------------
@@ -171,11 +170,11 @@ class FloatVector2Class(VectorClasses):
 
     def __init__(self,parent):
         super(FloatVector2Class, self).__init__(parent)
-        self._v1 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1)
+        self._v1 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1, enable_switch_widget=True)
         x_hint_widget = self._v1.addHint('X')
         x_hint_widget.setProperty('class', 'x_property')
 
-        self._v2 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1)
+        self._v2 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1, enable_switch_widget=True)
         y_hint_widget = self._v2.addHint('Y')
         y_hint_widget.setProperty('class', 'y_property')
 
@@ -186,8 +185,8 @@ class FloatVector2Class(VectorClasses):
         self._hor_layout.addWidget(self._v1)
         self._hor_layout.addWidget(self._v2)
 
-        self._v1.baseWidget().valueChanged.connect(self._v1_change)
-        self._v2.baseWidget().valueChanged.connect(self._v2_change)
+        self._v1.base_widget().valueChanged.connect(self._v1_change)
+        self._v2.base_widget().valueChanged.connect(self._v2_change)
 
     def _v1_change(self, arg):
         self._value1 = arg
@@ -206,26 +205,29 @@ class FloatVector2Class(VectorClasses):
         self._v1.setValue(self.clampRange().min * 1000000.0)
         self._v2.setValue(self.clampRange().min * 1000000.0)
 
-        self._parent._widgets[self.name() + '_x'] = self._v1
-        self._parent._widgets[self.name() + '_y'] = self._v2
+        self._v1.setRange(self.clampRange().min, self.clampRange().max)
+        self._v2.setRange(self.clampRange().min, self.clampRange().max)
+
+        self._parent._layout_widget_data[self.name() + '_x'] = self._v1
+        self._parent._layout_widget_data[self.name() + '_y'] = self._v2
 
     def eval(self):
         return self._value
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         value = list(value)
         self._value1 = float(value[0])
         self._value2 = float(value[1])
 
-        self._v1.baseWidget().setValue(self._value1)
-        self._v2.baseWidget().setValue(self._value2)
+        self._v1.base_widget().setValue(self._value1)
+        self._v2.base_widget().setValue(self._value2)
 
 
 class FloatVector3Class(FloatVector2Class):
 
     def __init__(self,parent):
         super(FloatVector3Class, self).__init__(parent)
-        self._v3 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1)
+        self._v3 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1, enable_switch_widget=True)
         x_hint_widget = self._v3.addHint('Z')
         x_hint_widget.setProperty('class', 'z_property')
 
@@ -235,9 +237,9 @@ class FloatVector3Class(FloatVector2Class):
 
         self._hor_layout.addWidget(self._v3)
 
-        self._parent._widgets[self.name() + '_z'] = self._v3
+        self._parent._layout_widget_data[self.name() + '_z'] = self._v3
 
-        self._v3.baseWidget().valueChanged.connect(self._v3_change)
+        self._v3.base_widget().valueChanged.connect(self._v3_change)
 
     def _v3_change(self, arg):
         self._value3 = arg
@@ -250,21 +252,21 @@ class FloatVector3Class(FloatVector2Class):
 
         self._v3.setValue(self.clampRange().min * 1000000.0)
 
-        self._parent._widgets[self.name() + '_z'] = self._v3
+        self._parent._layout_widget_data[self.name() + '_z'] = self._v3
 
     def eval(self):
         return self._value
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         value = list(value)
         self._value1 = float(value[0])
         self._value2 = float(value[1])
         self._value3 = float(value[2])
 
 
-        self._v1.baseWidget().setValue(self._value1)
-        self._v2.baseWidget().setValue(self._value2)
-        self._v3.baseWidget().setValue(self._value3)
+        self._v1.base_widget().setValue(self._value1)
+        self._v2.base_widget().setValue(self._value2)
+        self._v3.base_widget().setValue(self._value3)
 
 
 
@@ -272,7 +274,7 @@ class FloatVector4Class(FloatVector3Class):
 
     def __init__(self,parent):
         super(FloatVector4Class, self).__init__(parent)
-        self._v4 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1)
+        self._v4 = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1, enable_switch_widget=True)
         self._v4.addHint('W')
 
         self._value4 = 0.0
@@ -281,7 +283,7 @@ class FloatVector4Class(FloatVector3Class):
 
         self._hor_layout.addWidget(self._v4)
 
-        self._v4.baseWidget().valueChanged.connect(self._v4_change)
+        self._v4.base_widget().valueChanged.connect(self._v4_change)
 
     def _v4_change(self, arg):
         self._value4 = arg
@@ -294,22 +296,22 @@ class FloatVector4Class(FloatVector3Class):
 
         self._v4.setValue(self.clampRange().min * 1000000.0)
 
-        self._parent._widgets[self.name() + '_w'] = self._v4
+        self._parent._layout_widget_data[self.name() + '_w'] = self._v4
 
     def eval(self):
         return self._value
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         value = list(value)
         self._value1 = float(value[0])
         self._value2 = float(value[1])
         self._value3 = float(value[2])
         self._value4 = float(value[3])
 
-        self._v1.baseWidget().setValue(self._value1)
-        self._v2.baseWidget().setValue(self._value2)
-        self._v3.baseWidget().setValue(self._value3)
-        self._v4.baseWidget().setValue(self._value4)
+        self._v1.base_widget().setValue(self._value1)
+        self._v2.base_widget().setValue(self._value2)
+        self._v3.base_widget().setValue(self._value3)
+        self._v4.base_widget().setValue(self._value4)
 
 
 #----------------------------------------------------------------------------------------------------

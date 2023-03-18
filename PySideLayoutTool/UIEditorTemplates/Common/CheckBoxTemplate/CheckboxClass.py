@@ -19,7 +19,7 @@ class CheckClass(LayoutTemplate.ParmSetup):
         self._state = state
         self.notify_expressions()
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         self._state = value
         self._checkbox.setChecked(bool(value))
 

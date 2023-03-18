@@ -27,7 +27,7 @@ class ComboBoxSetupClass(LayoutTemplate.ParmSetup):
     def eval(self):
         return self._current_index
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         self._combo_widget.setItem(int(value))
 
     def PostUpdate(self):

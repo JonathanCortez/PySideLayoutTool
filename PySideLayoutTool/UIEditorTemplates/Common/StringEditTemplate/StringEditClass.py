@@ -46,7 +46,7 @@ class StringClass(LayoutTemplate.ParmSetup):
 
         return self._textbox.string_widget().text()
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         if self.is_multi_line_string():
             self._textbox.insertPlainText(str(value))
         else:

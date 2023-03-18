@@ -1,13 +1,32 @@
 from setuptools import setup, find_packages
 
 setup(name='pysidelayouttool',
-      version='0.1.7',
+      version='0.1.15',
       description='A pyside2 parameter layout tool/application.',
       url='https://github.com/JonathanCortez/PySideLayoutTool',
       author='Jonathan Cortez',
       author_email='jonathancdev@outlook.com',
       license='LGPL-3.0',
-      install_requires=['PySide2', 'numpy'],
-      package_data={'PySideLayoutTool.resources': ['data/*.uiproject', 'data/*.css', 'data/*.qss', 'Icons/*.svg'], 'PySideLayoutTool.UIEditorTemplates' : ['*.uiplugin']},
-      packages=find_packages()
+      install_requires=['PySide2'],
+      package_data={'PySideLayoutTool.resources': ['data/*.uiproject', 'data/*.css', 'data/*.qss', 'Icons/*.svg'],
+                    'PySideLayoutTool.UIEditorTemplates': ['*.uiplugin']},
+      packages=find_packages(),
+      classifiers=[
+          'Development Status :: 3 - Alpha',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
+          'Natural Language :: English',
+          'Operating System :: Microsoft :: Windows',
+          'Operating System :: Microsoft :: Windows :: Windows 11',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.4',
+          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.7',
+          'Programming Language :: Python :: 3.8',
+          'Programming Language :: Python :: 3.9',
+          'Programming Language :: Python :: 3.10',
+          'Topic :: Software Development :: Libraries :: Python Modules',
+          'Topic :: Software Development :: User Interfaces'
+      ],
       )

@@ -21,7 +21,7 @@ class FileWidgetSetupClass(LayoutTemplate.ParmSetup):
     def eval(self):
         return self._file_value
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         self._file_value = value
         self._file_widget.set_text_value(value)
 

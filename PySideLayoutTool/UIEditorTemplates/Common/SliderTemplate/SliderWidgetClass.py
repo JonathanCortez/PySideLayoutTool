@@ -50,7 +50,7 @@ class FloatSliderWidget(SliderWidget):
 
     def __init__(self):
         super(FloatSliderWidget, self).__init__()
-        self.boxEdit = LineEditWidgets.LineEditFloatWidgetClass(parent=self)
+        self.boxEdit = LineEditWidgets.LineEditFloatWidgetClass(parent=self, steps=0.1)
         self.boxEdit.setMinimumWidth(35)
         self.boxEdit.setMaximumWidth(35)
 
@@ -61,16 +61,19 @@ class FloatSliderWidget(SliderWidget):
         self.boxEdit._digital_widget.valueChanged.connect(self._wheel_set_box_value)
 
 
+    def set_slider_value(self, value):
+        self.slider.setValue(int(1000000.0 * value))
+
     def setValue(self, value):
         self.boxEdit.setValue(value)
         self.slider.setValue(int(value * self._max))
 
 
-    def _set_slider_value(self, value):
+    def _set_slider_value(self, value, override=False):
         if self._slider_block:
             if self._value != value:
                 self._boxedit_block = False
-                self._value = float(self.clamp(value, int(0  * 1000000.0), int(1 * 1000000.0)) / 1000000.0)
+                self._value = float(self.clamp(value, int(self._min  * 1000000.0), int(self._max * 1000000.0)) / 1000000.0)
                 self.boxEdit.setValue(round(self._value, 3))
                 self._boxedit_block = True
 
@@ -105,13 +108,15 @@ class IntSliderWidget(SliderWidget):
         self.boxEdit._digital_widget.editingFinished.connect(self._set_box_value)
         self.boxEdit._digital_widget.valueChanged.connect(self._wheel_set_box_value)
 
+    def set_slider_value(self, value):
+        self.slider.setValue(value)
 
     def setValue(self, value):
         self.boxEdit.setValue(value)
         self.slider.setValue(int(value))
 
 
-    def _set_slider_value(self, value):
+    def _set_slider_value(self, value, override=False):
         if self._slider_block:
             if self._value != value:
                 self._boxedit_block = False
@@ -129,9 +134,12 @@ class IntSliderWidget(SliderWidget):
 
     def _wheel_set_box_value(self):
         if self.boxEdit.wheelState():
-            self._slider_block = False
-            self._boxedit_block = False
-            self._value = self._slider_widget.boxEdit.value()
+            self._value = self.boxEdit.value()
             self.slider.setValue(self._value)
-            self._slider_block = True
-            self._boxedit_block = True
+        # if self.boxEdit.wheelState():
+        #     self._slider_block = False
+        #     self._boxedit_block = False
+        #     self._value = self._slider_widget.boxEdit.value()
+        #     self.slider.setValue(self._value)
+        #     self._slider_block = True
+        #     self._boxedit_block = True

@@ -22,7 +22,7 @@ class RampSetupClass(LayoutTemplate.ParmSetup):
     def PostUpdate(self):
         self._ramp_widget.label(self.label())
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         value = ast.literal_eval(value)
         positions = list(map(int, list(value['positions'])))
         values = list(map(int, list(value['values'])))

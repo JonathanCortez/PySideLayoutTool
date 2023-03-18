@@ -21,9 +21,9 @@ class CheckProperty(IWidgetProperties):
         self._markState = True if arg == 2 else False
 
     def setValue(self,value):
-        self._checkbox.setChecked(value)
+        self._checkbox.setChecked(bool(value))
 
-    def value(self):
+    def value(self) -> bool:
         return self._checkbox.isChecked()
 
 

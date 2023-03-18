@@ -518,8 +518,8 @@ class PointNumWidget(QtWidgets.QWidget):
         self._layout.setAlignment(QtCore.Qt.AlignLeft)
 
         self._index_widget = LineEditWidgets.LineEditIntWidgetClass(no_num_button=False)
-        self._index_widget.baseWidget().setToolTip('Mouse wheel to change Selection.')
-        self._index_widget.baseWidget().setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
+        self._index_widget.base_widget().setToolTip('Mouse wheel to change Selection.')
+        self._index_widget.base_widget().setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
 
 
         self._add_button = QtWidgets.QPushButton('+')
@@ -546,7 +546,7 @@ class PointNumWidget(QtWidgets.QWidget):
 
         self._add_button.pressed.connect(self.add_point)
         self._sub_button.pressed.connect(self.remove_point)
-        self._index_widget.baseWidget().valueChanged.connect(self.updateSelection)
+        self._index_widget.base_widget().valueChanged.connect(self.updateSelection)
 
     def controllerParent(self):
         return self._other_parent

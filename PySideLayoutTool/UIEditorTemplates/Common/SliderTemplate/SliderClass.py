@@ -25,7 +25,7 @@ class SliderTemplateClass(LayoutTemplate.ParmSetup):
         return self._value
 
     @abstractmethod
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         pass
 
     @abstractmethod
@@ -33,7 +33,7 @@ class SliderTemplateClass(LayoutTemplate.ParmSetup):
         """ Give parameter set of values. """
 
     @abstractmethod
-    def _set_slider_value(self, value):
+    def _set_slider_value(self, value, override=False):
         """ Set Text to Slider value."""
         self.notify_expressions()
 
@@ -56,7 +56,7 @@ class IntegerSliderClass(SliderTemplateClass):
     def clampRange(self):
         pass
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         self._value = int(value)
         self._set_slider_value(self._value)
 
@@ -71,7 +71,7 @@ class IntegerSliderClass(SliderTemplateClass):
         self._slider_widget.boxEdit.setValue(self._value)
 
 
-    def _set_slider_value(self, value):
+    def _set_slider_value(self, value, override=False):
         if self._slider_widget._slider_block:
             if self._value != value:
                 self._slider_widget._boxedit_block = False
@@ -112,7 +112,7 @@ class FloatSliderClass(SliderTemplateClass):
     def clampRange(self):
         pass
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         self._value = float(value)
         self._set_slider_value(self._value)
 
@@ -125,7 +125,7 @@ class FloatSliderClass(SliderTemplateClass):
         self._slider_widget.boxEdit.setValue(float(self._value))
 
 
-    def _set_slider_value(self, value):
+    def _set_slider_value(self, value, override=False):
         if self._slider_widget._slider_block:
             if self._value != value:
                 self._slider_widget._boxedit_block = False

@@ -477,8 +477,7 @@ class TemplateSerialization:
             for i in self._current_data_base.display_groups()[key_display]:
                 property_dict = {}
                 for widget_property in i.Properties():
-                    property_dict[widget_property] = i.Properties()[widget_property].value() if i.Properties()[
-                        widget_property].value() else 'None'
+                    property_dict[widget_property] = i.Properties()[widget_property].value()
 
                 property_list.append(property_dict)
 
@@ -500,10 +499,17 @@ class TemplateSerialization:
 
             self._built_data['Py_Modules'] = py_modules
 
+    def _set_type_value(self, value):
+        if type(value) == bool:
+            return bool(value)
+        else:
+            return 'None'
+
     def writeData(self, key_name: str, value_data: Any):
         self._built_data[key_name] = value_data
 
     def save_data(self, force_save=False):
         if not os.path.exists(self._path) or force_save:
             with open(self._path, 'wb') as currentFile:
+                print(self._built_data)
                 pickle.dump(self._built_data, currentFile, protocol=pickle.HIGHEST_PROTOCOL)

@@ -41,17 +41,17 @@ class ColorSetupClass(LayoutTemplate.ParmSetup):
         self._hor_layout.addWidget(self._g)
         self._hor_layout.addWidget(self._b)
 
-        self._r.baseWidget().valueChanged.connect(self._color_button.colorPickerWidget()._colorEdited)
-        self._g.baseWidget().valueChanged.connect(self._color_button.colorPickerWidget()._colorEdited)
-        self._b.baseWidget().valueChanged.connect(self._color_button.colorPickerWidget()._colorEdited)
+        self._r.base_widget().valueChanged.connect(self._color_button.colorPickerWidget()._colorEdited)
+        self._g.base_widget().valueChanged.connect(self._color_button.colorPickerWidget()._colorEdited)
+        self._b.base_widget().valueChanged.connect(self._color_button.colorPickerWidget()._colorEdited)
 
-        self._r.baseWidget().valueChanged.connect(self._color_changed)
-        self._g.baseWidget().valueChanged.connect(self._color_changed)
-        self._b.baseWidget().valueChanged.connect(self._color_changed)
+        self._r.base_widget().valueChanged.connect(self._color_changed)
+        self._g.base_widget().valueChanged.connect(self._color_changed)
+        self._b.base_widget().valueChanged.connect(self._color_changed)
 
         if self._alpha:
-            self._alpha.baseWidget().valueChanged.connect(self._color_button.colorPickerWidget()._colorEdited)
-            self._alpha.baseWidget().valueChanged.connect(self._color_changed)
+            self._alpha.base_widget().valueChanged.connect(self._color_button.colorPickerWidget()._colorEdited)
+            self._alpha.base_widget().valueChanged.connect(self._color_changed)
             self._hor_layout.addWidget(self._alpha)
 
         self._layout.addLayout(self._hor_layout)

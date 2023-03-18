@@ -46,7 +46,7 @@ class UISetupWin(QtWidgets.QDialog):
     def check_name(self):
         new_name = StringValidatorClass.checkString(self._UI_name.text())
         self._UI_name.setText(new_name)
-        full_name_path = UIWindowManger.WindowsManger.root_save() + f'/{new_name}'
+        full_name_path = UIWindowManger.WindowsManger.root_save() + f'/{new_name}.qui'
         self._path_str.setText(full_name_path)
         self._save_path = full_name_path
 

@@ -200,7 +200,7 @@ class EditorsMediator(Mediator):
         if 'Default' in property_data:
             if not property_data['Default']:
                 if data['Values'][key_in][index] != property_data['Default']:
-                    builder.newWidget().set_value(data['Values'][key_in][index])
+                    builder.newWidget().set_value(data['Values'][key_in][index], override=True)
 
         return builder
 

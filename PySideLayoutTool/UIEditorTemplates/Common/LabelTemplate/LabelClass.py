@@ -17,7 +17,7 @@ class LabelSetupClass(LayoutTemplate.ParmSetup):
     def eval(self):
         return self._label_widget.text()
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         self._label_widget.setText(str(value))
 
 

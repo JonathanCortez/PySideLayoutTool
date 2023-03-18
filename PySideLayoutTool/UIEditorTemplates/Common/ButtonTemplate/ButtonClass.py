@@ -114,7 +114,7 @@ class RGBAButtonWidgetSetup(LayoutTemplate.ParmSetup):
         self._button_widget._a_button_widget.setToolTip('Alpha')
         self._button_widget._a_button_widget.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
 
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         pass
 
 

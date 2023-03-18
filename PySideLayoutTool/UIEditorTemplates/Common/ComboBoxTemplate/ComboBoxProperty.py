@@ -35,6 +35,7 @@ class ComboBoxProperty(IWidgetProperties):
 
     def setItems(self, items):
         self._items = items
+        self._combo_widget._combo_box.clear()
         self._combo_widget._combo_box.addItems(items)
 
     def _comboChanged(self, arg__1):
