@@ -511,5 +511,4 @@ class TemplateSerialization:
     def save_data(self, force_save=False):
         if not os.path.exists(self._path) or force_save:
             with open(self._path, 'wb') as currentFile:
-                print(self._built_data)
                 pickle.dump(self._built_data, currentFile, protocol=pickle.HIGHEST_PROTOCOL)
