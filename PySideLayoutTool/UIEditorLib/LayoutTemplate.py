@@ -93,6 +93,10 @@ class WidgetSetup(QtWidgets.QWidget):
 
     def callback_func(self):
         if hasattr(self, '__code_obj__'):
+            if hasattr(self, '__import_modules__'):
+                for module_str in getattr(self,'__import_modules__'):
+                    exec(module_str, globals(), globals())
+
             exec(compile(getattr(self, '__code_obj__'), 'Script', 'exec'), globals(), locals())
             if hasattr(self, '__call_obj__'):
                 if hasattr(self, '__call_args__'):
@@ -234,6 +238,10 @@ class WidgetSetup(QtWidgets.QWidget):
     def set_value(self, value, override=False):
         """ set value for parameter """
 
+    @abstractmethod
+    def set_saved_value(self, value):
+        """ last saved value when layout closed/saved. """
+
 
 class ParmSetup(WidgetSetup):
 
@@ -248,6 +256,10 @@ class ParmSetup(WidgetSetup):
     @abstractmethod
     def set_value(self, value, override=False):
         """ set value for parameter """
+
+    @abstractmethod
+    def set_saved_value(self, value):
+        """ last saved value when layout closed/saved. """
 
 
 class FolderSetup(WidgetSetup):
@@ -274,7 +286,7 @@ class FolderSetup(WidgetSetup):
         pass
 
     @abstractmethod
-    def set_value(self, value):
+    def set_value(self, value, override=False):
         """ set value for parameter """
 
     @abstractmethod
@@ -284,6 +296,10 @@ class FolderSetup(WidgetSetup):
     @abstractmethod
     def setTabDisable(self, state: bool):
         """ Implementation for disabling tab group """
+
+    @abstractmethod
+    def set_saved_value(self, value):
+        """ last saved value when layout closed/saved. """
 
     def PostUpdate(self):
         pass

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='pysidelayouttool',
-      version='0.1.15',
+      version='0.1.17',
       description='A pyside2 parameter layout tool/application.',
       url='https://github.com/JonathanCortez/PySideLayoutTool',
       author='Jonathan Cortez',

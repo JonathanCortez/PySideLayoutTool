@@ -62,7 +62,7 @@ class IntegerSliderClass(SliderTemplateClass):
 
     def PostUpdate(self):
         super(IntegerSliderClass, self).PostUpdate()
-        self._value = int(self.clampRange().min)
+        self._value = int(self._value)
         self._slider_widget.slider.setRange(self.clampRange().min, self.clampRange().max)
         self._slider_widget.slider.setValue(self._value)
         self._slider_widget.slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
@@ -118,7 +118,7 @@ class FloatSliderClass(SliderTemplateClass):
 
     def PostUpdate(self):
         super(FloatSliderClass, self).PostUpdate()
-        self._value = float(self.clampRange().min)
+        self._value = float(self._value)
         self._slider_widget.slider.setRange(int(self.clampRange().min * 1000000.0),int(self.clampRange().max * 1000000.0))
         self._slider_widget.slider.setValue(int(self._value * 1000000.0))
         self._slider_widget.boxEdit.setRange(float(self.clampRange().min) if self.clampRange().minLock else -1000000.0, float(self.clampRange().max) if self.clampRange().maxLock else 1000000.0)

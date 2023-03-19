@@ -294,6 +294,7 @@ class TemplateData:
             self.add_widget_to_layout_data(main_layout_win, widget)
 
 
+
     def final_process(self, widget):
         widget.PostUpdate()
         widget._setHidden_expression(self._conditionHandle(widget.hidden_when(), widget))
@@ -365,6 +366,14 @@ class TemplateData:
                 code = eval(expression)
 
                 if code:
+                    import_modules = []
+                    for item in code.split("\n"):
+                        if "import" in item:
+                            import_modules.append(item.strip())
+
+                    if import_modules:
+                        setattr(widget_obj,'__import_modules__', import_modules)
+
                     setattr(widget_obj, '__code_obj__', code)
                     setattr(widget_obj, '__call_obj__', call)
                     if args:
