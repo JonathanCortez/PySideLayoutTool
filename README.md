@@ -152,9 +152,6 @@ parameter layout to there supported application that has a python interpreter.
   ![Screenshot (434)](https://user-images.githubusercontent.com/19835724/166815862-54a6afee-ef4d-4fe3-8d63-4d20d2cd9d22.png)
 
 # Known Issues 
-
-  - importing modules from text editor will fail depending on scope.
-    - text editor will be reworked completely with jedi or kite plugin. 
     
   ### Ramp
     - Not all interpolation are yet implemented.
