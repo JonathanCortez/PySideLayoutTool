@@ -49,10 +49,13 @@ def PostInitialize() -> None:
     for file in glob.glob("*.qui"):
         full_path = path + f'/{file}'
         with open(full_path, 'rb') as uiFile:
-            data = pickle.load(uiFile)
-            WindowsManger.initilize_windows(data['Name'], full_path, data['Category'])
-            WindowsManger.restoreState(data)
-            uiFile.close()
+            try:
+                data = pickle.load(uiFile)
+                WindowsManger.initilize_windows(data['Name'], full_path, data['Category'])
+                WindowsManger.restoreState(data)
+                uiFile.close()
+            except:
+                print(f'File : {uiFile} as failed.')
 
 
 def set_layout_file_save_root(file_dir):

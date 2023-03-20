@@ -34,8 +34,8 @@ class IntegerVector2Class(VectorClasses):
         y_hint_widget.setProperty('class', 'y_property')
 
         self._value1, self._value2 = 0, 0
-        value_tuple = namedtuple('Value',['x', 'y'])
-        self._value = value_tuple(self._value1, self._value2)
+        # value_tuple = namedtuple('Value',['x', 'y'])
+        # self._value = value_tuple(self._value1, self._value2)
 
         self._hor_layout.addWidget(self._v1)
         self._hor_layout.addWidget(self._v2)
@@ -57,17 +57,16 @@ class IntegerVector2Class(VectorClasses):
         self._v1.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
         self._v2.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
 
-        self._v1.setValue(self.clampRange().min)
-        self._v2.setValue(self.clampRange().min)
+        # self._v1.setValue(self.clampRange().min)
+        # self._v2.setValue(self.clampRange().min)
 
         self._parent._layout_widget_data[self.name() + '_x'] = self._v1
         self._parent._layout_widget_data[self.name() + '_y'] = self._v2
 
     def eval(self):
-        return self._value
+        return self._value1, self._value2
 
     def set_value(self, value, override=False):
-        value = list(value)
         self._value1 = int(value[0])
         self._value2 = int(value[1])
 
@@ -85,8 +84,8 @@ class IntegerVector3Class(IntegerVector2Class):
         x_hint_widget.setProperty('class', 'z_property')
 
         self._value3 = 0
-        value_tuple = namedtuple('Value', ['x', 'y', 'z'])
-        self._value = value_tuple(self._value1, self._value2, self._value3)
+        # value_tuple = namedtuple('Value', ['x', 'y', 'z'])
+        # self._value = value_tuple(self._value1, self._value2, self._value3)
 
         self._hor_layout.addWidget(self._v3)
 
@@ -101,15 +100,14 @@ class IntegerVector3Class(IntegerVector2Class):
         self._v3.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_z'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_z'}<B></p>")
         self._v3.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
 
-        self._v3.setValue(self.clampRange().min)
-
+        # self._v3.setValue(self.clampRange().min)
+        self._v3.setRange(self.clampRange().min, self.clampRange().max)
         self._parent._layout_widget_data[self.name() + '_z'] = self._v3
 
     def eval(self):
-        return self._value
+        return self._value1, self._value2, self._value3
 
     def set_value(self, value, override=False):
-        value = list(value)
         self._value1 = int(value[0])
         self._value2 = int(value[1])
         self._value3 = int(value[2])
@@ -127,8 +125,8 @@ class IntegerVector4Class(IntegerVector3Class):
         self._v4.addHint('W')
 
         self._value4 = 0
-        value_tuple = namedtuple('Value', ['x', 'y', 'z','w'])
-        self._value = value_tuple(self._value1, self._value2, self._value3, self._value4)
+        # value_tuple = namedtuple('Value', ['x', 'y', 'z','w'])
+        # self._value = value_tuple(self._value1, self._value2, self._value3, self._value4)
 
         self._hor_layout.addWidget(self._v4)
 
@@ -144,15 +142,14 @@ class IntegerVector4Class(IntegerVector3Class):
         self._v4.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_w'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_w'}<B></p>")
         self._v4.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
 
-        self._v4.setValue(self.clampRange().min)
-
+        # self._v4.setValue(self.clampRange().min)
+        self._v4.setRange(self.clampRange().min, self.clampRange().max)
         self._parent._layout_widget_data[self.name() + '_w'] = self._v4
 
     def eval(self):
-        return self._value
+        return self._value1, self._value2, self._value3, self._value4
 
     def set_value(self, value, override=False):
-        value = list(value)
         self._value1 = int(value[0])
         self._value2 = int(value[1])
         self._value3 = int(value[2])
@@ -179,8 +176,8 @@ class FloatVector2Class(VectorClasses):
         y_hint_widget.setProperty('class', 'y_property')
 
         self._value1, self._value2 = 0.0, 0.0
-        value_tuple = namedtuple('Value',['x', 'y'])
-        self._value = value_tuple(self._value1, self._value2)
+        # value_tuple = namedtuple('Value',['x', 'y'])
+        # self._value = value_tuple(self._value1, self._value2)
 
         self._hor_layout.addWidget(self._v1)
         self._hor_layout.addWidget(self._v2)
@@ -202,20 +199,22 @@ class FloatVector2Class(VectorClasses):
         self._v1.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
         self._v2.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
 
-        self._v1.setValue(self.clampRange().min * 1000000.0)
-        self._v2.setValue(self.clampRange().min * 1000000.0)
+        # self._v1.setValue(self.clampRange().min * 1000000.0)
+        # self._v2.setValue(self.clampRange().min * 1000000.0)
 
         self._v1.setRange(self.clampRange().min, self.clampRange().max)
         self._v2.setRange(self.clampRange().min, self.clampRange().max)
+
+        self._v1.base_widget().setValue(self._value1)
+        self._v2.base_widget().setValue(self._value2)
 
         self._parent._layout_widget_data[self.name() + '_x'] = self._v1
         self._parent._layout_widget_data[self.name() + '_y'] = self._v2
 
     def eval(self):
-        return self._value
+        return self._value1, self._value2
 
     def set_value(self, value, override=False):
-        value = list(value)
         self._value1 = float(value[0])
         self._value2 = float(value[1])
 
@@ -232,8 +231,8 @@ class FloatVector3Class(FloatVector2Class):
         x_hint_widget.setProperty('class', 'z_property')
 
         self._value3 = 0.0
-        value_tuple = namedtuple('Value', ['x', 'y', 'z'])
-        self._value = value_tuple(self._value1, self._value2, self._value3)
+        # value_tuple = namedtuple('Value', ['x', 'y', 'z'])
+        # self._value = value_tuple(self._value1, self._value2, self._value3)
 
         self._hor_layout.addWidget(self._v3)
 
@@ -250,19 +249,18 @@ class FloatVector3Class(FloatVector2Class):
         self._v3.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_z'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_z'}<B></p>")
         self._v3.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
 
-        self._v3.setValue(self.clampRange().min * 1000000.0)
+        self._v3.setRange(self.clampRange().min, self.clampRange().max)
+        self._v3.base_widget().setValue(self._value3)
 
         self._parent._layout_widget_data[self.name() + '_z'] = self._v3
 
     def eval(self):
-        return self._value
+        return self._value1, self._value2, self._value3
 
     def set_value(self, value, override=False):
-        value = list(value)
         self._value1 = float(value[0])
         self._value2 = float(value[1])
         self._value3 = float(value[2])
-
 
         self._v1.base_widget().setValue(self._value1)
         self._v2.base_widget().setValue(self._value2)
@@ -278,8 +276,8 @@ class FloatVector4Class(FloatVector3Class):
         self._v4.addHint('W')
 
         self._value4 = 0.0
-        value_tuple = namedtuple('Value', ['x', 'y', 'z','w'])
-        self._value = value_tuple(self._value1, self._value2, self._value3, self._value4)
+        # value_tuple = namedtuple('Value', ['x', 'y', 'z','w'])
+        # self._value = value_tuple(self._value1, self._value2, self._value3, self._value4)
 
         self._hor_layout.addWidget(self._v4)
 
@@ -294,15 +292,15 @@ class FloatVector4Class(FloatVector3Class):
         self._v4.setToolTip(f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_w'}<B></p> {self.tooltip()} " if self.tooltip() != '' else f"<p style='white-space:pre'> Parameter: <B>{self.name() + '_w'}<B></p>")
         self._v4.setStyleSheet("QToolTip { color: #ffffff; background-color: #484848; border: 0px;}")
 
-        self._v4.setValue(self.clampRange().min * 1000000.0)
+        self._v4.setRange(self.clampRange().min, self.clampRange().max)
+        self._v4.base_widget().setValue(self._value4)
 
         self._parent._layout_widget_data[self.name() + '_w'] = self._v4
 
     def eval(self):
-        return self._value
+        return self._value1, self._value2, self._value3, self._value4
 
     def set_value(self, value, override=False):
-        value = list(value)
         self._value1 = float(value[0])
         self._value2 = float(value[1])
         self._value3 = float(value[2])

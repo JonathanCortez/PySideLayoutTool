@@ -31,7 +31,7 @@ class SwitchLabelWidget(QtWidgets.QStackedWidget):
         return self._child_widget
 
     def base_widget(self):
-        return self._main_widget.base_widget()
+        return self._main_widget
 
     def set_label_text(self, text: str):
         self._hint_label.setText(text)

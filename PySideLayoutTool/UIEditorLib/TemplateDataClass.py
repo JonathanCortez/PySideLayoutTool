@@ -491,7 +491,7 @@ class TemplateSerialization:
                 property_list.append(property_dict)
 
             for w in self._current_data_base.widget_groups()[key_display]:
-                widget_values.append(str(w.eval()))
+                widget_values.append(w.eval())
 
             property_groups[key_display] = property_list
             value_list[key_display] = widget_values

@@ -252,6 +252,7 @@ class SpinBoxWidget(QtWidgets.QWidget):
     def setValue(self, value):
         self._value = value
         if not self._int_enable:
-            self._value = float(self.clamp(value, int(self._min * 1000000.0), int(self._max * 1000000.0)) / 1000000.0)
+            if type(self._value) == int:
+                self._value = float(self.clamp(value, int(self._min * 1000000.0), int(self._max * 1000000.0)) / 1000000.0)
 
         self._digital_widget.setValue(self._value)
