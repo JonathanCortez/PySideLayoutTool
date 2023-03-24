@@ -12,7 +12,7 @@ spacing options to help users create a neat and organized layout. """
 
 
 setup(name='PySideLayoutTool',
-      version='0.2.1',
+      version='0.2.3',
       description='PySide Layout Tool is an open-source graphical user interface (GUI) tool developed using PySide2',
       long_description=description,
       maintainer='Jonathan Cortez',
@@ -20,7 +20,7 @@ setup(name='PySideLayoutTool',
       author='Jonathan Cortez',
       author_email='jonathancdev@outlook.com',
       license='LGPL-3.0',
-      install_requires=['PySide2'],
+      install_requires=['PySide2>=5.15.2.1'],
       package_data={'PySideLayoutTool.resources': ['data/*.uiproject', 'data/*.css', 'data/*.qss', 'Icons/*.svg'],
                     'PySideLayoutTool.UIEditorTemplates': ['*.uiplugin']},
       packages=find_packages(),

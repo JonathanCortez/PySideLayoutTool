@@ -5,8 +5,9 @@ from PySide2 import QtWidgets
 
 from PySideLayoutTool.UIEditorLib import UIEditorFactory, TreeItemInterface, RootWidget
 from PySideLayoutTool.UIEditorTemplates.Layout import CustomFormLayout
-import pickle
 
+import pickle
+import json
 
 class TemplateData:
 
@@ -465,6 +466,106 @@ class TemplateGroup(QtWidgets.QWidget):
         new_clone_widgets = self.__data_class.cloneLayout(parent, layout_win, self._template_name, {})
         self.__data_class.recursiveLayout(layout_win, self._template_name, clone_template, new_clone_widgets, state)
         return clone_template
+
+
+
+class JsonSerialization:
+
+    def __init__(self, path, data_base):
+        self._current_data_base = data_base
+        self._path = path
+        self._built_data = {}
+
+    def write_commonData(self):
+        self._built_data['Types'] = self._current_data_base.string_groups()
+
+        property_groups: Dict[str, List[Dict[str, Any]]] = {}
+        value_list: Dict[str, List[str]] = {}
+        for key_display in self._current_data_base.display_groups():
+            property_list = []
+            widget_values = []
+            for i in self._current_data_base.display_groups()[key_display]:
+                property_dict = {}
+                for widget_property in i.Properties():
+                    property_dict[widget_property] = i.Properties()[widget_property].value()
+
+                property_list.append(property_dict)
+                widget_values.append(i.value())
+
+            property_groups[key_display] = property_list
+            value_list[key_display] = widget_values
+
+        self._built_data['Properties'] = property_groups
+        self._built_data['Values'] = value_list
+
+    def write_templateData(self):
+        self._built_data['Templates'] = self._current_data_base.template_groups()
+
+    def write(self):
+        self.write_commonData()
+        self.write_templateData()
+
+        with open(self._path, 'w') as file:
+            json.dump(self._built_data, file, indent=4)
+
+    def read(self):
+        self.read_commonData()
+        self.read_templateData()
+
+    def read_commonData(self):
+        with open(self._path, 'r') as file:
+            self._built_data = json.load(file)
+
+        self._current_data_base.set_string_groups(self._built_data['Types'])
+
+        for key_display in self._built_data['Properties']:
+            for i in range(len(self._built_data['Properties'][key_display])):
+                for widget_property in self._built_data['Properties'][key_display][i]:
+                    self._current_data_base.display_groups()[key_display][i].Properties()[widget_property].setValue(self._built_data['Properties'][key_display][i][widget_property])
+
+                self._current_data_base.display_groups()[key_display][i].setValue(self._built_data['Values'][key_display][i])
+
+    def read_templateData(self):
+        self._current_data_base.set_template_groups(self._built_data['Templates'])
+
+    def read_template(self, template_name):
+        with open(self._path, 'r') as file:
+            self._built_data = json.load(file)
+
+        self._current_data_base.set_string_groups(self._built_data['Types'])
+
+        for key_display in self._built_data['Properties']:
+            for i in range(len(self._built_data['Properties'][key_display])):
+                for widget_property in self._built_data['Properties'][key_display][i]:
+                    self._current_data_base.display_groups()[key_display][i].Properties()[widget_property].setValue(self._built_data['Properties'][key_display][i][widget_property])
+
+                self._current_data_base.display_groups()[key_display][i].setValue(self._built_data['Values'][key_display][i])
+
+        self._current_data_base.set_template_groups(self._built_data['Templates'])
+
+        return self._current_data_base.template_groups()[template_name]
+
+    def read_template_group(self, template_name):
+        with open(self._path, 'r') as file:
+            self._built_data = json.load(file)
+
+        self._current_data_base.set_string_groups(self._built_data['Types'])
+
+        for key_display in self._built_data['Properties']:
+            for i in range(len(self._built_data['Properties'][key_display])):
+                for widget_property in self._built_data['Properties'][key_display][i]:
+                    self._current_data_base.display_groups()[key_display][i].Properties()[widget_property].setValue(self._built_data['Properties'][key_display][i][widget_property])
+
+                self._current_data_base.display_groups()[key_display][i].setValue(self._built_data['Values'][key_display][i])
+
+        self._current_data_base.set_template_groups(self._built_data['Templates'])
+
+        return self._current_data_base.template_groups()[template_name]
+
+
+
+
+
 
 
 # TODO : REDO Template Serialization to public class not instance.

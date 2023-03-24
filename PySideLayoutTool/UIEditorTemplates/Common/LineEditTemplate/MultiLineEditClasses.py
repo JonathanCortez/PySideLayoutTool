@@ -40,8 +40,8 @@ class IntegerVector2Class(VectorClasses):
         self._hor_layout.addWidget(self._v1)
         self._hor_layout.addWidget(self._v2)
 
-        self._v1.base_widget().valueChanged.connect(self._v1_change)
-        self._v2.base_widget().valueChanged.connect(self._v2_change)
+        self._v1.base_widget().base_widget().valueChanged.connect(self._v1_change)
+        self._v2.base_widget().base_widget().valueChanged.connect(self._v2_change)
 
     def _v1_change(self, arg):
         self._value1 = arg
@@ -89,7 +89,7 @@ class IntegerVector3Class(IntegerVector2Class):
 
         self._hor_layout.addWidget(self._v3)
 
-        self._v3.base_widget().valueChanged.connect(self._v3_change)
+        self._v3.base_widget().base_widget().valueChanged.connect(self._v3_change)
 
     def _v3_change(self,arg):
         self._value3 = arg
@@ -130,7 +130,7 @@ class IntegerVector4Class(IntegerVector3Class):
 
         self._hor_layout.addWidget(self._v4)
 
-        self._v4.base_widget().valueChanged.connect(self._v4_change)
+        self._v4.base_widget().base_widget().valueChanged.connect(self._v4_change)
 
 
     def _v4_change(self, arg):
@@ -182,8 +182,8 @@ class FloatVector2Class(VectorClasses):
         self._hor_layout.addWidget(self._v1)
         self._hor_layout.addWidget(self._v2)
 
-        self._v1.base_widget().valueChanged.connect(self._v1_change)
-        self._v2.base_widget().valueChanged.connect(self._v2_change)
+        self._v1.base_widget().base_widget().valueChanged.connect(self._v1_change)
+        self._v1.base_widget().base_widget().valueChanged.connect(self._v2_change)
 
     def _v1_change(self, arg):
         self._value1 = arg
@@ -238,7 +238,7 @@ class FloatVector3Class(FloatVector2Class):
 
         self._parent._layout_widget_data[self.name() + '_z'] = self._v3
 
-        self._v3.base_widget().valueChanged.connect(self._v3_change)
+        self._v3.base_widget().base_widget().valueChanged.connect(self._v3_change)
 
     def _v3_change(self, arg):
         self._value3 = arg
@@ -281,7 +281,7 @@ class FloatVector4Class(FloatVector3Class):
 
         self._hor_layout.addWidget(self._v4)
 
-        self._v4.base_widget().valueChanged.connect(self._v4_change)
+        self._v4.base_widget().base_widget().valueChanged.connect(self._v4_change)
 
     def _v4_change(self, arg):
         self._value4 = arg
