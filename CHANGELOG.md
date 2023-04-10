@@ -1,4 +1,4 @@
-## V0.2.4 (2023-04-09) 
+## V0.3.0 (2023-04-09) 
 ___
   - ### Feature : 
     - New **Notification** window implementation changelog view.
