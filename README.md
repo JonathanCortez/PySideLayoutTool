@@ -187,14 +187,14 @@ Special arguments that can be passed to invoked callback function: </p>
 To get other parameter objects : </p>
  ```ui.layout('Name of UI', 'Category Name').parm('parameter Name')```
 
-![](../../OneDrive/Pictures/PySideLayoutTool_Pics/Screenshot 2023-03-20 012638.png)
+![Screenshot 2023-03-20 012638](https://user-images.githubusercontent.com/19835724/230806623-d0f4a247-b003-404b-9ea3-450c9522f6ea.png)
+
 
 ## Extending PySide Layout Tool
  ### Settings
    1. Go to Setting in `Create Layout` window.
       - Go to Plugins section.
-      
-![](../../OneDrive/Pictures/PySideLayoutTool_Pics/Screenshot 2023-04-09 185330.png)
+![Screenshot 2023-04-09 185330](https://user-images.githubusercontent.com/19835724/230806563-ae0c4993-e0ea-40e5-b762-b9b17b388ec1.png)
    2. In Plugins display section, click `New Plugin` button.
    3. Fill in the information.
       - **Name** : Name of the plugin.
@@ -205,7 +205,8 @@ To get other parameter objects : </p>
         - **Type** : `Parameter`, `Folder`, `Property`.
       - **Enable Icon** : Enable Custom Icon that come with the plugin.
       
-![](../../OneDrive/Pictures/PySideLayoutTool_Pics/Screenshot 2023-04-09 185256.png)
+![Screenshot 2023-04-09 185256](https://user-images.githubusercontent.com/19835724/230806635-9244f3ea-98d8-4486-a0f7-cef463e393c6.png)
+
    4. Click `Create` button.
 
 Once the plugin is created, it will be saved in the path you specified. The plugin will be loaded when you open the Layout Editor.</p>
