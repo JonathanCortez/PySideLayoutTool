@@ -1,4 +1,4 @@
-from . import UIWindowManger
+from . import WindowsModule
 
 
 def editor(name: str, category: str):

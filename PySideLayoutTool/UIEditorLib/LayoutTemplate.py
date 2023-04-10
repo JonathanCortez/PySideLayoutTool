@@ -216,7 +216,7 @@ class WidgetSetup(QtWidgets.QWidget):
 
     @abstractmethod
     def PreUpdate(self):
-        """ stuff before adding to the layout."""
+        """ Before widget is added to the layout and values are given to it."""
 
     @abstractmethod
     def PostUpdate(self):

@@ -1,6 +1,6 @@
 import re
 
-_specialChars = re.compile('[{};:?/|!~`$%@^&*()-+=.\><]')
+_specialChars = re.compile('[{};:?/|!~`$%@^&*()\[\]\-+=.\><,"\']')
 
 def checkString(string: str) -> str:
     if _specialChars.search(string) is None:

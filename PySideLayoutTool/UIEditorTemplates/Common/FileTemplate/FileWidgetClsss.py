@@ -1,5 +1,5 @@
 from PySide2 import QtWidgets, QtCore
-from PySideLayoutTool.UIEditorLib import UIEditorIconFactory, UIWindowManger
+from PySideLayoutTool.UIEditorLib import UIEditorIconFactory, WindowsModule
 
 
 class FileWidgetLayout(QtWidgets.QWidget):

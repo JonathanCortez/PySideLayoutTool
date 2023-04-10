@@ -1,6 +1,6 @@
 import sys
 
-from PySideLayoutTool.UIEditorLib import UISetupModule
+from PySideLayoutTool.UIEditorLib import SetupTools
 from PySide2 import QtWidgets
 
 
@@ -17,9 +17,10 @@ def houdini_main_window():
 
 
 def DisplayWindow():
-    UISetupModule.PreInitialize(None)
-    UISetupModule.Setup_Init()
-
+    # SetupTools.set_custom_plugin_loader(r'C:\Users\heata\PycharmProjects\PySideLayoutTool\PySideLayoutTool\Plugins')
+    SetupTools.enable_notification(False)
+    SetupTools.PreInitialize(None)
+    SetupTools.Setup_Init()
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

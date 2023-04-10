@@ -100,7 +100,7 @@ QComboBox::drop-down {
     width: 16px;
     height: 16px;
     margin-top: 2px;
-    image: url(':/Resources/Icons/arrow_down_box.svg');
+    image: url(':/icons/arrow_down_box');
 }
 
 
@@ -121,16 +121,17 @@ QCheckBox::indicator {
     height: 16px;
 }
 
+
 QCheckBox::indicator:unchecked::disabled  {
-    image: url(':/Resources/Icons/checkbox_unchecked_disable.svg');
+    image: url(':/icons/checkbox_unchecked_disable');
 }
 
 QCheckBox::indicator:unchecked {
-    image: url(':/Resources/Icons/checkbox_unchecked.svg');
+    image: url(':/icons/checkbox_checked');
 }
 
 QCheckBox::indicator:checked {
-    image: url(':/Resources/Icons/checkbox_checked.svg');
+    image: url(':/icons/checkbox_unchecked');
 }
 
 /*-------------------------------------------------------------------------*/
@@ -141,6 +142,11 @@ QLineEdit {
     border-radius: 4px;
     background-color: #2f2f2f;
     color: #9e9e9e;
+}
+.markdown_display
+{
+    background-color: #2b2b2b;
+    color: #ffffff
 }
 
 QLineEdit:focus {
@@ -213,7 +219,7 @@ QPushButton {
     border-radius: 4px;
 }
 .unlock_button{
-    image: url(':/Resources/Icons/lock_unlocked.svg');
+    image: url(':/icons/lock_unlocked');
 }
 .add_button {
     border-top-left-radius: 4px;
@@ -226,6 +232,12 @@ QPushButton {
     border-bottom-right-radius: 4px;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
+}
+.setting_button {
+    border-radius: 4px;
+    background-color: #2f2f2f;
+}.setting_button:hover:!pressed {
+    background-color: #3f3f3f;
 }
 
 QPushButton:flat {
@@ -245,7 +257,7 @@ QPushButton:pressed{
     background-color: #9e9e9e;
 }
 .lock_button{
-    image: url(':/Resources/Icons/lock_locked.svg');
+    image: url(':/icons/lock_locked');
 }
 
 QPushButton:hover:!pressed{
@@ -308,11 +320,11 @@ QToolButton:pressed {
 }
 
 QToolButton::right-arrow {
-    image: url(':/Resources/Icons/chevron_arrow_right.svg');
+    image: url(':/icons/chevron_arrow_right');
 }
 
 QToolButton::down-arrow {
-    image: url(':/Resources/Icons/chevron_arrow_down.svg');
+    image: url(':/icons/chevron_arrow_down');
 }
 
 /*-------------------------------------------------------------------------*/
@@ -446,11 +458,11 @@ QTabBar::tab:selected {
 
 
 QTabBar::close-button {
-    image: url(':/Resources/Icons/normal_close.svg');
+    image: url(':/icons/normal_close');
 }
 
 QTabBar::close-button:pressed {
-    image: url(':/Resources/Icons/normal_close_pressed.svg');
+    image: url(':/icons/normal_close_pressed');
 }
 
 /*-------------------------------------------------------------------------*/
@@ -477,13 +489,13 @@ QTreeView::branch:!has-children:!has-siblings:adjoins-item {
 QTreeView::branch:open:has-children:!has-siblings,
 QTreeView::branch:open:has-children:has-siblings  {
         border-image: none;
-        image: url(':/Resources/Icons/folder_minus.svg');
+        image: url(':/icons/folder_minus');
 }
 
 QTreeView::branch:has-children:!has-siblings:closed,
 QTreeView::branch:closed:has-children:has-siblings {
         border-image: none;
-        image: url(':/Resources/Icons/folder_plus.svg');
+        image: url(':/icons/folder_plus');
 }
 
 /*-------------------------------------------------------------------------*/
@@ -494,6 +506,12 @@ QSplitter {
   border: none;
 }
 
+QSplitter[splitter_settings="1"]::handle {
+  border-right: 2px solid gray;
+  border-radius: 4px;
+  margin: 0 3px;
+}
+
 QSplitter::handle:pressed {
   background-color: #121212;
   border-radius: 4px;
@@ -501,8 +519,7 @@ QSplitter::handle:pressed {
 
 QMainWindow::separator:vertical,
 QSplitter::handle:horizontal {
-    image: url(':/Resources/Icons/vertical_alt.svg');
-
+    image: url(':/icons/vertical_alt');
 }
 
 QMainWindow::separator:horizontal,

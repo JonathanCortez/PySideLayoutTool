@@ -1,0 +1,40 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="icons">
+        <file alias="add_file">Icons/add_file.svg</file>
+        <file alias="arrow_chevron_down">Icons/arrow_chevron_down.svg</file>
+        <file alias="arrow_chevron_up">Icons/arrow_chevron_up.svg</file>
+        <file alias="arrow_down_box">Icons/arrow_down_box.svg</file>
+        <file alias="arrow_exchange_alt">Icons/arrow_exchange_alt.svg</file>
+        <file alias="arrow_exchange_v">Icons/arrow_exchange_v.svg</file>
+        <file alias="arrow_left_box">Icons/arrow_left_box.svg</file>
+        <file alias="border_style_solid_dashed_sep">Icons/border_style_dashed_sep.svg</file>
+        <file alias="border_style_solid_sep">Icons/border_style_solid_sep.svg</file>
+        <file alias="checkbox_checked">Icons/checkbox_checked.svg</file>
+        <file alias="checkbox_unchecked">Icons/checkbox_unchecked.svg</file>
+        <file alias="checkbox_unchecked_disable">Icons/checkbox_unchecked_disable.svg</file>
+        <file alias="checkerPattern">Icons/checkerPattern.png</file>
+        <file alias="checkerPattern_Alpha">Icons/checkerPatternAlpha.png</file>
+        <file alias="chevron_arrow_down">Icons/chevron_arrow_down.svg</file>
+        <file alias="chevron_arrow_right">Icons/chevron_arrow_right.svg</file>
+        <file alias="color_picker">Icons/color_picker.svg</file>
+        <file alias="comment">Icons/comment.svg</file>
+        <file alias="eye_view">Icons/eye_view.svg</file>
+        <file alias="folder_minus">Icons/folder_minus.svg</file>
+        <file alias="folder_plug">Icons/folder_plus.svg</file>
+        <file alias="lock_locked">Icons/lock_locked.svg</file>
+        <file alias="lock_unlocked">Icons/lock_unlocked.svg</file>
+        <file alias="menu_list_display">Icons/menu_list_display.svg</file>
+        <file alias="move_left_arrow">Icons/move_left_arrow.svg</file>
+        <file alias="move_right_arrow">Icons/move_right_arrow.svg</file>
+        <file alias="normal_close">Icons/normal_close.svg</file>
+        <file alias="normal_close_pressed">Icons/normal_close_pressed.svg</file>
+        <file alias="normal_folder">Icons/normal_folder.svg</file>
+        <file alias="splitter_vertical_alt_2">Icons/splitter_vertical_alt_2.svg</file>
+        <file alias="vertical_alt">Icons/vertical_alt.svg</file>
+        <file alias="zoom_in">Icons/zoom_in.svg</file>
+        <file alias="zoom_out">Icons/zoom_out.svg</file>
+        <file alias="hor_solid_line">Icons/solid_line.svg</file>
+        <file alias="setting_icon">Icons/setting_gear_icon.svg</file>
+    </qresource>
+</RCC>

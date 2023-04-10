@@ -10,7 +10,7 @@ class IconEditorFactory:
         if icon_name not in cls.iconloc_str:
             cls.iconloc_str[icon_name] = icon_obj
 
-
+    @classmethod
     def unregister(self,character_type: str) -> None:
         """Unregister a widget layout type."""
         self.iconloc_str.pop(character_type, None)

@@ -44,3 +44,42 @@ def register() -> None:
 
     IconEditorFactory.register('menu_list', QIcon(QPixmap(f'{resource_path}/menu_list_display.svg')))
 
+def unregister() -> None:
+    IconEditorFactory.unregister('folder_nor')
+    IconEditorFactory.unregister('folder_add')
+    IconEditorFactory.unregister('folder_sub')
+
+    IconEditorFactory.unregister('lock_open')
+    IconEditorFactory.unregister('lock_closed')
+
+    IconEditorFactory.unregister('splitter_v1')
+    IconEditorFactory.unregister('splitter_v2')
+
+    IconEditorFactory.unregister('separtor_v1')
+    IconEditorFactory.unregister('separtor_v2')
+
+    IconEditorFactory.unregister('arrow_v1_right')
+    IconEditorFactory.unregister('arrow_v1_down')
+
+    IconEditorFactory.unregister('unchecked')
+    IconEditorFactory.unregister('checked')
+
+    IconEditorFactory.unregister('eye_v1')
+
+    IconEditorFactory.unregister('move_right')
+    IconEditorFactory.unregister('move_left')
+
+    IconEditorFactory.unregister('comment')
+
+    IconEditorFactory.unregister('zoom_In')
+    IconEditorFactory.unregister('zoom_Out')
+
+    IconEditorFactory.unregister('add_file')
+
+    IconEditorFactory.unregister('arrow_exchange_alt')
+    IconEditorFactory.unregister('arrow_exchange_v')
+
+    IconEditorFactory.unregister('arrow_open')
+    IconEditorFactory.unregister('arrow_close')
+
+    IconEditorFactory.unregister('menu_list')

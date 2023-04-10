@@ -28,7 +28,6 @@ class WidgetDemoLayout(QtWidgets.QWidget):
         self.setLayout(self._base_layout)
 
 
-
 # Base widget class template
 """
 LayoutTemplate.ParmSetup : is for most common parameters.
@@ -78,7 +77,15 @@ class WidgetDemoBuild(TemplateBuildClass.ParameterBuild):
 
 
 """
+register() and unregister() are required for the plugin to be loaded.
+"""
+
+"""
 Register widget to be shown in supported templates.
 """
 def register():
     WidgetFactory.register('Demo Widget', WidgetDemoBuild)
+
+def unregister():
+    WidgetFactory.unregister('Demo Widget')
+

@@ -10,8 +10,11 @@ class WindowsManger:
     UI_Wins: Dict[str, Dict[str, Dict[str,Any]]] = {}
     UI_Wins_Names_Category: Dict[str, Dict[str, List[str]]] = {}
 
+    plugins_found: Dict[str, Dict[str, Any]] = {}
+
     DCC_parent_func: Callable[..., Any] = None
     Save_Path = ''
+    Plugin_Path = ''
 
     #TODO: Refactor this function.
     @classmethod
@@ -39,6 +42,23 @@ class WindowsManger:
         temp_UI_Win_Names[main_name_given] = [editor_name, layout_name]
         cls.UI_Wins_Names_Category[win_category] = temp_UI_Win_Names
 
+    @classmethod
+    def add_plugin(cls, name : str, enabled : bool, path: str):
+        cls.plugins_found[name] = {}
+        cls.plugins_found[name]['Enabled'] = enabled
+        cls.plugins_found[name]['Path'] = path
+
+    @classmethod
+    def get_plugins(cls):
+        return cls.plugins_found
+
+    @classmethod
+    def set_plugin_path(cls, path: str):
+        cls.Plugin_Path = path
+
+    @classmethod
+    def get_plugin_path(cls):
+        return cls.Plugin_Path
 
     @classmethod
     def root_save(cls):
@@ -89,7 +109,7 @@ class WindowsManger:
 
 
     @classmethod
-    def WindowShow(cls, instance):
+    def window_show(cls, instance):
         if cls.DCC_parent_func:
             instance.show()
             cls.DCC_parent_func(instance)

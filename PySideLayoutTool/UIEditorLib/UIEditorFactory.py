@@ -10,8 +10,9 @@ class WidgetFactory:
         if category not in cls.widget_category:
             cls.widget_category[category] = []
 
-    def unregisterCategory(self, category_type: str):
-        self.widget_category.pop(category_type, None)
+    @classmethod
+    def unregisterCategory(self, category_name: str):
+        self.widget_category.pop(category_name, None)
 
     @classmethod
     def register(cls, widget_type: str, creator_fn: Callable[..., Any]) -> None:
@@ -30,9 +31,22 @@ class WidgetFactory:
             tempDict[widget_type] = creator_fn
             cls.widget_category[module_path[index]].append(tempDict)
 
-    def unregister(self,character_type: str) -> None:
+    @classmethod
+    def unregister(cls, widget_name: str) -> None:
         """Unregister a widget layout type."""
-        self.widget_creation_funcs.pop(character_type, None)
+        cls.widget_creation_funcs.pop(widget_name, None)
+
+        temp_widget_category = dict(cls.widget_category)
+
+        for category in temp_widget_category:
+            for i in temp_widget_category[category]:
+                if widget_name in i:
+                    cls.widget_category[category].remove(i)
+                    break
+
+            if len(cls.widget_category[category]) == 0:
+                cls.unregisterCategory(category)
+
 
     @classmethod
     def create(cls,widget_name: str):

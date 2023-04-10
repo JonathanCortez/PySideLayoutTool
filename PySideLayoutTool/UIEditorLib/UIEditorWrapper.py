@@ -1,5 +1,5 @@
 from typing import Callable
-from . import UIWindowManger, LayoutConstructorClass
+from . import WindowsModule, LayoutConstructorClass
 
 
 class UIParameterStateChange:

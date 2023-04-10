@@ -155,6 +155,7 @@ class FolderMultiTabList(QtWidgets.QWidget):
         self._layout.setAlignment(QtCore.Qt.AlignTop)
 
         self._parent = parent
+        self._minimum_count = 0
 
         self._hor_layout = QtWidgets.QHBoxLayout()
         self._hor_layout.setSpacing(5)
@@ -214,6 +215,7 @@ class FolderMultiTabList(QtWidgets.QWidget):
             self._scroll_area.setWidgetResizable(True)
             self._scroll_area.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.MinimumExpanding)
             self._scroll_area.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+            self._scroll_area.setStyleSheet("QScrollArea{ border: 0px; }")
 
             self._scroll_area.setWidget(self._frame)
             self._layout.addWidget(self._scroll_area)
@@ -229,7 +231,10 @@ class FolderMultiTabList(QtWidgets.QWidget):
 
 
     def new_widget(self):
-        new_widget = self._base_widget.clone(self,self._parent.layout_win(),False)
+        if hasattr(self._parent,'layout_win'):
+            new_widget = self._base_widget.clone(self, self._parent.layout_win(), False)
+        else:
+            new_widget = self._base_widget.clone(self, None, False)
 
         hor_layout = QtWidgets.QHBoxLayout()
         hor_layout.setSpacing(0)
@@ -268,7 +273,10 @@ class FolderMultiTabList(QtWidgets.QWidget):
         self.updateIndexs()
 
     def insertWidget(self, index):
-        new_widget = self._base_widget.clone(self, self._parent.layout_win(), False)
+        if hasattr(self._parent, 'layout_win'):
+            new_widget = self._base_widget.clone(self, self._parent.layout_win(), False)
+        else:
+            new_widget = self._base_widget.clone(self, None, False)
 
         hor_layout = QtWidgets.QHBoxLayout()
         hor_layout.setSpacing(0)
@@ -289,24 +297,29 @@ class FolderMultiTabList(QtWidgets.QWidget):
     def clearWidgets(self):
         current_count = self._frame_layout.count()
 
-        for i in range(0,current_count):
+        for i in range(self._minimum_count, current_count):
             layout_item = self._frame_layout.itemAt(i)
             widget_button = layout_item.layout().itemAt(0).widget()
             widget_layout = layout_item.layout().itemAt(1).widget()
             widget_button.deleteLater()
             widget_layout.deleteLater()
 
-        for i in range(0, current_count):
-            layout_item = self._frame_layout.itemAt(0)
+        for i in range(self._minimum_count, current_count):
+            layout_item = self._frame_layout.itemAt(self._minimum_count)
             self._frame_layout.removeItem(layout_item)
             del layout_item
 
         self.last_widget_removed = self._folder_contents[0]
 
-        self._contents_button.clear()
-        self._folder_contents.clear()
+        if self._minimum_count == 0:
+            self._contents_button.clear()
+            self._folder_contents.clear()
+        else:
+            for i in range(self._minimum_count, current_count):
+                self._contents_button.pop(self._minimum_count)
+                self._folder_contents.pop(self._minimum_count)
 
-        self._count = 0
+        self._count = self._minimum_count
         self._textbox.setText(str(self._count))
 
     def updateIndexs(self):
@@ -314,6 +327,9 @@ class FolderMultiTabList(QtWidgets.QWidget):
             item = self._frame_layout.itemAt(i)
             item.itemAt(0).widget().updateIndex(i)
 
+
+    def set_minimum_count(self, num: int):
+        self._minimum_count = num
 
     def setName(self, name_str: str):
         self._label.setText(name_str)

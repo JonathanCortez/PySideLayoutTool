@@ -1,4 +1,4 @@
-from PySideLayoutTool.UIEditorLib import UIWindowManger
+from PySideLayoutTool.UIEditorLib import WindowsModule
 from PySide2 import QtCore, QtWidgets
 
 
@@ -49,4 +49,4 @@ class MainWindowLayout(QtWidgets.QMainWindow):
         return self._layout_name
 
     def display(self):
-        UIWindowManger.WindowsManger.WindowShow(self)
+        WindowsModule.WindowsManger.window_show(self)
