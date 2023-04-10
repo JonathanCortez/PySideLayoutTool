@@ -11,9 +11,10 @@ class CollapsibleFolderWidgetV2(QtWidgets.QWidget):
         self._speed = 300
 
         self._button = QtWidgets.QToolButton(text=title, checkable=True, checked=False)
+        self._button.setAttribute(QtCore.Qt.WA_StyledBackground, True)
         self._button.setProperty('class','collapsible_folder')
 
-        self._button.setSizePolicy(QtWidgets.QSizePolicy.Expanding,QtWidgets.QSizePolicy.Fixed)
+        self._button.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self._button.setFixedHeight(25)
         self._button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         self._button.setArrowType(QtCore.Qt.RightArrow)
@@ -62,11 +63,12 @@ class CollapsibleFolderWidgetV2(QtWidgets.QWidget):
         checked = self._button.isChecked()
         self._check = checked
         if self._check:
+            self._button.setStyleSheet('border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; background-color: #9e9e9e;')
+            self._frame.setMaximumHeight(self._frame_layout.sizeHint().height())
+            self._frame.setMinimumHeight(self._frame_layout.sizeHint().height())
             self._button.setArrowType(QtCore.Qt.DownArrow)
             self._ToggleAnimation.setDirection(QtCore.QAbstractAnimation.Forward)
             self._ToggleAnimation.start()
-            self._frame.setMaximumHeight(self._frame_layout.sizeHint().height())
-            self._frame.setMinimumHeight(self._frame_layout.sizeHint().height())
 
         else:
             self._button.setArrowType(QtCore.Qt.RightArrow)
@@ -78,10 +80,15 @@ class CollapsibleFolderWidgetV2(QtWidgets.QWidget):
         if not self._check:
             self._frame.setMaximumHeight(0)
             self._frame.setMinimumHeight(0)
+            self._button.setStyleSheet('border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;')
+
 
     def force_close(self):
-        self._frame.setMaximumHeight(0)
-        self._frame.setMinimumHeight(0)
+        self._button.setArrowType(QtCore.Qt.RightArrow)
+        self._ToggleAnimation.setDirection(QtCore.QAbstractAnimation.Backward)
+        self._ToggleAnimation.start()
+        # self._frame.setMaximumHeight(0)
+        # self._frame.setMinimumHeight(0)
 
     def init_open(self, arg: bool):
         if arg:

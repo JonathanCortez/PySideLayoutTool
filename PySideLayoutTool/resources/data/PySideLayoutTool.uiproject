@@ -1,0 +1,14 @@
+{
+    "Version": 0.1,
+    "Modules": [
+        {
+            "Name": "UIEditorTemplates"
+        }
+    ],
+    "Plugins": [
+        {
+            "Name": "TestingWidgetPlugin",
+            "Enable": false
+        }
+    ]
+}
