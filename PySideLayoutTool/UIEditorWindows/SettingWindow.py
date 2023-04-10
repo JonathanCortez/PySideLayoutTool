@@ -39,6 +39,7 @@ class SettingDisplay(QtWidgets.QDialog):
     def closeEvent(self, event):
         if self._plugin_display._plugin_create_win is not None:
             self._plugin_display._plugin_create_win.close()
+            self._plugin_display._plugin_create_win = None
 
 
 class OptionsDisplay(QtWidgets.QWidget):
@@ -86,7 +87,6 @@ class PluginDisplay(QtWidgets.QWidget):
 
         self.setLayout(self._layout)
 
-
         self._create_plugin_button.pressed.connect(self.create_plugin)
 
     def plugin_create_win(self):
@@ -96,8 +96,7 @@ class PluginDisplay(QtWidgets.QWidget):
         if self._plugin_create_win is None:
             self._plugin_create_win = Plugin_Create(self._plugins_found_list)
             WindowsModule.WindowsManger.window_show(self._plugin_create_win)
-        else:
-            self._plugin_create_win.setFocus()
+
 
 
 
@@ -185,6 +184,7 @@ class Plugin_Create(QtWidgets.QDialog):
         self.setWindowTitle('Create Plugin')
         self.setMinimumSize(700, 200)
         self.setSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Minimum)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
 
         self._parent = parent
 

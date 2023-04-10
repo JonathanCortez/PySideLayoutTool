@@ -1,3 +1,10 @@
+## V0.3.1 (2023-04-09)
+___
+  - ### Hotfix : 
+    - Added `self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)` to </p>
+    `class Plugin_Create(QtWidgets.QDialog):` to fix crash when closing </p>
+    inside other DCC.
+
 ## V0.3.0 (2023-04-09) 
 ___
   - ### Feature : 

@@ -1,4 +1,11 @@
-## V0.2.4 (2023-04-09) 
+## V0.3.1 (2023-04-09)
+___
+  - ### Hotfix : 
+    - Added `self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)` to </p>
+    `class Plugin_Create(QtWidgets.QDialog):` to fix crash when closing </p>
+    inside other DCC.
+
+## V0.3.0 (2023-04-09) 
 ___
   - ### Feature : 
     - New **Notification** window implementation changelog view.
@@ -8,12 +15,6 @@ ___
     - Custom plugin path.
     - New **Settings** Window has been added under **Create Button**.
       - This window will allow you to enable/disable plugins found.
-    - `SetupTools.py` new functions.
-        - `set_custom_plugin_loader(plugin_path: str) -> None`
-        - `load_plugin_modules(plugin_name : str, path : str) -> None`
-        - `unload_plugin_modules(plugin_name : str, path : str) -> None`
-        - `Tool_Json_Data() -> tuple`
-        - `enable_notification(state: bool) -> None`
     -  New system to create plugins.
 
   - ### Update :
@@ -29,6 +30,12 @@ ___
     - `StringValidator.py` improved the special characters compile.
     - `WindowsManager.py` has been renamed to `WindowsModule`.
     - `README.md` has been updated to reflect the new **Plugins** system and tool usage.
+    - `SetupTools.py` new functions.
+        - `set_custom_plugin_loader(plugin_path: str) -> None`
+        - `load_plugin_modules(plugin_name : str, path : str) -> None`
+        - `unload_plugin_modules(plugin_name : str, path : str) -> None`
+        - `Tool_Json_Data() -> tuple`
+        - `enable_notification(state: bool) -> None`
 
   - ### Added :
     - New **Plugins** system.
