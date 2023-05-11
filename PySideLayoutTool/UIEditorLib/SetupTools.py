@@ -91,22 +91,42 @@ def PreInitialize(func) -> None:
                 if dir != '__pycache__':
                     folders[dir] = os.path.join(path, dir)
 
+        plugin_names = [item['Name'] for item in tool_json_data['Plugins']]
         for name, full_path in folders.items():
-            index = [item['Name'] for item in tool_json_data['Plugins']].index(name)
             if f'{name}.uiplugin' in os.listdir(full_path):
-                if len(tool_json_data['Plugins']) == 0:
+                # Check if 'name' is in the list of plugin names
+                if name in plugin_names:
+                    index = plugin_names.index(name)
+                else:
+                    # If 'name' is not in the list, append it and update our list of plugin names
                     tool_json_data['Plugins'].append({'Name': name, 'Enable': False})
-
-                if name not in [item['Name'] for item in tool_json_data['Plugins']]:
-                    tool_json_data['Plugins'].append({'Name': name, 'Enable': False})
+                    plugin_names.append(name)
+                    # Get the index of the newly added plugin
+                    index = len(plugin_names) - 1
 
                 if tool_json_data['Plugins'][index]['Enable']:
                     load_plugin_modules(name, full_path, LOAD_MODULE)
 
                 WindowsManger.add_plugin(name, tool_json_data['Plugins'][index]['Enable'], full_path)
-
             else:
                 print(f'Plugin {name} is missing the .uiplugin file.')
+
+        # for name, full_path in folders.items():
+        #     index = [item['Name'] for item in tool_json_data['Plugins']].index(name)
+        #     if f'{name}.uiplugin' in os.listdir(full_path):
+        #         if len(tool_json_data['Plugins']) == 0:
+        #             tool_json_data['Plugins'].append({'Name': name, 'Enable': False})
+        #
+        #         if name not in [item['Name'] for item in tool_json_data['Plugins']]:
+        #             tool_json_data['Plugins'].append({'Name': name, 'Enable': False})
+        #
+        #         if tool_json_data['Plugins'][index]['Enable']:
+        #             load_plugin_modules(name, full_path, LOAD_MODULE)
+        #
+        #         WindowsManger.add_plugin(name, tool_json_data['Plugins'][index]['Enable'], full_path)
+        #
+        #     else:
+        #         print(f'Plugin {name} is missing the .uiplugin file.')
 
     with open(tool_json_path, 'w') as file:
         json.dump(tool_json_data, file, indent=4)
