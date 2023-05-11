@@ -1,3 +1,16 @@
+## V0.3.1 (2023-05-09)
+___
+  - ### Added :
+    - Added New Widget for Unreal Engine Plugin, replicating the unreal editor </p>
+    drop-down menu for content classes and level actors.
+  - ### Update :
+    - Reworked the Ramp Widget to be more responsive and look to it </p>
+    also added the missing interpolation types with some blends between them.
+    
+  - ### Hotfix : 
+    - Added some small improvements to the MultiFolder(Scroll) widget </p>
+    with height resize and removing item from list.
+
 ## V0.3.1 (2023-04-09)
 ___
   - ### Hotfix : 

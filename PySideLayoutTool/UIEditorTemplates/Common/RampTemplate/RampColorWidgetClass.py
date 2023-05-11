@@ -562,11 +562,13 @@ class PointNumWidget(QtWidgets.QWidget):
 
 
     def updateSelection(self, value):
-        if self._index_widget.wheelState():
+        if self._base_parent.bInit():
+            self._base_parent.setbInit(False)
             self._index_widget.setValue(self._base_index)
             controls = list(self._base_parent.slider_widget().handle_dict_positions().keys())
             self._base_parent.widgetStack().setCurrentWidget(controls[value-1])
             self.setFocus()
+            self._base_parent.setbInit(True)
 
 
     def new_insert(self):
@@ -821,6 +823,8 @@ class ColorRect(QtWidgets.QWidget):
 
         self._frame_colors = []
         self._color_ranges = []
+        self.color_points = []
+        self.interps = []
 
         self.linearGrad = QtGui.QLinearGradient(5, 5, self._width, 25)
         self.linearBrush = QtGui.QBrush(self.linearGrad)
@@ -885,3 +889,46 @@ class ColorRect(QtWidgets.QWidget):
 
         self.linearBrush = QtGui.QBrush(self.linearGrad)
         self.update()
+
+    # def interpolate_colors(self):
+    #     self.color_points = []
+    #
+    #     i = 0
+    #     while i < len(self._color_ranges):
+    #         p = self._color_ranges[i]
+    #         interp = self.interps[p]
+    #
+    #         prev_c = self._frame_colors[i - 1] if i > 0 else self._frame_colors[i]
+    #         cur_c = self._frame_colors[i]
+    #
+    #         if interp == 0:  # Constant
+    #             self.color_points.append((p, cur_c))
+    #
+    #         elif interp == 1:  # Linear
+    #             steps = 100
+    #             for step in range(steps + 1):
+    #                 t = step / steps
+    #                 pos = prev_c + (cur_c - prev_c) * t
+    #
+    #                 red = prev_c.redF() * (1 - t) + cur_c.redF() * t
+    #                 green = prev_c.greenF() * (1 - t) + cur_c.greenF() * t
+    #                 blue = prev_c.blueF() * (1 - t) + cur_c.blueF() * t
+    #                 alpha = prev_c.alphaF() * (1 - t) + cur_c.alphaF() * t
+    #
+    #                 self.color_points.append((pos, QtGui.QColor.fromRgbF(red, green, blue, alpha)))
+    #
+    #         # Add other interpolation methods here
+    #
+    #         i += 1
+    #
+    #     return
+    #
+    # def update_color_rect(self):
+    #     self.interpolate_colors()
+    #     self.linearGrad = QtGui.QLinearGradient(5, 5, self._width, 25)
+    #
+    #     for pos, color in self.color_points:
+    #         self.linearGrad.setColorAt(pos, color)
+    #
+    #     self.linearBrush = QtGui.QBrush(self.linearGrad)
+    #     self.update()
