@@ -216,6 +216,7 @@ class FolderMultiTabList(QtWidgets.QWidget):
             self._scroll_area.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.MinimumExpanding)
             self._scroll_area.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
             self._scroll_area.setStyleSheet("QScrollArea{ border: 0px; }")
+            self._scroll_area.setUpdatesEnabled(True)
 
             self._scroll_area.setWidget(self._frame)
             self._layout.addWidget(self._scroll_area)
@@ -250,27 +251,36 @@ class FolderMultiTabList(QtWidgets.QWidget):
         self._folder_contents.append(new_widget)
         self._contents_button.append(widget_buttons)
 
+        if self._scroll_area:
+            self._scroll_area.setMinimumHeight(self._base_widget.size().height()/2)
+            self._scroll_area.updateGeometry()
+
     def removeWidget(self, index):
-        if type(index) == bool:
-            index = self._count-1
+        if self._count > 0:
+            if type(index) == bool:
+                index = self._count-1
 
-        buttons = self._contents_button.pop(index)
-        widget = self._folder_contents.pop(index)
-        self.last_widget_removed = widget
+            buttons = self._contents_button.pop(index)
+            widget = self._folder_contents.pop(index)
+            self.last_widget_removed = widget
 
-        layout_item = self._frame_layout.itemAt(index)
-        widget_button = layout_item.layout().itemAt(0).widget()
-        widget_layout = layout_item.layout().itemAt(1).widget()
-        widget_button.deleteLater()
-        widget_layout.deleteLater()
+            layout_item = self._frame_layout.itemAt(index)
+            widget_button = layout_item.layout().itemAt(0).widget()
+            widget_layout = layout_item.layout().itemAt(1).widget()
+            widget_button.deleteLater()
+            widget_layout.deleteLater()
 
-        layout_item = self._frame_layout.itemAt(index)
-        self._frame_layout.removeItem(layout_item)
-        del widget, buttons, layout_item
-        self._count -= 1
-        self._textbox.setText(str(self._count))
+            layout_item = self._frame_layout.itemAt(index)
+            self._frame_layout.removeItem(layout_item)
+            del widget, buttons, layout_item
+            self._count -= 1
+            self._textbox.setText(str(self._count))
 
-        self.updateIndexs()
+            self.updateIndexs()
+
+            if self._scroll_area and self._count == 0:
+                self._scroll_area.setMinimumHeight(0)
+                self._scroll_area.updateGeometry()
 
     def insertWidget(self, index):
         if hasattr(self._parent, 'layout_win'):
@@ -293,34 +303,41 @@ class FolderMultiTabList(QtWidgets.QWidget):
 
         self.updateIndexs()
 
+        if self._scroll_area:
+            self._scroll_area.setMinimumHeight(self._base_widget.size().height()/2)
+            self._scroll_area.updateGeometry()
 
     def clearWidgets(self):
         current_count = self._frame_layout.count()
-
-        for i in range(self._minimum_count, current_count):
-            layout_item = self._frame_layout.itemAt(i)
-            widget_button = layout_item.layout().itemAt(0).widget()
-            widget_layout = layout_item.layout().itemAt(1).widget()
-            widget_button.deleteLater()
-            widget_layout.deleteLater()
-
-        for i in range(self._minimum_count, current_count):
-            layout_item = self._frame_layout.itemAt(self._minimum_count)
-            self._frame_layout.removeItem(layout_item)
-            del layout_item
-
-        self.last_widget_removed = self._folder_contents[0]
-
-        if self._minimum_count == 0:
-            self._contents_button.clear()
-            self._folder_contents.clear()
-        else:
+        if self._count > 0:
             for i in range(self._minimum_count, current_count):
-                self._contents_button.pop(self._minimum_count)
-                self._folder_contents.pop(self._minimum_count)
+                layout_item = self._frame_layout.itemAt(i)
+                widget_button = layout_item.layout().itemAt(0).widget()
+                widget_layout = layout_item.layout().itemAt(1).widget()
+                widget_button.deleteLater()
+                widget_layout.deleteLater()
 
-        self._count = self._minimum_count
-        self._textbox.setText(str(self._count))
+            for i in range(self._minimum_count, current_count):
+                layout_item = self._frame_layout.itemAt(self._minimum_count)
+                self._frame_layout.removeItem(layout_item)
+                del layout_item
+
+            self.last_widget_removed = self._folder_contents[0]
+
+            if self._minimum_count == 0:
+                self._contents_button.clear()
+                self._folder_contents.clear()
+            else:
+                for i in range(self._minimum_count, current_count):
+                    self._contents_button.pop(self._minimum_count)
+                    self._folder_contents.pop(self._minimum_count)
+
+            self._count = self._minimum_count
+            self._textbox.setText(str(self._count))
+
+            if self._scroll_area:
+                self._scroll_area.setMinimumHeight(0)
+                self._scroll_area.updateGeometry()
 
     def updateIndexs(self):
         for i in range(0,self._frame_layout.count()):

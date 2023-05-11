@@ -232,8 +232,13 @@ class TemplateData:
 
     def recursiveLayout(self, main_layout_win, name: str, template_layout, widget_data, update_clear=True):
         for widget_update in widget_data[name]:
+            widget_update.PrePropertySetup()
+
             widget_update._updateProperties()
             widget_update.clear_Observers()
+
+            widget_update.PostPropertySetup()
+
 
         # index = start_index
 
@@ -365,6 +370,7 @@ class TemplateData:
 
                 expression = compile(expression_path, 'Script', 'eval')
                 code = eval(expression)
+                print(code)
 
                 if code:
                     import_modules = []

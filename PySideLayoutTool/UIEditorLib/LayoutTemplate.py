@@ -153,30 +153,6 @@ class WidgetSetup(QtWidgets.QWidget):
     def layout_win(self):
         return self._parent
 
-    # @property
-    # def parent_id(self):
-    #     return self._parent_id
-    #
-    # @parent_id.setter
-    # def parent_id(self, parent_id: int):
-    #     self._parent_id = parent_id
-    #
-    # @property
-    # def is_child(self):
-    #     return self._is_child_widget
-    #
-    # @is_child.setter
-    # def is_child(self, state: bool):
-    #     self._is_child_widget = state
-    #
-    # @property
-    # def widget_id(self):
-    #     return self._id
-    #
-    # @widget_id.setter
-    # def widget_id(self, id_num: int):
-    #     self._id = id_num
-
     @UIProperty(metaWidget='LineEditProperty', label='Name', category='Default', category_args=(True, 300),
                 defaults=(2, 1, 'NewName', StringValidatorClass.checkString))
     def name(self):
@@ -213,6 +189,14 @@ class WidgetSetup(QtWidgets.QWidget):
     @UIProperty(metaWidget='LineEditProperty', label='Default', category='Setting')
     def default_value(self):
         pass
+
+    @abstractmethod
+    def PrePropertySetup(self):
+        """ Before properties are added to the widget."""
+
+    @abstractmethod
+    def PostPropertySetup(self):
+        """ After properties are added to the widget."""
 
     @abstractmethod
     def PreUpdate(self):
