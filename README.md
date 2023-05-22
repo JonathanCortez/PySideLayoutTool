@@ -326,7 +326,4 @@ Once the plugin is created, it will be saved in the path you specified. The plug
 # Known Issues 
     
   ### Ramp
-    - Not all interpolation are yet implemented.
-    - Sometimes Ramp graph doesnt resize properly.
     - Callback not implemented.
-    - Needs more testing.
